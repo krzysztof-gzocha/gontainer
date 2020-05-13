@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"math"
 	"testing"
 
@@ -46,5 +47,64 @@ func TestNewBaseParamContainer(t *testing.T) {
 				assert.Nil(t, realValue)
 			}
 		})
+	}
+}
+
+func TestNewBaseContainer(t *testing.T) {
+	tests := []struct {
+		name    string
+		getters map[string]GetterDefinition
+		hasNot  []string
+	}{
+		{
+			name:    "empty container",
+			getters: nil,
+			hasNot:  []string{"db"},
+		},
+		{
+			name: "db",
+			getters: map[string]GetterDefinition{
+				"db": createGetterDefinition(struct{}{}, "", false),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			container := NewBaseContainer(tt.getters)
+
+			for id, _ := range tt.getters {
+				assert.True(t, container.Has(id))
+				assert.NotPanics(t, func() {
+					container.MustGet(id)
+				})
+
+				_, err := container.Get(id)
+				assert.NoError(t, err)
+			}
+
+			for _, id := range tt.hasNot {
+				assert.False(t, container.Has(id))
+				assert.Panics(t, func() {
+					container.MustGet(id)
+				})
+
+				_, err := container.Get(id)
+				assert.Error(t, err)
+			}
+		})
+	}
+}
+
+func createGetterDefinition(svc interface{}, err string, disposable bool) GetterDefinition {
+	return GetterDefinition{
+		Getter: func() (interface{}, error) {
+			var e error
+			if err != "" {
+				e = fmt.Errorf(err)
+			}
+
+			return svc, e
+		},
+		Disposable: disposable,
 	}
 }
