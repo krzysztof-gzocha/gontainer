@@ -4,7 +4,7 @@ Depenendency Injection container for GO inspired by Symfony.
 
 ## Example
 
-```
+```yaml
 meta:
   pkg: container
 
