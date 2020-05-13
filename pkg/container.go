@@ -32,14 +32,18 @@ func NewBaseParamContainer(params map[string]interface{}) *BaseParamContainer {
 
 func (b BaseParamContainer) GetParam(id string) (interface{}, error) {
 	if b.HasParam(id) {
-		return b.MustGetParam(id), nil
+		return b.params[id], nil
 	}
 
 	return nil, fmt.Errorf("parameter %s does not exist", id)
 }
 
 func (b BaseParamContainer) MustGetParam(id string) interface{} {
-	return b.params[id]
+	r, err := b.GetParam(id)
+	if err != nil {
+		panic(err)
+	}
+	return r
 }
 
 func (b BaseParamContainer) HasParam(id string) bool {
@@ -122,7 +126,7 @@ func (b BaseContainer) Has(id string) bool {
 
 type BaseTaggedContainer struct {
 	container Container
-	mapping map[string][]string
+	mapping   map[string][]string
 }
 
 func (b BaseTaggedContainer) Get(id string) (interface{}, error) {
