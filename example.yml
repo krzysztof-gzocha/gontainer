@@ -1,0 +1,25 @@
+params: # flat structure, value cannot be a slice
+  db.name: "my_db"
+  hardcoded_port: 3306                                              # 3306
+  db.port: "%envint(MY_SERVICE_PORT)%"                              # panic if not int
+  db.host: "mydb.net"
+  db.dsn: "mysql:host=%db.host%:%db.port%;dbname=%my_db%"           # "mysql:host=" + toString(%db.host%) + ":" + toString(%db.port%) + ";dbname=" + toString(%my_db%)
+  db.port_alias: "%db.port%"                                        # %db.port%
+  env: '%env("ENVIRONMENT")%'
+
+services:
+  isVerified:
+    (...)
+    tags:
+      "factor"
+  titleLength:
+    constructor: "foo/bar/foobat.CreateTitleLength"
+    args: ["%db.name%", "@isVerified.(foo/bar/foobar.MyType)"]
+    (...)
+    tags:
+      "factor"
+
+tags:
+  "factor":
+    transformers:
+      - ["pkg/foo/bar/NewTrackingFactor"]
