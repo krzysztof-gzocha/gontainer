@@ -48,5 +48,5 @@ func (s SimpleResolver) Resolve(expr string) (Argument, error) {
 		}
 	}
 
-	return Argument{}, fmt.Errorf("cannot resolve argument `%d`", expr)
+	return Argument{}, fmt.Errorf("cannot resolve argument `%s`", expr)
 }
