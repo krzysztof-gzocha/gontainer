@@ -2,5 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-go run ${DIR}/../main.go build -i example/example.yml -o example/container/example.go
-go run ${DIR}/*.go
+cd ${DIR}/..
+go run ./main.go build -i ${DIR}/../example/example.yml -o ${DIR}/../example/container/example.go
+go run ${DIR}/../example/main.go
+cd ${DIR}
