@@ -2,4 +2,3 @@
 * build using multiple of different yaml files (build -i container/*.yml - container/prod/*.yml ...)
 * tests
 * getters: c.MustGetEmployee() instead of c.MustGet("employee").(*pkg.Employee)
-
