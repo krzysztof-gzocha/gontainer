@@ -1,6 +1,7 @@
 package imports
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
 	"strings"
@@ -14,12 +15,23 @@ type Import struct {
 type Imports interface {
 	GetAlias(string) string
 	GetImports() []Import
+	RegisterPrefix(shortcut string, path string) error
 }
 
 type SimpleImports struct {
-	prefix  string
-	counter int64
-	imports map[string]Import
+	prefix    string
+	counter   int64
+	imports   map[string]Import
+	shortcuts map[string]string
+}
+
+func (s *SimpleImports) RegisterPrefix(shortcut string, path string) error {
+	if _, ok := s.shortcuts[shortcut]; ok {
+		return fmt.Errorf("shortcut `%s` is already registered", shortcut)
+	}
+
+	s.shortcuts[shortcut] = path
+	return nil
 }
 
 func (s *SimpleImports) GetAlias(path string) string {
@@ -31,7 +43,7 @@ func (s *SimpleImports) GetAlias(path string) string {
 
 	i := Import{
 		Path:  path,
-		Alias: strings.Replace(parts[len(parts)-1], ".", "_", 999) + "_" + s.prefix + strconv.FormatInt(s.counter, 16),
+		Alias: strings.ReplaceAll(parts[len(parts)-1], ".", "_") + "_" + s.prefix + strconv.FormatInt(s.counter, 16),
 	}
 	s.imports[path] = i
 	s.counter++

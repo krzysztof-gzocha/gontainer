@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+
 	"github.com/gomponents/gontainer/pkg/arguments"
 	"github.com/gomponents/gontainer/pkg/definition"
 	"github.com/gomponents/gontainer/pkg/exporters"
@@ -11,7 +13,6 @@ import (
 	"github.com/gomponents/gontainer/pkg/tokens"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
 )
 
 func NewBuildCmd() *cobra.Command {
