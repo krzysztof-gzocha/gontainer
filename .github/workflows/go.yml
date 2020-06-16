@@ -19,11 +19,6 @@ jobs:
         go-version: ^1.13
       id: go
 
-    - name: GOROOT and GOPATH
-      run: |
-        echo $GOROOT;
-        echo $GOPATH;
-
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
