@@ -108,3 +108,34 @@ func createGetterDefinition(svc interface{}, err string, disposable bool) Getter
 		Disposable: disposable,
 	}
 }
+
+func TestNewBaseTaggedContainer(t *testing.T) {
+	container := NewBaseContainer(map[string]GetterDefinition{
+		"mysql": createGetterDefinition(struct{}{}, "", false),
+		"redis": createGetterDefinition(struct{}{}, "", false),
+	})
+
+	tests := []struct {
+		name      string
+		container Container
+		mapping   map[string][]string
+		tags      map[string]uint
+	}{
+		{
+			name:      "simple example",
+			container: container,
+			mapping:   map[string][]string{"storage": {"mysql", "redis"}},
+			tags:      nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			container := NewBaseTaggedContainer(tt.container, tt.mapping)
+			for tag, count := range tt.tags {
+				services, err := container.GetByTag(tag)
+				assert.NoError(t, err)
+				assert.Equal(t, count, len(services))
+			}
+		})
+	}
+}
