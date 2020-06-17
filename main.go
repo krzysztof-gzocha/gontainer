@@ -19,6 +19,7 @@ Re-use dependencies whenever you need and forget about dependency hell in main.g
 
 	rootCmd.AddCommand(
 		cmd.NewBuildCmd(),
+		cmd.NewVersionCmd(),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
