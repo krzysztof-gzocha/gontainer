@@ -1,4 +1,4 @@
-![](https://github.com/actions/hello-world/workflows/Greet%20Everyone/badge.svg?branch=master)
+[![Build Status](https://github.com/actions/hello-world/workflows/Greet%20Everyone/badge.svg?branch=master)](https://github.com/gomponents/gontainer/actions?query=workflow%3AGo)
 [![Coverage Status](https://coveralls.io/repos/github/gomponents/gontainer/badge.svg?branch=master)](https://coveralls.io/github/gomponents/gontainer?branch=master)
 
 # Gontainer
