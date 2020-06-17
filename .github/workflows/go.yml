@@ -32,7 +32,10 @@ jobs:
       run: go build -v main.go
 
     - name: Test
-      run: go test ./cmd/... ./pkg/...
-      
+      run: go test -coverprofile=coverage.out ./cmd/... ./pkg/...
+
+    - name: Test coverage
+      run: go tool cover -func=coverage.out
+
     - name: Example
       run: example/run.sh
