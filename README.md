@@ -1,3 +1,6 @@
+![](https://github.com/actions/hello-world/workflows/Greet%20Everyone/badge.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/gomponents/gontainer/badge.svg?branch=master)](https://coveralls.io/github/gomponents/gontainer?branch=master)
+
 # Gontainer
 
 Depenendency Injection container for GO inspired by Symfony.
