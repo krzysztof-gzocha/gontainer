@@ -7,12 +7,9 @@ import (
 	goVersion "go.hein.dev/go-version"
 )
 
-func NewVersionCmd() *cobra.Command {
+func NewVersionCmd(version, commit, date string) *cobra.Command {
 	var (
 		shortened  = false
-		version    = "dev"
-		commit     = "none"
-		date       = "unknown"
 		output     = "json"
 		versionCmd = &cobra.Command{
 			Use:   "version",

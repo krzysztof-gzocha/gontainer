@@ -8,6 +8,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func main() {
 	rootCmd := cobra.Command{
 		Use:   "gontainer",
@@ -19,7 +25,7 @@ Re-use dependencies whenever you need and forget about dependency hell in main.g
 
 	rootCmd.AddCommand(
 		cmd.NewBuildCmd(),
-		cmd.NewVersionCmd(),
+		cmd.NewVersionCmd(version, commit, date),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
