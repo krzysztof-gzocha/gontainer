@@ -93,8 +93,7 @@ func (b BaseContainer) Get(id string) (interface{}, error) {
 		return getter.service, nil
 	}
 
-	callee := getter.getter
-	service, err := callee()
+	service, err := getter.getter()
 
 	if err != nil {
 		return nil, fmt.Errorf("cannot create service %s: %s", id, err.Error())

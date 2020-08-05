@@ -1,5 +1,7 @@
 meta:
   pkg: container
+  imports:
+    "gontainer": "github.com/gomponents/gontainer"
 
 parameters:
   first_name: "Jane"
@@ -12,6 +14,8 @@ services:
   person:
     constructor: "github.com/gomponents/gontainer/example/pkg.NewPerson"
     args: ["%first_name% %last_name%", "%age%"]
+    getter: "GetPerson()"
+    type: "*github.com/gomponents/gontainer/example/pkg/Person"
 
   employee:
     constructor: "github.com/gomponents/gontainer/example/pkg.NewEmployee"

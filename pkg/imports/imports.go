@@ -2,7 +2,6 @@ package imports
 
 import (
 	"fmt"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -56,10 +55,6 @@ func (s *SimpleImports) GetImports() []Import {
 	for _, i := range s.imports {
 		r = append(r, i)
 	}
-
-	sort.Slice(r, func(i, j int) bool {
-		return strings.Compare(r[i].Path, r[j].Path) < 0
-	})
 
 	return r
 }

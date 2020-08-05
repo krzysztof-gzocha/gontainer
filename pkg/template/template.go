@@ -26,6 +26,10 @@ const TemplateBody = `
 // GO:  {{$param.Code}}
 // -------------------
 {{end}}
+
+// TODO name should be injectable
+type MyContainer {{.RootImportAlias}}.Container
+
 func CreateParamContainer() {{.RootImportAlias}}.ParamContainer {
 	params := make(map[string]interface{})
 {{range $name, $param := .Params}}	params["{{$name}}"] = {{$param.Code}}
@@ -34,7 +38,7 @@ func CreateParamContainer() {{.RootImportAlias}}.ParamContainer {
 }
 {{ $RootImportAlias := .RootImportAlias -}}
 {{- $Imports := .Imports }}
-func CreateContainer() {{.RootImportAlias}}.Container {
+func CreateContainer() MyContainer {
 	var result *{{.RootImportAlias}}.BaseContainer
 
 	getters := make(map[string]{{.RootImportAlias}}.GetterDefinition)
@@ -72,6 +76,13 @@ func CreateContainer() {{.RootImportAlias}}.Container {
 	result = {{.RootImportAlias}}.NewBaseContainer(getters)
 	return result
 }
+
+// {{range $service := .Services}}
+// {{- if ne $service.Service.Getter "" }}
+// func (c *MyContainer) {{ $service.Service.Getter }} {{ $service.Service.Type }} {
+// }
+// {{ end }}
+// {{ end }}
 `
 
 type Builder interface {

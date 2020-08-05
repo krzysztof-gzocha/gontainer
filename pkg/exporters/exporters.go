@@ -71,8 +71,15 @@ func (n NilExporter) Supports(v interface{}) bool {
 type NumericExporter struct{}
 
 func (n NumericExporter) Export(v interface{}) (string, error) {
-	// TODO complex128(534) => (534+0i)
-	return fmt.Sprintf("%v", v), nil
+	switch reflect.TypeOf(v).Kind() {
+	case
+		reflect.Float32,
+		reflect.Float64,
+		reflect.Complex64,
+		reflect.Complex128:
+		return fmt.Sprintf("%#v", v), nil
+	}
+	return fmt.Sprintf("%d", v), nil
 }
 
 func (n NumericExporter) Supports(v interface{}) bool {
