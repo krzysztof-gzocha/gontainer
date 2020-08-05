@@ -31,6 +31,7 @@ func (c ChainValidator) Validate(d Definition) error {
 func NewDefaultValidator() Validator {
 	return NewChainValidator([]func(Definition) error{
 		ValidateMetaPkg,
+		ValidateMetaImports,
 	})
 }
 
@@ -43,6 +44,27 @@ func ValidateMetaPkg(d Definition) error {
 
 	if !regexp.MustCompile(r).MatchString(d.Meta.Pkg) {
 		return fmt.Errorf("meta.pkg must match %s, `%s` given", r, d.Meta.Pkg)
+	}
+
+	return nil
+}
+
+// TODO improve impP regex
+func ValidateMetaImports(d Definition) error {
+	aliasP := "^[a-zA-Z0-9_]+$"
+	aliasR := regexp.MustCompile(aliasP)
+
+	impP := "^[a-zA-Z0-9_./]+$"
+	impR := regexp.MustCompile(impP)
+
+	for alias, imp := range d.Meta.Imports {
+		if !aliasR.MatchString(alias) {
+			return fmt.Errorf("invalid import alias `%s`, must match `%s`", alias, aliasP)
+		}
+
+		if !impR.MatchString(imp) {
+			return fmt.Errorf("invalid import `%s`, must match `%s`", imp, impP)
+		}
 	}
 
 	return nil

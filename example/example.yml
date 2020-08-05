@@ -12,14 +12,14 @@ parameters:
 
 services:
   person:
-    constructor: "github.com/gomponents/gontainer/example/pkg.NewPerson"
+    constructor: "gontainer/example/pkg.NewPerson"
     args: ["%first_name% %last_name%", "%age%"]
     getter: "GetPerson()"
-    type: "*github.com/gomponents/gontainer/example/pkg/Person"
+    type: "*gontainer/example/pkg/Person"
 
   employee:
-    constructor: "github.com/gomponents/gontainer/example/pkg.NewEmployee"
+    constructor: "gontainer/example/pkg.NewEmployee"
     args:
-      - "@person.(*github.com/gomponents/gontainer/example/pkg.Person)"
+      - "@person.(*gontainer/example/pkg.Person)"
       - "%salary%"
       - "%position%"

@@ -39,6 +39,11 @@ func NewBuildCmd() *cobra.Command {
 		}
 
 		imps := imports.NewSimpleImports("gontainer_")
+		for a, i := range input.Meta.Imports {
+			if err := imps.RegisterPrefix(a, i); err != nil {
+				panic(err)
+			}
+		}
 		exporter := exporters.NewDefaultExporter()
 
 		tokenFactories := []tokens.TokenFactoryStrategy{

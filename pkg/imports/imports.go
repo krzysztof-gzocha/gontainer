@@ -34,6 +34,8 @@ func (s *SimpleImports) RegisterPrefix(shortcut string, path string) error {
 }
 
 func (s *SimpleImports) GetAlias(path string) string {
+	path = s.decorateImport(path)
+
 	if i, ok := s.imports[path]; ok {
 		return i.Alias
 	}
@@ -59,9 +61,20 @@ func (s *SimpleImports) GetImports() []Import {
 	return r
 }
 
+func (s *SimpleImports) decorateImport(i string) string {
+	for shortcut, path := range s.shortcuts {
+		if strings.Index(i, shortcut) == 0 {
+			return strings.Replace(i, shortcut, path, 1)
+		}
+	}
+
+	return i
+}
+
 func NewSimpleImports(prefix string) *SimpleImports {
 	return &SimpleImports{
-		prefix:  prefix,
-		imports: make(map[string]Import),
+		prefix:    prefix,
+		imports:   make(map[string]Import),
+		shortcuts: make(map[string]string),
 	}
 }

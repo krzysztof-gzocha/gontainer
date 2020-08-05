@@ -16,7 +16,8 @@ type Service struct {
 
 type Definition struct {
 	Meta struct {
-		Pkg string `yaml:"pkg"`
+		Pkg     string            `yaml:"pkg"`
+		Imports map[string]string `yaml:"imports"`
 	} `yaml:"meta"`
 	Params   parameters.RawParameters `yaml:"parameters"`
 	Services map[string]Service       `yaml:"services"`
