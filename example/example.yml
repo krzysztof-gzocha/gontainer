@@ -18,6 +18,7 @@ services:
     args: ["%first_name% %last_name%", "%age%"]
     getter: "GetPerson"
     type: "*gontainer/example/pkg.Person"
+    disposable: true
 
   employee:
     getter: "GetEmployee"
