@@ -22,8 +22,7 @@ func (s PatternTokenizer) Tokenize(pattern string) ([]Token, error) {
 	opened := false
 	buff := ""
 
-	// todo use runes
-	for _, c := range pattern {
+	for _, c := range []rune(pattern) {
 		ch := string(c)
 		if ch == TokenDelimiter {
 			if opened {
