@@ -71,6 +71,7 @@ func NewBuildCmd() *cobra.Command {
 			},
 		)
 
+		// todo check circular deps
 		services := make(map[string]template.Service)
 		for id, s := range input.Services {
 			compiledArgs := make([]arguments.Argument, 0)
