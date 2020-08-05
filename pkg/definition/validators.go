@@ -52,7 +52,7 @@ func ValidateMetaPkg(d Definition) error {
 	return nil
 }
 
-// TODO improve impP regex
+// TODO improve impP regex e.g. "/aa" it's not valid import
 func ValidateMetaImports(d Definition) error {
 	aliasP := "^[a-zA-Z0-9_]+$"
 	aliasR := regexp.MustCompile(aliasP)
