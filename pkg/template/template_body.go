@@ -70,10 +70,11 @@ func CreateContainer() *{{.ContainerType}} {
 	return result
 }
 
-{{ $ContainerType := .ContainerType -}}
-{{range $name, $service := .Services}}
-{{- if ne $service.Service.Getter "" }}
-{{ $serviceType := decorateType $service.Service.Type }}
+{{- $ContainerType := .ContainerType -}}
+{{- range $name, $service := .Services -}}
+{{- if ne $service.Service.Getter "" -}}
+{{- $serviceType := decorateType $service.Service.Type }}
+
 func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $serviceType }}, err error) {
 	var object interface{}
 	var ok bool
@@ -90,6 +91,6 @@ func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $service
 
 	return
 }
-{{ end }}
-{{ end }}
+{{- end -}}
+{{- end }}
 `

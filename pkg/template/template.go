@@ -128,16 +128,26 @@ func NewSimpleBuilder(opts ...SimpleBuilderOpt) (*SimpleBuilder, error) {
 
 			return r.data.Imports.GetAlias(alias)
 		},
+		// *gontainer/example/pkg.Person
+		// registers import "gontainer/example/pkg"
+		// returns *Person
 		"decorateType": func(t string) string {
 			ptr := []rune(t)[0] == '*'
 			t = strings.TrimLeft(t, "*")
 
 			parts := strings.Split(t, "/")
-
 			result := parts[len(parts)-1]
+			path := parts[:len(parts)-1]
+
+			if strings.Contains(result, ".") {
+				subparts := strings.Split(result, ".")
+				result = subparts[len(subparts)-1]
+				path = append(path, strings.Join(subparts[:len(subparts)-1], "."))
+			}
+
 			// TODO move imports somewhere else
-			if len(parts) > 1 {
-				imp := strings.Join(parts[:len(parts)-1], "/")
+			if len(path) > 0 {
+				imp := strings.Join(path, "/")
 				result = r.data.Imports.GetAlias(imp) + "." + result
 			}
 

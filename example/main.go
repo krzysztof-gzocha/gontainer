@@ -9,11 +9,10 @@ import (
 func main() {
 	c := container.CreateContainer()
 	//employee := c.MustGet("employee").(*pkg.Employee)
-	//
-	//fmt.Printf("Full name: %s\n", employee.Fullname)
-	//fmt.Printf("Position: %s\n", employee.Position)
-	//fmt.Printf("Salary: %d\n", employee.Salary)
+	employee, err := c.GetEmployee()
+	fmt.Printf("err %s\n", err)
 
-	a, b := c.GetPerson()
-	fmt.Printf("%#v %s\n", a, b)
+	fmt.Printf("Full name: %s\n", employee.Fullname)
+	fmt.Printf("Position: %s\n", employee.Position)
+	fmt.Printf("Salary: %d\n", employee.Salary)
 }

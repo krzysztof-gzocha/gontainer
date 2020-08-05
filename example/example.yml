@@ -13,13 +13,15 @@ parameters:
 
 services:
   person:
+    # todo NewPerson without import won't work
     constructor: "gontainer/example/pkg.NewPerson"
     args: ["%first_name% %last_name%", "%age%"]
     getter: "GetPerson"
-    # todo .Person
-    type: "*gontainer/example/pkg/Person"
+    type: "*gontainer/example/pkg.Person"
 
   employee:
+    getter: "GetEmployee"
+    type: "*gontainer/example/pkg.Employee"
     constructor: "gontainer/example/pkg.NewEmployee"
     args:
       - "@person.(*gontainer/example/pkg.Person)"
