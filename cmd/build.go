@@ -23,13 +23,7 @@ func NewBuildCmd() *cobra.Command {
 	)
 
 	callback := func(cmd *cobra.Command, args []string) {
-		input := struct {
-			Meta struct {
-				Pkg string `yaml:"pkg"`
-			} `yaml:"meta"`
-			Params   parameters.RawParameters `yaml:"parameters"`
-			Services definition.Services      `yaml:"services"`
-		}{}
+		input := definition.Definition{}
 
 		if file, err := ioutil.ReadFile(inputFile); err != nil {
 			panic(fmt.Sprintf("Error has occurred during opening file: %s", err.Error()))
@@ -37,6 +31,11 @@ func NewBuildCmd() *cobra.Command {
 			if yamlErr := yaml.Unmarshal(file, &input); yamlErr != nil {
 				panic(fmt.Sprintf("Error has occurred during parsing yaml file: %s", yamlErr.Error()))
 			}
+		}
+
+		validator := definition.NewDefaultValidator()
+		if err := validator.Validate(input); err != nil {
+			panic(err)
 		}
 
 		imps := imports.NewSimpleImports("gontainer_")

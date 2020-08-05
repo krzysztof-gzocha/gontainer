@@ -1,5 +1,9 @@
 package definition
 
+import (
+	"github.com/gomponents/gontainer/pkg/parameters"
+)
+
 type Service struct {
 	Getter      string   `yaml:"getter"`
 	Type        string   `yaml:"type"`
@@ -10,4 +14,10 @@ type Service struct {
 	Tags        []string `yaml:"tags"`
 }
 
-type Services map[string]Service
+type Definition struct {
+	Meta struct {
+		Pkg string `yaml:"pkg"`
+	} `yaml:"meta"`
+	Params   parameters.RawParameters `yaml:"parameters"`
+	Services map[string]Service       `yaml:"services"`
+}
