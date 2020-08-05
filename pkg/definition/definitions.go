@@ -16,8 +16,9 @@ type Service struct {
 
 type Definition struct {
 	Meta struct {
-		Pkg     string            `yaml:"pkg"`
-		Imports map[string]string `yaml:"imports"`
+		Pkg           string            `yaml:"pkg"`
+		Imports       map[string]string `yaml:"imports"`
+		ContainerType string            `yaml:"container_type"`
 	} `yaml:"meta"`
 	Params   parameters.RawParameters `yaml:"parameters"`
 	Services map[string]Service       `yaml:"services"`

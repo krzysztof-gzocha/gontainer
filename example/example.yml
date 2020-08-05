@@ -1,5 +1,6 @@
 meta:
   pkg: container
+  container_type: MyFooContainer
   imports:
     "gontainer": "github.com/gomponents/gontainer"
 

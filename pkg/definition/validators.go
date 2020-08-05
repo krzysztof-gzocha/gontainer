@@ -32,6 +32,7 @@ func NewDefaultValidator() Validator {
 	return NewChainValidator([]func(Definition) error{
 		ValidateMetaPkg,
 		ValidateMetaImports,
+		ValidateMetaContainerType,
 	})
 }
 
@@ -65,6 +66,16 @@ func ValidateMetaImports(d Definition) error {
 		if !impR.MatchString(imp) {
 			return fmt.Errorf("invalid import `%s`, must match `%s`", imp, impP)
 		}
+	}
+
+	return nil
+}
+
+func ValidateMetaContainerType(d Definition) error {
+	p := "^[A-Za-z][A-Za-z0-9_]*$"
+
+	if !regexp.MustCompile(p).MatchString(d.Meta.ContainerType) {
+		return fmt.Errorf("meta.container_type must match %s, `%s` given", p, d.Meta.ContainerType)
 	}
 
 	return nil
