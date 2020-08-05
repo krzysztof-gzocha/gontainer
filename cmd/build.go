@@ -46,14 +46,12 @@ func NewBuildCmd() *cobra.Command {
 		}
 		exporter := exporters.NewDefaultExporter()
 
-		tokenFactories := []tokens.TokenFactoryStrategy{
+		tokenizer := tokens.NewPatternTokenizer([]tokens.TokenFactoryStrategy{
 			tokens.NewTokenSimpleFunction(imps, "env", "os", "Getenv"),
 			tokens.TokenPercentSign{},
 			tokens.TokenReference{},
 			tokens.TokenString{},
-		}
-
-		tokenizer := tokens.NewPatternTokenizer(tokenFactories)
+		})
 
 		bagFactory := parameters.NewSimpleBagFactory(tokenizer, exporter, imps)
 		resolvedParams, paramsErr := bagFactory.Create(input.Params)

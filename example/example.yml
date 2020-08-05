@@ -9,7 +9,7 @@ parameters:
   last_name: "Doe"
   age: 30
   salary: 30000
-  position: "CTO"
+  position: '%env("PERSON_POSITION")%'
 
 services:
   person:
