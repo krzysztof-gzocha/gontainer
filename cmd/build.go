@@ -56,8 +56,10 @@ func NewBuildCmd() *cobra.Command {
 		tokenizer := tokens.NewPatternTokenizer(tokenFactories)
 
 		bagFactory := parameters.NewSimpleBagFactory(tokenizer, exporter, imps)
-		// todo
-		resolvedParams, _ := bagFactory.Create(input.Params)
+		resolvedParams, paramsErr := bagFactory.Create(input.Params)
+		if paramsErr != nil {
+			panic(paramsErr)
+		}
 
 		argumentResolver := arguments.NewSimpleResolver(
 			[]arguments.Subresolver{
