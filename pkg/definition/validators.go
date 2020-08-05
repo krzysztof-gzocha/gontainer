@@ -119,8 +119,13 @@ func ValidateParams(d Definition) error {
 		return false
 	}
 
+	nameP := "^[A-Za-z]([_.]?[A-Za-z0-9])*$"
+	nameR := regexp.MustCompile(nameP)
+
 	for k, v := range d.Params {
-		// todo validate name
+		if !nameR.MatchString(k) {
+			return fmt.Errorf("parameter name should match `%s`, `%s` given", nameP, k)
+		}
 
 		if !validateType(v) {
 			return fmt.Errorf("unsupported type `%T` of parameter `%s`", v, k)
