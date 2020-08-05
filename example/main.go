@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/gomponents/gontainer/example/pkg"
 	"github.com/gomponents/gontainer/example/container"
+	"github.com/gomponents/gontainer/example/pkg"
 )
 
 func main() {
