@@ -2,6 +2,7 @@ package definition
 
 import (
 	"fmt"
+	"reflect"
 	"regexp"
 )
 
@@ -33,6 +34,7 @@ func NewDefaultValidator() Validator {
 		ValidateMetaPkg,
 		ValidateMetaImports,
 		ValidateMetaContainerType,
+		ValidateParams,
 	})
 }
 
@@ -76,6 +78,53 @@ func ValidateMetaContainerType(d Definition) error {
 
 	if !regexp.MustCompile(p).MatchString(d.Meta.ContainerType) {
 		return fmt.Errorf("meta.container_type must match %s, `%s` given", p, d.Meta.ContainerType)
+	}
+
+	return nil
+}
+
+func ValidateParams(d Definition) error {
+	validateType := func(val interface{}) bool {
+		if val == nil {
+			return true
+		}
+
+		allowedKinds := []reflect.Kind{
+			reflect.String,
+			reflect.Bool,
+			reflect.Int,
+			reflect.Int8,
+			reflect.Int16,
+			reflect.Int32,
+			reflect.Int64,
+			reflect.Uint,
+			reflect.Uint8,
+			reflect.Uint16,
+			reflect.Uint32,
+			reflect.Uint64,
+			reflect.Float32,
+			reflect.Float64,
+			reflect.Complex64,
+			reflect.Complex128,
+		}
+
+		t := reflect.TypeOf(val)
+
+		for _, k := range allowedKinds {
+			if k == t.Kind() {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	for k, v := range d.Params {
+		// todo validate name
+
+		if !validateType(v) {
+			return fmt.Errorf("unsupported type `%T` of parameter `%s`", v, k)
+		}
 	}
 
 	return nil
