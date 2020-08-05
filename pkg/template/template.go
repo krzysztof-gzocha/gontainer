@@ -128,6 +128,25 @@ func NewSimpleBuilder(opts ...SimpleBuilderOpt) (*SimpleBuilder, error) {
 
 			return r.data.Imports.GetAlias(alias)
 		},
+		"decorateType": func(t string) string {
+			ptr := []rune(t)[0] == '*'
+			t = strings.TrimLeft(t, "*")
+
+			parts := strings.Split(t, "/")
+
+			result := parts[len(parts)-1]
+			// TODO move imports somewhere else
+			if len(parts) > 1 {
+				imp := strings.Join(parts[:len(parts)-1], "/")
+				result = r.data.Imports.GetAlias(imp) + "." + result
+			}
+
+			if ptr {
+				result = "*" + result
+			}
+
+			return result
+		},
 	}
 
 	r = &SimpleBuilder{}

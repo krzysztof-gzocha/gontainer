@@ -15,7 +15,8 @@ services:
   person:
     constructor: "gontainer/example/pkg.NewPerson"
     args: ["%first_name% %last_name%", "%age%"]
-    getter: "GetPerson()"
+    getter: "GetPerson"
+    # todo .Person
     type: "*gontainer/example/pkg/Person"
 
   employee:

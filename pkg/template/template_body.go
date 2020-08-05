@@ -7,7 +7,21 @@ const TemplateBody = `
 // GO:  {{$param.Code}}
 // -------------------
 {{end}}
-type {{.ContainerType}} {{.RootImportAlias}}.Container
+type {{.ContainerType}} struct {
+	container *{{.RootImportAlias}}.BaseContainer
+}
+
+func (c *{{.ContainerType}}) Get(id string) (interface{}, error) {
+	return c.container.Get(id)
+}
+
+func (c *{{.ContainerType}}) MustGet(id string) interface{} {
+	return c.container.MustGet(id)
+}
+
+func (c *{{.ContainerType}}) Has(id string) bool {
+	return c.container.Has(id)
+}
 
 func CreateParamContainer() {{.RootImportAlias}}.ParamContainer {
 	params := make(map[string]interface{})
@@ -15,10 +29,10 @@ func CreateParamContainer() {{.RootImportAlias}}.ParamContainer {
 {{end}}
 	return {{.RootImportAlias}}.NewBaseParamContainer(params)
 }
+
 {{ $RootImportAlias := .RootImportAlias -}}
-{{- $Imports := .Imports }}
-func CreateContainer() {{.ContainerType}} {
-	var result *{{.RootImportAlias}}.BaseContainer
+func CreateContainer() *{{.ContainerType}} {
+	result := &{{.ContainerType}}{}
 
 	getters := make(map[string]{{.RootImportAlias}}.GetterDefinition)
 {{range $name, $service := .Services}}	getters[{{ export $name }}] = {{$RootImportAlias}}.GetterDefinition{
@@ -52,15 +66,30 @@ func CreateContainer() {{.ContainerType}} {
 		Disposable: {{$service.Service.Disposable}},
 	}
 {{end}}
-	result = {{.RootImportAlias}}.NewBaseContainer(getters)
+	result.container = {{.RootImportAlias}}.NewBaseContainer(getters)
 	return result
 }
 
-// {{ $ContainerType := .ContainerType -}}
-// {{range $service := .Services}}
-// {{- if ne $service.Service.Getter "" }}
-// func (c *{{$ContainerType}}) {{ $service.Service.Getter }} {{ $service.Service.Type }} {
-// }
-// {{ end }}
-// {{ end }}
+{{ $ContainerType := .ContainerType -}}
+{{range $name, $service := .Services}}
+{{- if ne $service.Service.Getter "" }}
+{{ $serviceType := decorateType $service.Service.Type }}
+func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $serviceType }}, err error) {
+	var object interface{}
+	var ok bool
+
+	object, err = c.Get({{ export $name }})
+
+	if err != nil {
+		return
+	}
+
+	if result, ok = object.({{ $serviceType }}); !ok {
+		err = fmt_gontainer_3.Errorf("cannot cast %T to %T", object, result)
+	}
+
+	return
+}
+{{ end }}
+{{ end }}
 `
