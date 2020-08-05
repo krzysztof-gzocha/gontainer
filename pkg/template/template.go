@@ -26,9 +26,7 @@ const TemplateBody = `
 // GO:  {{$param.Code}}
 // -------------------
 {{end}}
-
-// TODO name should be injectable
-type MyContainer {{.RootImportAlias}}.Container
+type {{.ContainerType}} {{.RootImportAlias}}.Container
 
 func CreateParamContainer() {{.RootImportAlias}}.ParamContainer {
 	params := make(map[string]interface{})
@@ -38,7 +36,7 @@ func CreateParamContainer() {{.RootImportAlias}}.ParamContainer {
 }
 {{ $RootImportAlias := .RootImportAlias -}}
 {{- $Imports := .Imports }}
-func CreateContainer() MyContainer {
+func CreateContainer() {{.ContainerType}} {
 	var result *{{.RootImportAlias}}.BaseContainer
 
 	getters := make(map[string]{{.RootImportAlias}}.GetterDefinition)
@@ -77,9 +75,10 @@ func CreateContainer() MyContainer {
 	return result
 }
 
+// {{ $ContainerType := .ContainerType -}}
 // {{range $service := .Services}}
 // {{- if ne $service.Service.Getter "" }}
-// func (c *MyContainer) {{ $service.Service.Getter }} {{ $service.Service.Type }} {
+// func (c *{{$ContainerType}}) {{ $service.Service.Getter }} {{ $service.Service.Type }} {
 // }
 // {{ end }}
 // {{ end }}
@@ -104,6 +103,7 @@ type simpleBuilderData struct {
 	Params          parameters.ResolvedParams
 	Services        map[string]serviceMetaDefinition
 	RootImportAlias string
+	ContainerType   string
 }
 
 type SimpleBuilderOpt func(*SimpleBuilder) error
@@ -144,6 +144,13 @@ func WithServices(services Services) SimpleBuilderOpt {
 			}
 		}
 		builder.data.Services = result
+		return nil
+	}
+}
+
+func WithContainerType(t string) SimpleBuilderOpt {
+	return func(builder *SimpleBuilder) error {
+		builder.data.ContainerType = t
 		return nil
 	}
 }

@@ -92,6 +92,7 @@ func NewBuildCmd() *cobra.Command {
 			template.WithImports(imps),
 			template.WithParams(resolvedParams),
 			template.WithServices(services),
+			template.WithContainerType(input.Meta.ContainerType),
 		)
 
 		if tpl, err := tplBuilder.Build(); err != nil {
