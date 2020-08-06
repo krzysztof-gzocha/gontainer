@@ -86,7 +86,7 @@ func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $service
 	}
 
 	if result, ok = object.({{ $serviceType }}); !ok {
-		err = fmt_gontainer_3.Errorf("cannot create %s due to cannot cast %T to %T", {{ export $name }}, object, result)
+		err = fmt_gontainer_3.Errorf("cannot create %s, because cannot cast %T to %T", {{ export $name }}, object, result)
 	}
 
 	return
