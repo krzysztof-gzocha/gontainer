@@ -26,7 +26,7 @@ func ValidateServices(i Input) error {
 
 var (
 	serviceNameRegex   = regexp.MustCompile(`^` + syntax.ServiceNamePattern + `$`)
-	serviceGetterRegex = regexp.MustCompile(`^[A-Z][A-Za-z0-9_]$`)
+	serviceGetterRegex = regexp.MustCompile(`^[A-Z][A-Za-z0-9_]*$`)
 )
 
 func ValidateServicesNames(n string, _ Service) error {
