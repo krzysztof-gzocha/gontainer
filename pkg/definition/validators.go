@@ -29,5 +29,6 @@ func NewDefaultValidator() Validator {
 		ValidateMetaImports,
 		ValidateMetaContainerType,
 		ValidateParams,
+		ValidateServicesNames,
 	})
 }

@@ -8,7 +8,7 @@ type Service struct {
 	Getter      string   `yaml:"getter"`
 	Type        string   `yaml:"type"`
 	Constructor string   `yaml:"constructor"`
-	WithError   bool     `yaml:"withError"`
+	WithError   bool     `yaml:"with_error"`
 	Disposable  bool     `yaml:"disposable"`
 	Args        []string `yaml:"args"`
 	Tags        []string `yaml:"tags"`
