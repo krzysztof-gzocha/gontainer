@@ -27,6 +27,18 @@ func NewDefaultCompiledValidator() CompiledValidator {
 	})
 }
 
+type seekableStringSlice []string
+
+func (sss seekableStringSlice) contains(s string) bool {
+	for _, n := range sss {
+		if n == s {
+			return true
+		}
+	}
+
+	return false
+}
+
 func validateCircularDependency(i CompiledInput) error {
 	deps := make(map[string][]string)
 	for n, s := range i.Services {
