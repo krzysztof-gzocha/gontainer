@@ -39,6 +39,7 @@ type SimpleServiceResolver struct {
 	typeResolver TypeResolver
 }
 
+// todo improve regexps
 var (
 	importPart         = `(?P<import>([A-Za-z][A-Z-a-z0-9._/-]*\.)*)`
 	namePart           = `(?P<name>[A-Za-z_][A-Za-z0-9_]*)`
