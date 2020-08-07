@@ -1,4 +1,4 @@
-package definition
+package dto
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-func ValidateParams(d Definition) error {
+func ValidateParams(i Input) error {
 	validateType := func(val interface{}) bool {
 		if val == nil {
 			return true
@@ -45,7 +45,7 @@ func ValidateParams(d Definition) error {
 	nameP := "^[A-Za-z]([_.]?[A-Za-z0-9])*$"
 	nameR := regexp.MustCompile(nameP)
 
-	for k, v := range d.Params {
+	for k, v := range i.Params {
 		if !nameR.MatchString(k) {
 			return fmt.Errorf("parameter name should match `%s`, `%s` given", nameP, k)
 		}

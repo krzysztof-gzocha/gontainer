@@ -1,33 +1,33 @@
-package definition
+package dto
 
 import (
 	"fmt"
 	"regexp"
 )
 
-func ValidateMetaPkg(d Definition) error {
-	if d.Meta.Pkg == "" {
+func ValidateMetaPkg(i Input) error {
+	if i.Meta.Pkg == "" {
 		return fmt.Errorf("meta.pkg cannot be empty")
 	}
 
 	r := "^[a-z][a-zA-Z0-9_]*$"
 
-	if !regexp.MustCompile(r).MatchString(d.Meta.Pkg) {
-		return fmt.Errorf("meta.pkg must match %s, `%s` given", r, d.Meta.Pkg)
+	if !regexp.MustCompile(r).MatchString(i.Meta.Pkg) {
+		return fmt.Errorf("meta.pkg must match %s, `%s` given", r, i.Meta.Pkg)
 	}
 
 	return nil
 }
 
 // TODO improve impP regex e.g. "/aa" it's not valid import
-func ValidateMetaImports(d Definition) error {
+func ValidateMetaImports(i Input) error {
 	aliasP := "^[a-zA-Z0-9_]+$"
 	aliasR := regexp.MustCompile(aliasP)
 
 	impP := "^[a-zA-Z0-9_./]+$"
 	impR := regexp.MustCompile(impP)
 
-	for alias, imp := range d.Meta.Imports {
+	for alias, imp := range i.Meta.Imports {
 		if !aliasR.MatchString(alias) {
 			return fmt.Errorf("invalid import alias `%s`, must match `%s`", alias, aliasP)
 		}
@@ -40,11 +40,11 @@ func ValidateMetaImports(d Definition) error {
 	return nil
 }
 
-func ValidateMetaContainerType(d Definition) error {
+func ValidateMetaContainerType(i Input) error {
 	p := "^[A-Za-z][A-Za-z0-9_]*$"
 
-	if !regexp.MustCompile(p).MatchString(d.Meta.ContainerType) {
-		return fmt.Errorf("meta.container_type must match %s, `%s` given", p, d.Meta.ContainerType)
+	if !regexp.MustCompile(p).MatchString(i.Meta.ContainerType) {
+		return fmt.Errorf("meta.container_type must match %s, `%s` given", p, i.Meta.ContainerType)
 	}
 
 	return nil

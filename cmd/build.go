@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 
 	"github.com/gomponents/gontainer/pkg/arguments"
-	"github.com/gomponents/gontainer/pkg/definition"
+	"github.com/gomponents/gontainer/pkg/dto"
 	"github.com/gomponents/gontainer/pkg/exporters"
 	"github.com/gomponents/gontainer/pkg/imports"
 	"github.com/gomponents/gontainer/pkg/parameters"
@@ -23,7 +23,7 @@ func NewBuildCmd() *cobra.Command {
 	)
 
 	callback := func(cmd *cobra.Command, args []string) {
-		input := definition.Definition{}
+		input := dto.Input{}
 
 		if file, err := ioutil.ReadFile(inputFile); err != nil {
 			panic(fmt.Sprintf("Error has occurred during opening file: %s", err.Error()))
@@ -33,7 +33,7 @@ func NewBuildCmd() *cobra.Command {
 			}
 		}
 
-		validator := definition.NewDefaultValidator()
+		validator := dto.NewDefaultValidator()
 		if err := validator.Validate(input); err != nil {
 			panic(err)
 		}

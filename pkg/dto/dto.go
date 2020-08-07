@@ -1,4 +1,4 @@
-package definition
+package dto
 
 import (
 	"github.com/gomponents/gontainer/pkg/parameters"
@@ -14,7 +14,7 @@ type Service struct {
 	Tags        []string `yaml:"tags"`
 }
 
-type Definition struct {
+type Input struct {
 	Meta struct {
 		Pkg           string            `yaml:"pkg"`
 		Imports       map[string]string `yaml:"imports"`
@@ -22,4 +22,38 @@ type Definition struct {
 	} `yaml:"meta"`
 	Params   parameters.RawParameters `yaml:"parameters"`
 	Services map[string]Service       `yaml:"services"`
+}
+
+type ServiceLink struct {
+	Name string
+	Type string
+}
+
+type CompiledArg struct {
+	Code        string
+	ServiceLink *ServiceLink
+}
+
+func (c *CompiledArg) IsService() bool {
+	return c.ServiceLink != nil
+}
+
+type CompiledService struct {
+	Getter      string
+	Type        string
+	Constructor string
+	WithError   bool
+	Disposable  bool
+	Args        []CompiledArg
+	Tags        []string
+}
+
+// TODO given model will be passed to template
+type CompiledInput struct {
+	Meta struct {
+		Pkg           string
+		ContainerType string
+	}
+	Params   parameters.ResolvedParams
+	Services map[string]CompiledService
 }

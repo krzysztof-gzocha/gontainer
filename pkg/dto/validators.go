@@ -1,18 +1,18 @@
-package definition
+package dto
 
 type Validator interface {
-	Validate(Definition) error
+	Validate(Input) error
 }
 
 type ChainValidator struct {
-	validators []func(Definition) error
+	validators []func(Input) error
 }
 
-func NewChainValidator(validators []func(Definition) error) *ChainValidator {
+func NewChainValidator(validators []func(Input) error) *ChainValidator {
 	return &ChainValidator{validators: validators}
 }
 
-func (c ChainValidator) Validate(d Definition) error {
+func (c ChainValidator) Validate(d Input) error {
 	for _, v := range c.validators {
 		err := v(d)
 		if err != nil {
@@ -24,12 +24,11 @@ func (c ChainValidator) Validate(d Definition) error {
 }
 
 func NewDefaultValidator() Validator {
-	return NewChainValidator([]func(Definition) error{
+	return NewChainValidator([]func(Input) error{
 		ValidateMetaPkg,
 		ValidateMetaImports,
 		ValidateMetaContainerType,
 		ValidateParams,
-		ValidateServicesNames,
-		ValidateServicesGetters,
+		ValidateServices,
 	})
 }

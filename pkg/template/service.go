@@ -2,11 +2,11 @@ package template
 
 import (
 	"github.com/gomponents/gontainer/pkg/arguments"
-	"github.com/gomponents/gontainer/pkg/definition"
+	"github.com/gomponents/gontainer/pkg/dto"
 )
 
 type Service struct {
-	definition.Service
+	dto.Service
 	CompiledArgs []arguments.Argument
 }
 
