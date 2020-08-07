@@ -30,5 +30,6 @@ func NewDefaultValidator() Validator {
 		ValidateMetaContainerType,
 		ValidateParams,
 		ValidateServicesNames,
+		ValidateServicesGetters,
 	})
 }
