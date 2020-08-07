@@ -22,6 +22,9 @@ services:
   employee:
     getter: "GetEmployee"
     type: "*gontainer/example/pkg.Employee"
+    # todo factory e.g. "@myFactoryService.NewEmployee"
+    # todo rename constructor to factory
+    # todo calls https://symfony.com/doc/current/service_container/calls.html
     constructor: "gontainer/example/pkg.NewEmployee"
     args:
       - "@person.(*gontainer/example/pkg.Person)"
