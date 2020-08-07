@@ -12,10 +12,9 @@ func NewChainValidator(validators []func(Input) error) *ChainValidator {
 	return &ChainValidator{validators: validators}
 }
 
-func (c ChainValidator) Validate(d Input) error {
+func (c *ChainValidator) Validate(i Input) error {
 	for _, v := range c.validators {
-		err := v(d)
-		if err != nil {
+		if err := v(i); err != nil {
 			return err
 		}
 	}
