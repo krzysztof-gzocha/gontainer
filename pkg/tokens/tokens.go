@@ -2,6 +2,7 @@ package tokens
 
 import (
 	"fmt"
+	"github.com/gomponents/gontainer/pkg/regex"
 	"regexp"
 
 	"github.com/gomponents/gontainer/pkg/imports"
@@ -118,32 +119,16 @@ func (t TokenSimpleFunction) Supports(expr string) bool {
 		return false
 	}
 
-	ok, m := matchAll(regexSimpleFn, e)
+	ok, m := regex.Match(regexSimpleFn, e)
 	return ok && m["fn"] == t.fn
 }
 
 func (t TokenSimpleFunction) Create(expr string) (Token, error) {
 	e, _ := toExpr(expr)
-	_, m := matchAll(regexSimpleFn, e)
+	_, m := regex.Match(regexSimpleFn, e)
 	return Token{
 		Kind: TokenKindCode,
 		Raw:  expr,
 		Code: fmt.Sprintf("%s.%s(%s)", t.imports.GetAlias(t.goImport), t.goFn, m["params"]),
 	}, nil
-}
-
-func matchAll(r *regexp.Regexp, s string) (bool, map[string]string) {
-	if !r.MatchString(s) {
-		return false, nil
-	}
-
-	match := r.FindStringSubmatch(s)
-	result := make(map[string]string)
-	for i, name := range r.SubexpNames() {
-		if i != 0 && name != "" {
-			result[name] = match[i]
-		}
-	}
-
-	return true, result
 }
