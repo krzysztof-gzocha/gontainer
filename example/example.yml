@@ -9,7 +9,7 @@ parameters:
   first_name: "%name%"
   last_name: "Doe"
   age: 30
-  salary: 30000
+  salary: '%envInt("PERSON_SALARY")%'
   position: '%env("PERSON_POSITION")%'
   multiline: |
     multi

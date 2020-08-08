@@ -49,6 +49,7 @@ func NewBuildCmd() *cobra.Command {
 
 		tokenizer := tokens.NewPatternTokenizer([]tokens.TokenFactoryStrategy{
 			tokens.NewTokenSimpleFunction(imps, "env", "os", "Getenv"),
+			tokens.NewTokenSimpleFunction(imps, "envInt", "github.com/gomponents/gontainer/pkg/std", "MustGetIntEnv"),
 			tokens.TokenPercentSign{},
 			tokens.TokenReference{},
 			tokens.TokenString{},

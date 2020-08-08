@@ -153,6 +153,10 @@ func (StringExporter) runeToString(r rune) string {
 		return fmt.Sprintf("%+q", string(r))
 	}
 
+	if r == '"' {
+		return `\"`
+	}
+
 	if s, ok := nc[string(r)]; ok {
 		return s
 	}
