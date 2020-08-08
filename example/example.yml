@@ -11,6 +11,9 @@ parameters:
   age: 30
   salary: 30000
   position: '%env("PERSON_POSITION")%'
+  multiline: |
+    multi
+    line
 
 services:
   person:
