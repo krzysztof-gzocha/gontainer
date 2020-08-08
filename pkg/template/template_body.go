@@ -46,7 +46,8 @@ func CreateContainer() *{{.ContainerType}} {
 {{- if ne $arg.ServiceLink.Name "" }}
 			val{{ $argIndex }}, ok{{ $argIndex }} := arg{{ $argIndex }}.({{ $arg.ServiceLink.Type }})
 			if !ok{{ $argIndex }} {
-				return nil, {{ importAlias "fmt" }}.Errorf("service %s is not an instance of %s, %T given", "todo", {{ export $arg.ServiceLink.Type }}, arg{{ $argIndex }})
+				t{{ $argIndex }} := {{ replace $arg.ServiceLink.Type "*" "&" }}{}
+				return nil, {{ importAlias "fmt" }}.Errorf("service %s is not an instance of %T, %T given", {{ export $name }}, t{{ $argIndex }}, arg{{ $argIndex }})
 			}
 {{ else }}
 // todo

@@ -128,6 +128,9 @@ func NewSimpleBuilder(opts ...SimpleBuilderOpt) (*SimpleBuilder, error) {
 
 			return r.data.Imports.GetAlias(alias)
 		},
+		"replace": func(input, from, to string) string {
+			return strings.Replace(input, from, to, -1)
+		},
 	}
 
 	r = &SimpleBuilder{}
