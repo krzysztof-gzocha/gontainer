@@ -29,6 +29,7 @@ services:
     # todo factory e.g. "@myFactoryService.NewEmployee"
     # todo rename constructor to factory
     # todo calls https://symfony.com/doc/current/service_container/calls.html
+    # todo add syntax "import.Employee{}" and "&import.Employee{}" or use type from line 28?
     constructor: "gontainer/example/pkg.NewEmployee"
     args:
       - "@person.(*gontainer/example/pkg.Person)"
