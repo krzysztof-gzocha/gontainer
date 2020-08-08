@@ -46,8 +46,7 @@ func CreateContainer() *{{.ContainerType}} {
 {{- if ne $arg.ServiceLink.Name "" }}
 			val{{ $argIndex }}, ok{{ $argIndex }} := arg{{ $argIndex }}.({{ $arg.ServiceLink.Type }})
 			if !ok{{ $argIndex }} {
-				t{{ $argIndex }} := {{ replace $arg.ServiceLink.Type "*" "&" }}{}
-				return nil, {{ importAlias "fmt" }}.Errorf("service %s is not an instance of %T, %T given", {{ export $name }}, t{{ $argIndex }}, arg{{ $argIndex }})
+				return nil, {{ importAlias "fmt" }}.Errorf("service %s is not an instance of %T, %T given", {{ export $name }}, val{{ $argIndex }}, arg{{ $argIndex }})
 			}
 {{ else }}
 // todo
@@ -74,9 +73,10 @@ func CreateContainer() *{{.ContainerType}} {
 
 {{- $ContainerType := .ContainerType -}}
 {{- range $name, $service := .Services -}}
-{{- if ne $service.Service.Getter "" }}
+{{- if ne $service.Service.Getter "" -}}
+{{- $serviceType := decorateType $service.Service.Type }}
 
-func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $service.Service.Type }}, err error) {
+func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $serviceType }}, err error) {
 	var object interface{}
 	var ok bool
 
@@ -86,7 +86,7 @@ func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $service
 		return
 	}
 
-	if result, ok = object.({{ $service.Service.Type }}); !ok {
+	if result, ok = object.({{ $serviceType }}); !ok {
 		err = {{ importAlias "fmt" }}.Errorf("cannot create %s, because cannot cast %T to %T", {{ export $name }}, object, result)
 	}
 
