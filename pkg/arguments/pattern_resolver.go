@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gomponents/gontainer/pkg/dto"
 	"github.com/gomponents/gontainer/pkg/exporters"
 	"github.com/gomponents/gontainer/pkg/imports"
 	"github.com/gomponents/gontainer/pkg/parameters"
@@ -21,15 +22,15 @@ func NewPatternResolver(tokenizer tokens.Tokenizer, exporter exporters.Exporter,
 	return &PatternResolver{tokenizer: tokenizer, exporter: exporter, imports: imports, params: params}
 }
 
-func (p PatternResolver) Resolve(expr string) (Argument, error) {
+func (p PatternResolver) Resolve(expr string) (dto.CompiledArg, error) {
 	tkns, err := p.tokenizer.Tokenize(expr)
 
 	if err != nil {
-		return Argument{}, fmt.Errorf("cannot tokenize expression %s", expr)
+		return dto.CompiledArg{}, fmt.Errorf("cannot tokenize expression %s", expr)
 	}
 
 	if len(tkns) == 0 {
-		return Argument{}, fmt.Errorf("unexpected error, tokenizer returned 0 tokens for expression `%s`", expr)
+		return dto.CompiledArg{}, fmt.Errorf("unexpected error, tokenizer returned 0 tokens for expression `%s`", expr)
 	}
 
 	solveTokenCode := func(t tokens.Token) (string, error) {
@@ -55,30 +56,24 @@ func (p PatternResolver) Resolve(expr string) (Argument, error) {
 		t := tkns[0]
 		code, err := solveTokenCode(t)
 		if err != nil {
-			return Argument{}, err
+			return dto.CompiledArg{}, err
 		}
 
-		return Argument{
-			Kind: ArgumentKindCode,
-			Code: code,
-		}, nil
+		return dto.CompiledArg{Code: code}, nil
 	}
 
 	codeParts := make([]string, 0)
 	for _, t := range tkns {
 		tmp, solveErr := solveTokenCode(t)
 		if solveErr != nil {
-			return Argument{}, solveErr
+			return dto.CompiledArg{}, solveErr
 		}
 
 		tmp = p.imports.GetAlias("github.com/gomponents/gontainer/pkg/std") + `.MustConvertToString(` + tmp + `)`
 		codeParts = append(codeParts, tmp)
 	}
 
-	return Argument{
-		Kind: ArgumentKindCode,
-		Code: strings.Join(codeParts, " + "),
-	}, nil
+	return dto.CompiledArg{Code: strings.Join(codeParts, " + ")}, nil
 }
 
 func (p PatternResolver) Supports(string) bool {

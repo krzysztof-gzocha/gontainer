@@ -1,53 +1,29 @@
 package arguments
 
 import (
-	"strings"
+	"github.com/gomponents/gontainer/pkg/dto"
+	"github.com/gomponents/gontainer/pkg/imports"
+	"github.com/gomponents/gontainer/pkg/syntax"
 )
 
-type ServiceResolver struct{}
+type ServiceResolver struct {
+	imports         imports.Imports
+	patternResolver syntax.ServiceResolver
+}
 
-// todo syntax validation
-// check whether service exists
-// @serviceName.(foo/bar/foobar.MyType)
-// @service
-func (s ServiceResolver) Resolve(expr string) (Argument, error) {
-	parts := strings.Split(expr, ".(")
+func NewServiceResolver(imports imports.Imports, patternResolver syntax.ServiceResolver) *ServiceResolver {
+	return &ServiceResolver{imports: imports, patternResolver: patternResolver}
+}
 
-	runeName := []rune(parts[0])
-	name := string(runeName[1:])
-
-	if len(parts) == 1 {
-		return Argument{
-			Kind: ArgumentKindService,
-			ServiceMetadata: ServiceMetadata{
-				ID:          name,
-				Import:      "",
-				Type:        "",
-				PointerType: false,
-			},
-		}, nil
+func (s ServiceResolver) Resolve(expr string) (dto.CompiledArg, error) {
+	service, type_, err := s.patternResolver.ResolveService(expr)
+	if err != nil {
+		return dto.CompiledArg{}, err
 	}
-
-	runeType := []rune(parts[1])
-	fullType := string(runeType[:len(runeType)-1])
-	typeParts := strings.Split(fullType, ".")
-
-	import_ := strings.Join(typeParts[:len(typeParts)-1], ".")
-	type_ := typeParts[len(typeParts)-1]
-	pointer := false
-
-	if []rune(import_)[0] == '*' {
-		import_ = import_[1:]
-		pointer = true
-	}
-
-	return Argument{
-		Kind: ArgumentKindService,
-		ServiceMetadata: ServiceMetadata{
-			ID:          name,
-			Import:      import_,
-			Type:        type_,
-			PointerType: pointer,
+	return dto.CompiledArg{
+		ServiceLink: &dto.ServiceLink{
+			Name: service,
+			Type: type_,
 		},
 	}, nil
 }

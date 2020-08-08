@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/gomponents/gontainer/pkg/syntax"
 	"io/ioutil"
 
 	"github.com/gomponents/gontainer/pkg/arguments"
@@ -61,7 +62,7 @@ func NewBuildCmd() *cobra.Command {
 
 		argumentResolver := arguments.NewSimpleResolver(
 			[]arguments.Subresolver{
-				arguments.ServiceResolver{},
+				arguments.NewServiceResolver(imps, syntax.NewSimpleServiceResolver(syntax.NewSimpleTypeResolver(imps))),
 				arguments.NewPatternResolver(
 					tokenizer,
 					exporter,
@@ -74,7 +75,7 @@ func NewBuildCmd() *cobra.Command {
 		// todo check circular deps
 		services := make(map[string]template.Service)
 		for id, s := range input.Services {
-			compiledArgs := make([]arguments.Argument, 0)
+			compiledArgs := make([]dto.CompiledArg, 0)
 			for _, a := range s.Args {
 				ra, err := argumentResolver.Resolve(a)
 				if err != nil {

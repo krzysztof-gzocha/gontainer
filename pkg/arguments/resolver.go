@@ -2,30 +2,12 @@ package arguments
 
 import (
 	"fmt"
+
+	"github.com/gomponents/gontainer/pkg/dto"
 )
-
-type ArgumentKind uint
-
-const (
-	ArgumentKindService ArgumentKind = iota
-	ArgumentKindCode
-)
-
-type ServiceMetadata struct {
-	ID          string
-	Import      string
-	Type        string
-	PointerType bool
-}
-
-type Argument struct {
-	Kind            ArgumentKind
-	Code            string
-	ServiceMetadata ServiceMetadata
-}
 
 type Resolver interface {
-	Resolve(string) (Argument, error)
+	Resolve(string) (dto.CompiledArg, error)
 }
 
 type Subresolver interface {
@@ -41,12 +23,12 @@ func NewSimpleResolver(subresolvers []Subresolver) *SimpleResolver {
 	return &SimpleResolver{subresolvers: subresolvers}
 }
 
-func (s SimpleResolver) Resolve(expr string) (Argument, error) {
+func (s SimpleResolver) Resolve(expr string) (dto.CompiledArg, error) {
 	for _, r := range s.subresolvers {
 		if r.Supports(expr) {
 			return r.Resolve(expr)
 		}
 	}
 
-	return Argument{}, fmt.Errorf("cannot resolve argument `%s`", expr)
+	return dto.CompiledArg{}, fmt.Errorf("cannot resolve argument `%s`", expr)
 }

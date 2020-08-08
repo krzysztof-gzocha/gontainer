@@ -38,24 +38,25 @@ func CreateContainer() *{{.ContainerType}} {
 {{range $name, $service := .Services}}	getters[{{ export $name }}] = {{$RootImportAlias}}.GetterDefinition{
 		Getter: func() (interface{}, error) {
 {{- range $argIndex, $arg := $service.Service.CompiledArgs -}}
-{{- if eq $arg.Kind 0 }}
-			arg{{ $argIndex }}, errGet{{ $argIndex }} := result.Get({{ export $arg.ServiceMetadata.ID }})
+{{- if $arg.IsService }}
+			arg{{ $argIndex }}, errGet{{ $argIndex }} := result.Get({{ export $arg.ServiceLink.Name }})
 			if errGet{{ $argIndex }} != nil {
 				return nil, {{ importAlias "fmt" }}.Errorf("cannot create %s due to: %s", {{ export $name }}, errGet{{ $argIndex }}.Error())
 			}
-{{- if ne $arg.ServiceMetadata.Import "" }}
-			val{{ $argIndex }}, ok{{ $argIndex }} := arg{{ $argIndex }}.({{ if $arg.ServiceMetadata.PointerType }}*{{ end }}{{ importAlias $arg.ServiceMetadata.Import }}.{{ $arg.ServiceMetadata.Type }})
+{{- if ne $arg.ServiceLink.Name "" }}
+			val{{ $argIndex }}, ok{{ $argIndex }} := arg{{ $argIndex }}.({{ $arg.ServiceLink.Type }})
 			if !ok{{ $argIndex }} {
-				return nil, {{ importAlias "fmt" }}.Errorf("service %s is not an instance of %s, %T given", {{ export $arg.ServiceMetadata.ID }}, {{ export $arg.ServiceMetadata.Type }}, arg{{ $argIndex }})
+				return nil, {{ importAlias "fmt" }}.Errorf("service %s is not an instance of %s, %T given", "todo", {{ export $arg.ServiceLink.Type }}, arg{{ $argIndex }})
 			}
 {{ else }}
+// todo
 			val{{ $argIndex }}, := arg{{ $argIndex }}
 {{- end -}}
 {{- end -}}
 {{ end }}
 			return {{importAlias $service.Import}}.{{$service.Function}}(
 				{{- range $argIndex, $arg := $service.Service.CompiledArgs -}}
-					{{- if eq $arg.Kind 0 }}
+					{{- if $arg.IsService }}
 				val{{ $argIndex }},
 					{{- else }}
 				{{ $arg.Code }},
@@ -86,7 +87,7 @@ func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $service
 	}
 
 	if result, ok = object.({{ $serviceType }}); !ok {
-		err = fmt_gontainer_3.Errorf("cannot create %s, because cannot cast %T to %T", {{ export $name }}, object, result)
+		err = {{ importAlias "fmt" }}.Errorf("cannot create %s, because cannot cast %T to %T", {{ export $name }}, object, result)
 	}
 
 	return
