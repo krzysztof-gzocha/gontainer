@@ -73,10 +73,9 @@ func CreateContainer() *{{.ContainerType}} {
 
 {{- $ContainerType := .ContainerType -}}
 {{- range $name, $service := .Services -}}
-{{- if ne $service.Service.Getter "" -}}
-{{- $serviceType := decorateType $service.Service.Type }}
+{{- if ne $service.Service.Getter "" }}
 
-func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $serviceType }}, err error) {
+func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $service.Service.Type }}, err error) {
 	var object interface{}
 	var ok bool
 
@@ -86,7 +85,7 @@ func (c *{{$ContainerType}}) {{ $service.Service.Getter }}() (result {{ $service
 		return
 	}
 
-	if result, ok = object.({{ $serviceType }}); !ok {
+	if result, ok = object.({{ $service.Service.Type }}); !ok {
 		err = {{ importAlias "fmt" }}.Errorf("cannot create %s, because cannot cast %T to %T", {{ export $name }}, object, result)
 	}
 
