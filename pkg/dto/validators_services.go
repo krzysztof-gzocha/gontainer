@@ -50,6 +50,7 @@ func ValidateServicesGetters(n string, s Service) error {
 			s.Getter,
 		)
 	}
+	// todo getter cannot be one of the following Get, Has...
 
 	return nil
 }
