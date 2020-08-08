@@ -134,6 +134,12 @@ func TestSimpleServiceResolver_ResolveService(t *testing.T) {
 			type_:   "alias.Mysql",
 			err:     false,
 		},
+		{
+			input:   "@123service",
+			service: "",
+			type_:   "",
+			err:     true,
+		},
 	}
 
 	for id, s := range scenarios {
