@@ -23,6 +23,17 @@ func (c *{{.ContainerType}}) Has(id string) bool {
 	return c.container.Has(id)
 }
 
+func (c *{{.ContainerType}}) ValidateAllServices() (errors []error) {
+	for _, id := range []string{
+{{range $name, $service := .Services -}} {{ "		" }} {{- export $name }},{{ "\n" }}{{ end -}}
+{{- "	" -}} } {
+		if _, err := c.Get(id); err != nil {
+			errors = append(errors, err)
+		}
+	}
+	return
+}
+
 func CreateParamContainer() {{.RootImportAlias}}.ParamContainer {
 	params := make(map[string]interface{})
 {{range $name, $param := .Params}}	params["{{$name}}"] = {{$param.Code}}
