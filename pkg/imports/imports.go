@@ -17,10 +17,11 @@ type Imports interface {
 }
 
 type SimpleImports struct {
-	prefix    string
-	counter   int64
-	imports   map[string]Import
-	shortcuts map[string]string
+	prefix       string
+	counter      int64
+	imports      map[string]Import
+	importsSlice []Import
+	shortcuts    map[string]string
 }
 
 func (s *SimpleImports) RegisterPrefix(shortcut string, path string) error {
@@ -47,17 +48,13 @@ func (s *SimpleImports) GetAlias(path string) string {
 	}
 	s.imports[path] = i
 	s.counter++
+	s.importsSlice = append(s.importsSlice, i)
 
 	return i.Alias
 }
 
 func (s *SimpleImports) GetImports() []Import {
-	r := make([]Import, 0)
-	for _, i := range s.imports {
-		r = append(r, i)
-	}
-
-	return r
+	return append(s.importsSlice)
 }
 
 func (s *SimpleImports) decorateImport(i string) string {

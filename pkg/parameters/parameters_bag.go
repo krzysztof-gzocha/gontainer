@@ -56,7 +56,6 @@ func (s SimpleBagFactory) solveNonStrings(bag bagParams) error {
 		}
 
 		p.param.Code = code
-		p.param.Debug = code
 		p.resolved = true
 
 		bag[n] = p

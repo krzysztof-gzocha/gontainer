@@ -5,7 +5,8 @@ meta:
     "gontainer": "github.com/gomponents/gontainer"
 
 parameters:
-  first_name: "Jane"
+  name: "Jane"
+  first_name: "%name%"
   last_name: "Doe"
   age: 30
   salary: 30000

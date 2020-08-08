@@ -5,7 +5,7 @@ const TemplateBody = `
 // {{$name}}
 // Raw: {{ export $param.Raw }}
 // GO:  {{$param.Code}}
-// -------------------
+// -----------------------------------------------------------------------------
 {{end}}
 type {{.ContainerType}} struct {
 	container {{.RootImportAlias}}.Container
