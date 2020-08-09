@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/gomponents/gontainer/pkg/template2"
 	"io/ioutil"
 
 	"github.com/gomponents/gontainer/pkg/arguments"
@@ -105,6 +106,22 @@ func NewBuildCmd() *cobra.Command {
 			}
 
 			_, _ = cmd.OutOrStdout().Write([]byte(fmt.Sprintf("Container has built [%s]\n", outputFile)))
+		}
+
+		// new version
+		imp2 := imports.NewSimpleImports("gontainer")
+		compiler := createCompiler(imp2)
+		ci, ciErr := compiler.Compile(input)
+		if ciErr != nil {
+			panic(ciErr)
+		}
+		contents, b := template2.NewSimpleBuilder(imp2).Build(ci)
+		if b != nil {
+			panic(b)
+		}
+
+		if fileErr := ioutil.WriteFile(outputFile, []byte(contents), 0644); fileErr != nil {
+			panic(fmt.Sprintf("Error has occurred during saving file: %s", fileErr.Error()))
 		}
 	}
 

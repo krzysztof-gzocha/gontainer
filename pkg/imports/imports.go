@@ -18,7 +18,7 @@ type Imports interface {
 }
 
 type SimpleImports struct {
-	prefix       string
+	suffix       string
 	counter      int64
 	imports      map[string]Import
 	importsSlice []Import
@@ -45,7 +45,7 @@ func (s *SimpleImports) GetAlias(path string) string {
 
 	i := Import{
 		Path:  path,
-		Alias: strings.ReplaceAll(parts[len(parts)-1], ".", "_") + "_" + s.prefix + strconv.FormatInt(s.counter, 16),
+		Alias: strings.ReplaceAll(parts[len(parts)-1], ".", "_") + "_" + s.suffix + strconv.FormatInt(s.counter, 16),
 	}
 	s.imports[path] = i
 	s.counter++
@@ -68,9 +68,9 @@ func (s *SimpleImports) decorateImport(i string) string {
 	return i
 }
 
-func NewSimpleImports(prefix string) *SimpleImports {
+func NewSimpleImports(suffix string) *SimpleImports {
 	return &SimpleImports{
-		prefix:    prefix,
+		suffix:    suffix,
 		imports:   make(map[string]Import),
 		shortcuts: make(map[string]string),
 	}
