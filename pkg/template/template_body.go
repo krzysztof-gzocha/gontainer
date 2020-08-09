@@ -23,13 +23,17 @@ func (c *{{.ContainerType}}) Has(id string) bool {
 	return c.container.Has(id)
 }
 
-func (c *{{.ContainerType}}) ValidateAllServices() (errors []error) {
+func (c *{{.ContainerType}}) ValidateAllServices() (errors map[string]error) {
+	errors = make(map[string]error)
 	for _, id := range []string{
 {{range $name, $service := .Services -}} {{ "		" }} {{- export $name }},{{ "\n" }}{{ end -}}
 {{- "	" -}} } {
 		if _, err := c.Get(id); err != nil {
-			errors = append(errors, err)
+			errors[id] = err
 		}
+	}
+	if len(errors) == 0 {
+		errors = nil
 	}
 	return
 }

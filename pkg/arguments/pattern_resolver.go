@@ -15,14 +15,13 @@ type PatternResolver struct {
 	tokenizer tokens.Tokenizer
 	exporter  exporters.Exporter
 	imports   imports.Imports
-	params    parameters.ResolvedParams
 }
 
-func NewPatternResolver(tokenizer tokens.Tokenizer, exporter exporters.Exporter, imports imports.Imports, params parameters.ResolvedParams) *PatternResolver {
-	return &PatternResolver{tokenizer: tokenizer, exporter: exporter, imports: imports, params: params}
+func NewPatternResolver(tokenizer tokens.Tokenizer, exporter exporters.Exporter, imports imports.Imports) *PatternResolver {
+	return &PatternResolver{tokenizer: tokenizer, exporter: exporter, imports: imports}
 }
 
-func (p PatternResolver) Resolve(expr string) (dto.CompiledArg, error) {
+func (p PatternResolver) Resolve(expr string, params parameters.ResolvedParams) (dto.CompiledArg, error) {
 	tkns, err := p.tokenizer.Tokenize(expr)
 
 	if err != nil {
@@ -40,7 +39,7 @@ func (p PatternResolver) Resolve(expr string) (dto.CompiledArg, error) {
 		case tokens.TokenKindReference:
 			runes := []rune(t.Raw)
 			depID := string(runes[1 : len(runes)-1])
-			param, ok := p.params[depID]
+			param, ok := params[depID]
 			if !ok {
 				return "", fmt.Errorf("parameter `%s` does not exist", depID)
 			}

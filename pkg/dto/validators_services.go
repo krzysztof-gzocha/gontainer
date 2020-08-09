@@ -50,7 +50,13 @@ func ValidateServicesGetters(n string, s Service) error {
 			s.Getter,
 		)
 	}
-	// todo getter cannot be one of the following Get, Has...
+
+	reserved := []string{"Get", "MustGet", "Has", "ValidateAllServices"}
+	for _, w := range reserved {
+		if w == s.Getter {
+			return fmt.Errorf("service `%s`: getter `%s` is reserved", n, w)
+		}
+	}
 
 	return nil
 }

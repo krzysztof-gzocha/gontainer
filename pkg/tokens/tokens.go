@@ -123,6 +123,7 @@ func (t TokenSimpleFunction) Supports(expr string) bool {
 	return ok && m["fn"] == t.fn
 }
 
+// todo it won't work without alias
 func (t TokenSimpleFunction) Create(expr string) (Token, error) {
 	e, _ := toExpr(expr)
 	_, m := regex.Match(regexSimpleFn, e)

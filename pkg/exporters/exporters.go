@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"unicode"
 )
 
 type Exporter interface {
@@ -117,49 +116,10 @@ func (n NumericExporter) Supports(v interface{}) bool {
 type StringExporter struct{}
 
 func (s StringExporter) Export(v interface{}) (string, error) {
-	d, _ := v.(string)
-
-	r := ""
-	for _, c := range d {
-		r += s.runeToString(c)
-	}
-
-	return `"` + r + `"`, nil
+	return fmt.Sprintf("%+q", v), nil
 }
 
 func (s StringExporter) Supports(v interface{}) bool {
 	_, ok := v.(string)
 	return ok
-}
-
-func (StringExporter) runeToString(r rune) string {
-	wc := map[string]string{
-		"\n": "\\n",
-		"\t": "\\t",
-		"\r": "\\r",
-		"\f": "\\f",
-		" ":  " ",
-	}
-
-	nc := map[string]string{
-		"\\": "\\\\",
-	}
-
-	if unicode.IsSpace(r) {
-		if s, ok := wc[string(r)]; ok {
-			return s
-		}
-
-		return fmt.Sprintf("%+q", string(r))
-	}
-
-	if r == '"' {
-		return `\"`
-	}
-
-	if s, ok := nc[string(r)]; ok {
-		return s
-	}
-
-	return string(r)
 }

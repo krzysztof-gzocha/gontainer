@@ -14,6 +14,7 @@ type Import struct {
 type Imports interface {
 	GetAlias(string) string
 	GetImports() []Import
+	RegisterPrefix(shortcut string, path string) error
 }
 
 type SimpleImports struct {

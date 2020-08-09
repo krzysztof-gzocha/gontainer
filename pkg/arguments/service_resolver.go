@@ -3,6 +3,7 @@ package arguments
 import (
 	"github.com/gomponents/gontainer/pkg/dto"
 	"github.com/gomponents/gontainer/pkg/imports"
+	"github.com/gomponents/gontainer/pkg/parameters"
 	"github.com/gomponents/gontainer/pkg/syntax"
 )
 
@@ -15,7 +16,7 @@ func NewServiceResolver(imports imports.Imports, patternResolver syntax.ServiceR
 	return &ServiceResolver{imports: imports, patternResolver: patternResolver}
 }
 
-func (s ServiceResolver) Resolve(expr string) (dto.CompiledArg, error) {
+func (s ServiceResolver) Resolve(expr string, _ parameters.ResolvedParams) (dto.CompiledArg, error) {
 	service, type_, err := s.patternResolver.ResolveService(expr)
 	if err != nil {
 		return dto.CompiledArg{}, err
@@ -29,5 +30,5 @@ func (s ServiceResolver) Resolve(expr string) (dto.CompiledArg, error) {
 }
 
 func (s ServiceResolver) Supports(expr string) bool {
-	return []rune(expr)[0] == '@'
+	return len(expr) >= 1 && []rune(expr)[0] == '@'
 }
