@@ -53,7 +53,13 @@ func CreateContainer() *{{$ContainerType}} {
 
 	getters := make(map[string]{{$RootImportAlias}}.GetterDefinition)
 {{range $service := .Input.Services}}	getters[{{ export $service.Name }}] = {{$RootImportAlias}}.GetterDefinition{
-		Getter: func() (interface{}, error) {
+		Getter: func() (service interface{}, err error) {
+			defer func() {
+				if r := recover(); r != nil {
+					service = nil
+					err = {{ importAlias "fmt" }}.Errorf("%s", r)
+				}
+			}()
 {{- range $argIndex, $arg := $service.Args -}}
 {{- if $arg.IsService }}
 			arg{{ $argIndex }}, errGet{{ $argIndex }} := result.Get({{ export $arg.ServiceLink.Name }})

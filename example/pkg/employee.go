@@ -10,7 +10,7 @@ type Employee struct {
 	Position string
 }
 
-func NewEmployee(person *Person, salary int, position string, aaa interface{}) *Employee {
+func NewEmployee(person *Person, salary int, position string, aaa ...interface{}) *Employee {
 	return &Employee{Person: person, Salary: salary, Position: position}
 }
 
