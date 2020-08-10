@@ -7,6 +7,13 @@
 
 Depenendency Injection container for GO inspired by Symfony.
 
+## Cmd
+
+```bash
+ENV=dev
+gontainer build -i container.yml -i container_${DEV}.yml -o container.go
+```
+
 ## Example
 
 ```yaml

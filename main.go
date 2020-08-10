@@ -14,6 +14,8 @@ var (
 	date    = "unknown"
 )
 
+//go:generate echo "aaa" >> aaa.go
+
 func main() {
 	rootCmd := cobra.Command{
 		Use:   "gontainer",

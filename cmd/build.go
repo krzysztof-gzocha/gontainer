@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/gomponents/gontainer/pkg"
 	"github.com/gomponents/gontainer/pkg/template2"
 	"io/ioutil"
 
@@ -13,35 +14,44 @@ import (
 	"github.com/gomponents/gontainer/pkg/syntax"
 	"github.com/gomponents/gontainer/pkg/tokens"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 )
 
 func NewBuildCmd() *cobra.Command {
 	var (
-		inputFile  string
+		inputFiles []string
 		outputFile string
 		cmd        *cobra.Command
 	)
 
+	handleErr := func(err error) {
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	write := func(s string) {
+		_, err := cmd.OutOrStdout().Write([]byte(s))
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	callback := func(cmd *cobra.Command, args []string) {
 		input := dto.Input{}
 
-		if file, err := ioutil.ReadFile(inputFile); err != nil {
-			panic(fmt.Sprintf("Error has occurred during opening file: %s", err.Error()))
-		} else {
-			if yamlErr := yaml.Unmarshal(file, &input); yamlErr != nil {
-				panic(fmt.Sprintf("Error has occurred during parsing yaml file: %s", yamlErr.Error()))
-			}
-		}
+		reader := pkg.NewDefaultConfigReader(func(s string) {
+			write(fmt.Sprintf("Parsing file: `%s`\n", s))
+		})
+		input, err := reader.Read(inputFiles)
+		handleErr(err)
 
-		imp2 := imports.NewSimpleImports("_gontainer")
-		compiler := createCompiler(imp2)
-		ci, ciErr := compiler.Compile(input)
-		if ciErr != nil {
-			panic(ciErr)
-		}
+		imps := imports.NewSimpleImports("_gontainer")
+		compiler := createCompiler(imps)
 
-		if tpl, err := template2.NewSimpleBuilder(imp2).Build(ci); err != nil {
+		compiledInput, ciErr := compiler.Compile(input)
+		handleErr(ciErr)
+
+		if tpl, err := template2.NewSimpleBuilder(imps).Build(compiledInput); err != nil {
 			panic(fmt.Sprintf("Unexpected error has occurred during building container: %s", err.Error()))
 		} else {
 			if fileErr := ioutil.WriteFile(outputFile, []byte(tpl), 0644); fileErr != nil {
@@ -59,7 +69,7 @@ func NewBuildCmd() *cobra.Command {
 		Run:   callback,
 	}
 
-	cmd.Flags().StringVarP(&inputFile, "input", "i", "", "input name (required)")
+	cmd.Flags().StringArrayVarP(&inputFiles, "input", "i", nil, "input name (required)")
 	_ = cmd.MarkFlagRequired("input")
 
 	cmd.Flags().StringVarP(&outputFile, "output", "o", "", "output name (required)")
