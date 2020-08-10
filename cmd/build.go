@@ -23,8 +23,11 @@ func NewBuildCmd() *cobra.Command {
 		cmd        *cobra.Command
 	)
 
-	handleErr := func(err error) {
+	handleErr := func(err error, msg ...string) {
 		if err != nil {
+			if len(msg) >= 0 {
+				panic(fmt.Sprintf("%s: %s", msg, err.Error()))
+			}
 			panic(err)
 		}
 	}
@@ -37,8 +40,6 @@ func NewBuildCmd() *cobra.Command {
 	}
 
 	callback := func(cmd *cobra.Command, args []string) {
-		input := dto.Input{}
-
 		reader := pkg.NewDefaultConfigReader(func(s string) {
 			write(fmt.Sprintf("Parsing file: `%s`\n", s))
 		})
@@ -51,15 +52,11 @@ func NewBuildCmd() *cobra.Command {
 		compiledInput, ciErr := compiler.Compile(input)
 		handleErr(ciErr)
 
-		if tpl, err := template2.NewSimpleBuilder(imps).Build(compiledInput); err != nil {
-			panic(fmt.Sprintf("Unexpected error has occurred during building container: %s", err.Error()))
-		} else {
-			if fileErr := ioutil.WriteFile(outputFile, []byte(tpl), 0644); fileErr != nil {
-				panic(fmt.Sprintf("Error has occurred during saving file: %s", fileErr.Error()))
-			}
-
-			_, _ = cmd.OutOrStdout().Write([]byte(fmt.Sprintf("Container has built [%s]\n", outputFile)))
-		}
+		tpl, tplErr := template2.NewSimpleBuilder(imps).Build(compiledInput)
+		handleErr(tplErr, "Unexpected error has occurred during building container")
+		fileErr := ioutil.WriteFile(outputFile, []byte(tpl), 0644)
+		handleErr(fileErr, "Error has occurred during saving file")
+		write(fmt.Sprintf("Container has been built [%s]\n", outputFile))
 	}
 
 	cmd = &cobra.Command{
