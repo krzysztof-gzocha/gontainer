@@ -68,7 +68,7 @@ func (p PatternResolver) Resolve(expr string, params parameters.ResolvedParams) 
 			return dto.CompiledArg{}, solveErr
 		}
 
-		tmp = p.imports.GetAlias("github.com/gomponents/gontainer/pkg/std") + `.MustConvertToString(` + tmp + `)`
+		tmp = p.imports.GetAlias("github.com/gomponents/gontainer/pkg/exporters") + `.MustToString(` + tmp + `)`
 		codeParts = append(codeParts, tmp)
 	}
 

@@ -48,17 +48,19 @@ func Test_seekableStringSlice_contains(t *testing.T) {
 
 func Test_validateCircularDependency(t *testing.T) {
 	scenarios := []struct {
-		services map[string]CompiledService
+		services []CompiledService
 		error    string
 	}{
 		{
-			services: map[string]CompiledService{
-				"foo": {
+			services: []CompiledService{
+				{
+					Name: "foo",
 					Args: []CompiledArg{
 						{ServiceLink: &ServiceLink{Name: "bar"}},
 					},
 				},
-				"bar": {
+				{
+					Name: "bar",
 					Args: []CompiledArg{
 						{ServiceLink: &ServiceLink{Name: "foo"}},
 					},
@@ -67,23 +69,27 @@ func Test_validateCircularDependency(t *testing.T) {
 			error: "found circular dependency bar -> foo -> bar",
 		},
 		{
-			services: map[string]CompiledService{
-				"s1": {
+			services: []CompiledService{
+				{
+					Name: "s1",
 					Args: []CompiledArg{
 						{ServiceLink: &ServiceLink{Name: "s2"}},
 					},
 				},
-				"s2": {
+				{
+					Name: "s2",
 					Args: []CompiledArg{
 						{ServiceLink: &ServiceLink{Name: "s3"}},
 					},
 				},
-				"s3": {
+				{
+					Name: "s3",
 					Args: []CompiledArg{
 						{ServiceLink: &ServiceLink{Name: "s4"}},
 					},
 				},
-				"s4": {
+				{
+					Name: "s4",
 					Args: []CompiledArg{
 						{ServiceLink: &ServiceLink{Name: "s2"}},
 					},
@@ -92,8 +98,9 @@ func Test_validateCircularDependency(t *testing.T) {
 			error: "found circular dependency s1 -> s2 -> s3 -> s4 -> s2",
 		},
 		{
-			services: map[string]CompiledService{
-				"foo": {
+			services: []CompiledService{
+				{
+					Name: "foo",
 					Args: []CompiledArg{
 						{ServiceLink: &ServiceLink{Name: "foo"}},
 					},
@@ -102,8 +109,9 @@ func Test_validateCircularDependency(t *testing.T) {
 			error: "found circular dependency foo -> foo",
 		},
 		{
-			services: map[string]CompiledService{
-				"foo": {
+			services: []CompiledService{
+				{
+					Name: "foo",
 					Args: []CompiledArg{
 						{ServiceLink: &ServiceLink{Name: "bar"}},
 					},

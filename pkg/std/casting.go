@@ -14,6 +14,8 @@ var (
 	)
 )
 
+// TODO remove
+// use exporters.MustToString
 func MustConvertToString(v interface{}) string {
 	if r, ok := v.(string); ok {
 		return r

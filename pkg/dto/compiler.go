@@ -2,6 +2,7 @@ package dto
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/gomponents/gontainer/pkg/imports"
 	"github.com/gomponents/gontainer/pkg/parameters"
@@ -67,19 +68,15 @@ func (c *BaseCompiler) Compile(i Input) (CompiledInput, error) {
 		return CompiledInput{}, paramsErr
 	}
 	r.Params = params
-	r.Services = make(map[string]CompiledService)
 
-	for n, s := range i.Services {
-		type_, tErr := c.typeResolver.ResolveType(s.Type)
-		if tErr != nil {
-			return CompiledInput{}, tErr
-		}
+	var names []string
+	for n, _ := range i.Services {
+		names = append(names, n)
+	}
+	sort.Strings(names)
 
-		constructor, cErr := c.fnResolver.ResolveFunction(s.Constructor)
-		if cErr != nil {
-			return CompiledInput{}, cErr
-		}
-
+	for _, n := range names {
+		s := i.Services[n]
 		args := make([]CompiledArg, 0)
 		for argN, a := range s.Args {
 			arg, argErr := c.argumentResolver.Resolve(a, r.Params)
@@ -94,15 +91,34 @@ func (c *BaseCompiler) Compile(i Input) (CompiledInput, error) {
 			args = append(args, arg)
 		}
 
-		r.Services[n] = CompiledService{
+		compiled := CompiledService{
+			Name:        n,
 			Getter:      s.Getter,
-			Type:        type_,
-			Constructor: constructor,
+			Type:        "",
+			Constructor: "",
 			WithError:   s.WithError,
 			Disposable:  s.Disposable,
 			Args:        args,
 			Tags:        append(s.Args),
 		}
+
+		if s.Type != "" {
+			type_, tErr := c.typeResolver.ResolveType(s.Type)
+			if tErr != nil {
+				return CompiledInput{}, tErr
+			}
+			compiled.Type = type_
+		}
+
+		if s.Constructor != "" {
+			constructor, cErr := c.fnResolver.ResolveFunction(s.Constructor)
+			if cErr != nil {
+				return CompiledInput{}, cErr
+			}
+			compiled.Constructor = constructor
+		}
+
+		r.Services = append(r.Services, compiled)
 	}
 
 	if err := c.compiledValidator.Validate(r); err != nil {

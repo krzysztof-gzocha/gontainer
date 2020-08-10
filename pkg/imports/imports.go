@@ -45,7 +45,7 @@ func (s *SimpleImports) GetAlias(path string) string {
 
 	i := Import{
 		Path:  path,
-		Alias: strings.ReplaceAll(parts[len(parts)-1], ".", "_") + "_" + s.suffix + strconv.FormatInt(s.counter, 16),
+		Alias: strings.ReplaceAll(parts[len(parts)-1], ".", "_") + s.suffix + strconv.FormatInt(s.counter, 16),
 	}
 	s.imports[path] = i
 	s.counter++

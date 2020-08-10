@@ -3,6 +3,7 @@ package template2
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"text/template"
 
 	"github.com/gomponents/gontainer/pkg/dto"
@@ -44,10 +45,13 @@ func (s SimpleBuilder) Build(i dto.CompiledInput) (string, error) {
 
 			return s.imports.GetAlias(alias)
 		},
+		"replace": func(input, from, to string) string {
+			return strings.Replace(input, from, to, -1)
+		},
 	}
 
 	exec := func(name string, tplBody string) (string, error) {
-		tpl, newErr := newTemplate(name, fncs, tplBody)
+		tpl, newErr := template.New("gontainer_" + name).Funcs(fncs).Parse(tplBody)
 		if newErr != nil {
 			return "", newErr
 		}
@@ -70,8 +74,4 @@ func (s SimpleBuilder) Build(i dto.CompiledInput) (string, error) {
 	}
 
 	return head + body, nil
-}
-
-func newTemplate(name string, fncs map[string]interface{}, tpl string) (*template.Template, error) {
-	return template.New("gontainer_" + name).Funcs(fncs).Parse(tpl)
 }

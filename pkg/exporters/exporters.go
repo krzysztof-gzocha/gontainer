@@ -6,6 +6,36 @@ import (
 	"reflect"
 )
 
+var (
+	defaultExporter = NewDefaultExporter()
+)
+
+// Export exports input value to GO code
+func Export(i interface{}) (string, error) {
+	return defaultExporter.Export(i)
+}
+
+// ToString casts input value to string
+func ToString(i interface{}) (string, error) {
+	if r, ok := i.(string); ok {
+		return r, nil
+	}
+
+	return NewChainExporter(
+		&BoolExporter{},
+		&NilExporter{},
+		&NumericExporter{},
+	).Export(i)
+}
+
+func MustToString(i interface{}) string {
+	r, err := ToString(i)
+	if err != nil {
+		panic(fmt.Sprintf("cannot cast parameter of type `%T` to string: %s", i, err.Error()))
+	}
+	return r
+}
+
 type Exporter interface {
 	Export(interface{}) (string, error)
 }

@@ -27,7 +27,12 @@ func NewSimpleResolver(subresolvers []Subresolver) *SimpleResolver {
 func (s SimpleResolver) Resolve(expr string, params parameters.ResolvedParams) (dto.CompiledArg, error) {
 	for _, r := range s.subresolvers {
 		if r.Supports(expr) {
-			return r.Resolve(expr, params)
+			result, err := r.Resolve(expr, params)
+			if err == nil {
+				result.Raw = expr
+			}
+
+			return result, err
 		}
 	}
 

@@ -29,7 +29,7 @@ func (c *{{$ContainerType}}) Has(id string) bool {
 func (c *{{$ContainerType}}) ValidateAllServices() (errors map[string]error) {
 	errors = make(map[string]error)
 	for _, id := range []string{
-{{range $name, $service := .Services -}} {{ "		" }} {{- export $name }},{{ "\n" }}{{ end -}}
+{{range $service := .Input.Services -}} {{ "		" }} {{- export $service.Name }},{{ "\n" }}{{ end -}}
 {{- "	" -}} } {
 		if _, err := c.Get(id); err != nil {
 			errors[id] = err
@@ -52,34 +52,34 @@ func CreateContainer() *{{$ContainerType}} {
 	result := &{{$ContainerType}}{}
 
 	getters := make(map[string]{{$RootImportAlias}}.GetterDefinition)
-{{range $name, $service := .Input.Services}}	getters[{{ export $name }}] = {{$RootImportAlias}}.GetterDefinition{
+{{range $service := .Input.Services}}	getters[{{ export $service.Name }}] = {{$RootImportAlias}}.GetterDefinition{
 		Getter: func() (interface{}, error) {
 {{- range $argIndex, $arg := $service.Args -}}
 {{- if $arg.IsService }}
 			arg{{ $argIndex }}, errGet{{ $argIndex }} := result.Get({{ export $arg.ServiceLink.Name }})
 			if errGet{{ $argIndex }} != nil {
-				return nil, {{ importAlias "fmt" }}.Errorf("cannot create %s due to: %s", {{ export $name }}, errGet{{ $argIndex }}.Error())
+				return nil, {{ importAlias "fmt" }}.Errorf("cannot create %s due to: %s", {{ export $service.Name }}, errGet{{ $argIndex }}.Error())
 			}
-{{- if ne $arg.ServiceLink.Name "" }}
+{{- if ne $arg.ServiceLink.Type "" }}
 			val{{ $argIndex }}, ok{{ $argIndex }} := arg{{ $argIndex }}.({{ $arg.ServiceLink.Type }})
 			if !ok{{ $argIndex }} {
-				return nil, {{ importAlias "fmt" }}.Errorf("service %s is not an instance of %T, %T given", {{ export $name }}, val{{ $argIndex }}, arg{{ $argIndex }})
+				return nil, {{ importAlias "fmt" }}.Errorf("service %s is not an instance of %T, %T given", {{ export $service.Name }}, val{{ $argIndex }}, arg{{ $argIndex }})
 			}
 {{ else }}
-// todo
-			val{{ $argIndex }}, := arg{{ $argIndex }}
+			val{{ $argIndex }} := arg{{ $argIndex }}
 {{- end -}}
 {{- end -}}
 {{ end }}
-			return {{$service.Constructor}}(
-				{{- range $argIndex, $arg := $service.Args -}}
+			{{ if ne $service.Constructor "" }}return {{$service.Constructor}}(
+				{{- range $argIndex, $arg := $service.Args }}
+				// {{ export $arg.Raw }}
 					{{- if $arg.IsService }}
 				val{{ $argIndex }},
 					{{- else }}
 				{{ $arg.Code }},
 					{{- end -}}
 				{{- end }}
-			){{if not $service.WithError}}, nil{{end}}
+			){{if not $service.WithError}}, nil{{end}}{{ else }}return {{ replace $service.Type "*" "&" }}{}, nil{{ end }}
 		},
 		Disposable: {{$service.Disposable}},
 	}
@@ -88,21 +88,21 @@ func CreateContainer() *{{$ContainerType}} {
 	return result
 }
 
-{{- range $name, $service := .Input.Services -}}
+{{- range $service := .Input.Services -}}
 {{- if ne $service.Getter "" }}
 
 func (c *{{$ContainerType}}) {{ $service.Getter }}() (result {{ $service.Type }}, err error) {
 	var object interface{}
 	var ok bool
 
-	object, err = c.Get({{ export $name }})
+	object, err = c.Get({{ export $service.Name }})
 
 	if err != nil {
 		return
 	}
 
 	if result, ok = object.({{ $service.Type }}); !ok {
-		err = {{ importAlias "fmt" }}.Errorf("cannot create %s, because cannot cast %T to %T", {{ export $name }}, object, result)
+		err = {{ importAlias "fmt" }}.Errorf("cannot create %s, because cannot cast %T to %T", {{ export $service.Name }}, object, result)
 	}
 
 	return

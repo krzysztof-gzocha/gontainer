@@ -62,14 +62,14 @@ func findCircularDep(n string, deps map[string][]string, path seekableStringSlic
 func validateCircularDependency(i CompiledInput) error {
 	services := make([]string, 0)
 	deps := make(map[string][]string)
-	for n, s := range i.Services {
-		services = append(services, n)
-		deps[n] = make([]string, 0)
+	for _, s := range i.Services {
+		services = append(services, s.Name)
+		deps[s.Name] = make([]string, 0)
 		for _, a := range s.Args {
 			if !a.IsService() {
 				continue
 			}
-			deps[n] = append(deps[n], a.ServiceLink.Name)
+			deps[s.Name] = append(deps[s.Name], a.ServiceLink.Name)
 		}
 	}
 

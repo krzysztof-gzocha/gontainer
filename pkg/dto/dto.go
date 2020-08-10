@@ -31,6 +31,7 @@ type ServiceLink struct {
 
 type CompiledArg struct {
 	Code        string
+	Raw         string
 	ServiceLink *ServiceLink
 }
 
@@ -39,6 +40,7 @@ func (c *CompiledArg) IsService() bool {
 }
 
 type CompiledService struct {
+	Name        string
 	Getter      string
 	Type        string
 	Constructor string
@@ -55,5 +57,5 @@ type CompiledInput struct {
 		ContainerType string
 	}
 	Params   parameters.ResolvedParams
-	Services map[string]CompiledService
+	Services []CompiledService
 }

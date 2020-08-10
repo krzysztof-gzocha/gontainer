@@ -13,6 +13,7 @@ func ValidateServices(i Input) error {
 	validators := []serviceValidator{
 		ValidateServicesNames,
 		ValidateServicesGetters,
+		ValidateBuildingMethod,
 	}
 	for _, v := range validators {
 		for n, d := range i.Services {
@@ -56,6 +57,22 @@ func ValidateServicesGetters(n string, s Service) error {
 		if w == s.Getter {
 			return fmt.Errorf("service `%s`: getter `%s` is reserved", n, w)
 		}
+	}
+
+	return nil
+}
+
+func ValidateBuildingMethod(n string, s Service) error {
+	if s.Constructor == "" && s.Type == "" {
+		return fmt.Errorf("service `%s`: missing contructor or type", n)
+	}
+
+	if s.Constructor == "" && len(s.Args) > 0 {
+		return fmt.Errorf("service `%s`: arguments are given, but constructor is missing", n)
+	}
+
+	if s.Getter != "" && s.Type == "" {
+		return fmt.Errorf("service `%s`: getter is given, but type is missing", n)
 	}
 
 	return nil

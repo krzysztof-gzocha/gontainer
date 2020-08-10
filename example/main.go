@@ -16,6 +16,9 @@ func main() {
 	fmt.Printf("Position: %s\n", employee.Position)
 	fmt.Printf("Salary: %d\n", employee.Salary)
 
+	a, b := c.GetMyErr()
+	fmt.Printf("%#v %#v\n", a, b)
+
 	p1, _ := c.GetPerson()
 	p2, _ := c.GetPerson()
 	e1, _ := c.GetEmployee()

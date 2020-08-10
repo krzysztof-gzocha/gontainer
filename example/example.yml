@@ -16,9 +16,19 @@ parameters:
     line
 
 services:
+  anotherTest:
+    constructor: "gontainer/example/pkg.NewEmplWithErr"
+    with_error: true
+    getter: GetMyErr
+    type: "*gontainer/example/pkg.Employee"
+
+  testPerson:
+    type: "gontainer/example/pkg.Employee"
+    getter: GetFooPerson
+
   person:
     constructor: "gontainer/example/pkg.NewPerson"
-    args: ["%first_name% %last_name%", "%age%"]
+    args: ["%first_name% %last_name% (%age%)", "%age%"]
     getter: "GetPerson"
     type: "*gontainer/example/pkg.Person"
     disposable: true
@@ -35,3 +45,4 @@ services:
       - "@person.(*gontainer/example/pkg.Person)"
       - "%salary%"
       - "%position%"
+      - "@testPerson"
