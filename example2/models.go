@@ -1,4 +1,4 @@
-package example2
+package main
 
 type Wallet struct {
 	Value uint
