@@ -46,5 +46,6 @@ services:
 
 ```go
     c := CreateContainer()
-    employee, err := c.GetEmployee()
+    employee, employeeErr := c.GetEmployee()
+    person, personErr := c.Get("person")
 ```
