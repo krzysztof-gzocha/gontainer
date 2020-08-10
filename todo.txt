@@ -3,3 +3,4 @@
 * getters: c.MustGetEmployee() instead of c.MustGet("employee").(*pkg.Employee)
 * go generate for templates
 * fix the following error: cannot create service person: cannot create person due to: cannot create service wallet: cannot create wallet due to: service serviceContainer does not exist
+* rename constructor to provider, allow for syntax `@serviceContainer.CreateSth` ???
