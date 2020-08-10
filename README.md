@@ -37,11 +37,11 @@ services:
   personExample2:
     type: "gontainer/example/pkg/Employee" # &alias.Employee{}
 
-  person:
+  person: # alias.NewPerson(...)
     constructor: "github.com/gomponents/gontainer/example/pkg.NewPerson"
     args: ["%first_name% %last_name%", "%age%"]
 
-  employee:
+  employee: # alias.NewEmployee(container.Get("person'), ...)
     getter: "Employee"
     type: "*gontainer/example/pkg/Employee"
     constructor: "gontainer/example/pkg.NewEmployee"
