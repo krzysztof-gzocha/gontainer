@@ -12,6 +12,7 @@ Depenendency Injection container for GO inspired by Symfony.
 ```yaml
 meta:
   pkg: container
+  container_type: MyContainer
   imports:
     gontainer: "github.com/gomponents/gontainer"
 
