@@ -30,13 +30,20 @@ var (
 	serviceGetterRegex = regexp.MustCompile(`^[A-Z][A-Za-z0-9_]*$`)
 )
 
-func ValidateServicesNames(n string, _ Service) error {
+func ValidateServicesNames(n string, s Service) error {
 	if !serviceNameRegex.MatchString(n) {
 		return fmt.Errorf(
 			"service name must match pattern `%s`, `%s` given",
 			serviceNameRegex.String(),
 			n,
 		)
+	}
+
+	reserved := []string{"serviceContainer"}
+	for _, w := range reserved {
+		if w == n {
+			return fmt.Errorf("service `%s`: getter `%s` is reserved", n, w)
+		}
 	}
 
 	return nil

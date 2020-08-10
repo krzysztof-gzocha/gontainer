@@ -1,6 +1,8 @@
 meta:
   pkg: main
   container_type: MyExample2
+  imports:
+    gontainer: "github.com/gomponents/gontainer"
 
 parameters:
   name: "John Doe"
@@ -9,7 +11,7 @@ parameters:
 services:
   wallet:
     constructor: "NewWallet"
-    args: ["%money%"]
+    args: ["%money%", "@serviceContainer.(gontainer/pkg.Container)"]
 
   person:
     constructor: "NewPerson"

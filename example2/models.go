@@ -1,10 +1,14 @@
 package main
 
+import (
+	"github.com/gomponents/gontainer/pkg"
+)
+
 type Wallet struct {
 	Value uint
 }
 
-func NewWallet(value uint) *Wallet {
+func NewWallet(value uint, c pkg.Container) *Wallet {
 	return &Wallet{Value: value}
 }
 
