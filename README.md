@@ -12,23 +12,33 @@ Depenendency Injection container for GO inspired by Symfony.
 ```yaml
 meta:
   pkg: container
+  imports:
+    gontainer: "github.com/gomponents/gontainer"
 
 parameters:
-  first_name: "Jane"
+  first_name: '%env("NAME")%'
   last_name: "Doe"
-  age: 30
+  age: '%envInt("AGE")%'
   salary: 30000
   position: "CTO"
 
 services:
+  personExample1:
+    type: "*gontainer/example/pkg/Employee" # alias.Employee{}
+
+  personExample2:
+    type: "gontainer/example/pkg/Employee" # &alias.Employee{}
+
   person:
     constructor: "github.com/gomponents/gontainer/example/pkg.NewPerson"
     args: ["%first_name% %last_name%", "%age%"]
 
   employee:
-    constructor: "github.com/gomponents/gontainer/example/pkg.NewEmployee"
+    getter: "Employee"
+    type: "*gontainer/example/pkg/Employee"
+    constructor: "gontainer/example/pkg.NewEmployee"
     args:
-      - "@person.(*github.com/gomponents/gontainer/example/pkg.Person)"
+      - "@person.(*gontainer/example/pkg.Person)"
       - "%salary%"
       - "%position%"
 ```
