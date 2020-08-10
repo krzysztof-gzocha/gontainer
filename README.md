@@ -43,3 +43,8 @@ services:
       - "%salary%"
       - "%position%"
 ```
+
+```go
+    c := CreateContainer()
+    employee, err := c.GetEmployee()
+```
