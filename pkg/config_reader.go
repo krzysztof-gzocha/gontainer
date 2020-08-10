@@ -30,6 +30,10 @@ func (s simpleConfigReader) Read(patterns []string) (dto.Input, error) {
 		return dto.Input{}, err
 	}
 
+	if len(files) == 0 {
+		return dto.Input{}, fmt.Errorf("cannot find any configuration file")
+	}
+
 	result := dto.Input{}
 
 	for _, f := range files {

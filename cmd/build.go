@@ -2,13 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
-	"os"
-
 	"github.com/gomponents/gontainer/pkg"
 	"github.com/gomponents/gontainer/pkg/imports"
 	"github.com/gomponents/gontainer/pkg/template2"
 	"github.com/spf13/cobra"
+	"io/ioutil"
+	"os"
 )
 
 func NewBuildCmd() *cobra.Command {
@@ -23,15 +22,12 @@ func NewBuildCmd() *cobra.Command {
 		if err != nil {
 			panic(err)
 		}
-		os.Exit(1)
 	}
 
-	handleErr := func(err error, msg ...string) {
+	handleErr := func(err error, msg string) {
 		if err != nil {
-			if len(msg) > 0 {
-				writeErr(fmt.Sprintf("%s: %s\n", msg[0], err.Error()))
-			}
-			writeErr(err.Error() + "\n")
+			writeErr(fmt.Sprintf("%s: %s\n", msg[0], err.Error()))
+			os.Exit(1)
 		}
 	}
 
@@ -48,7 +44,7 @@ func NewBuildCmd() *cobra.Command {
 		})
 		write("Reading files...\n")
 		input, err := reader.Read(inputFiles)
-		handleErr(err)
+		handleErr(err, "Configuration error")
 
 		imps := imports.NewSimpleImports("_gontainer")
 		compiler := pkg.NewDefaultCompiler(imps)
