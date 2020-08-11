@@ -11,6 +11,9 @@ import (
 type importsMock struct {
 }
 
+func (i importsMock) RegisterPrefix(string, string) error {
+}
+
 func (i importsMock) GetAlias(string) string {
 	return "alias"
 }
