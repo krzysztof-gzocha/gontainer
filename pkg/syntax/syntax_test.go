@@ -12,6 +12,7 @@ type importsMock struct {
 }
 
 func (i importsMock) RegisterPrefix(string, string) error {
+	return nil
 }
 
 func (i importsMock) GetAlias(string) string {
