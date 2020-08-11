@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/gomponents/gontainer/example/container"
+	"example/container"
 )
 
 func main() {

@@ -26,7 +26,7 @@ func NewBuildCmd() *cobra.Command {
 
 	handleErr := func(err error, msg string) {
 		if err != nil {
-			writeErr(fmt.Sprintf("%s: %s\n", msg[0], err.Error()))
+			writeErr(fmt.Sprintf("%s: %s\n", msg, err.Error()))
 			os.Exit(1)
 		}
 	}
