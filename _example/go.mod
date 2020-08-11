@@ -1,3 +1,3 @@
-module github.com/gomponents/gontainer/example
+module my.test/repo
 
 go 1.13
