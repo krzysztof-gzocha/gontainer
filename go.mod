@@ -3,7 +3,6 @@ module github.com/gomponents/gontainer
 go 1.13
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/spf13/cobra v0.0.5
 	github.com/stretchr/testify v1.5.1
 	github.com/wlbr/mule v0.0.0-20200517121540-6f9faa2e2d0b // indirect

@@ -38,7 +38,7 @@ jobs:
       run: go tool cover -func=coverage.out
 
     - name: Example
-      run: example/run.sh
+      run: _example/run.sh
 
     - name: Send coverage
       uses: shogo82148/actions-goveralls@v1

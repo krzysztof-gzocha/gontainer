@@ -2,7 +2,7 @@ package pkg
 
 type Person struct {
 	Fullname string
-	Age uint
+	Age      uint
 }
 
 func NewPerson(fullname string, age uint) *Person {
