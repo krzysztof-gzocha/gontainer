@@ -41,6 +41,10 @@ func (c *{{$ContainerType}}) ValidateAllServices() (errors map[string]error) {
 	return
 }
 
+func Hey(provider interface{}, params ...interface{}) (interface{}, error) {
+	{{ importAlias "github.com/gontainer/gontainer-helpers/caller" }}.CallProvider(provider, params...)
+}
+
 func CreateParamContainer() {{$RootImportAlias}}.ParamContainer {
 	params := make(map[string]interface{})
 {{range $name, $param := .Input.Params}}	params["{{$name}}"] = {{$param.Code}}
