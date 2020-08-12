@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"my.test/repo/container"
+	"my.test/repo/repo/container"
 )
 
 func main() {

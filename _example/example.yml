@@ -2,7 +2,7 @@ meta:
   pkg: container
   container_type: MyFooContainer
   imports:
-    "gontainer": "github.com/gomponents/gontainer"
+    "example": "my.test/repo/repo"
 
 parameters:
   name: Jane\/\t
@@ -17,32 +17,32 @@ parameters:
 
 services:
   anotherTest:
-    constructor: "gontainer/example/pkg.NewEmplWithErr"
+    constructor: "example/pkg.NewEmplWithErr"
     with_error: true
     getter: GetMyErr
-    type: "*gontainer/example/pkg.Employee"
+    type: "*example/pkg.Employee"
 
   testPerson:
-    type: "gontainer/example/pkg.Employee"
+    type: "example/pkg.Employee"
     getter: GetFooPerson
 
   person:
-    constructor: "gontainer/example/pkg.NewPerson"
+    constructor: "example/pkg.NewPerson"
     args: ["%first_name% %last_name% (%age%)", "%age%"]
     getter: "GetPerson"
-    type: "*gontainer/example/pkg.Person"
+    type: "*example/pkg.Person"
     disposable: true
 
   employee:
     getter: "GetEmployee"
-    type: "*gontainer/example/pkg.Employee"
+    type: "*example/pkg.Employee"
     # todo factory e.g. "@myFactoryService.NewEmployee"
     # todo rename constructor to factory
     # todo calls https://symfony.com/doc/current/service_container/calls.html
     # todo add syntax "import.Employee{}" and "&import.Employee{}" or use type from line 28?
-    constructor: "gontainer/example/pkg.NewEmployee"
+    constructor: "example/pkg.NewEmployee"
     args:
-      - "@person.(*gontainer/example/pkg.Person)"
+      - "@person.(*example/pkg.Person)"
       - "%salary%"
       - "%position%"
       - "@testPerson"
