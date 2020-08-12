@@ -42,7 +42,7 @@ func (c *{{$ContainerType}}) ValidateAllServices() (errors map[string]error) {
 }
 
 func Hey(provider interface{}, params ...interface{}) (interface{}, error) {
-	return {{ importAlias "github.com/gomponents/gontainer-helpers/v1/caller" }}.CallProvider(provider, params...)
+	return {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(provider, params...)
 }
 
 func CreateParamContainer() {{$RootImportAlias}}.ParamContainer {
