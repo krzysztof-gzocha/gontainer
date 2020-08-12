@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"my-module/container"
+	"mymodule/container"
 )
 
 func main() {
