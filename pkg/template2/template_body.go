@@ -1,7 +1,7 @@
 package template2
 
 const TemplateBody = `
-{{- $RootImportAlias := importAlias "github.com/gomponents/gontainer-helpers/container" -}}
+{{- $ContainerPathAlias := importAlias "github.com/gomponents/gontainer-helpers/container" -}}
 {{- $ContainerType := .Input.Meta.ContainerType -}}
 
 {{- range $name, $param := .Input.Params -}}
@@ -11,7 +11,7 @@ const TemplateBody = `
 // -----------------------------------------------------------------------------
 {{end}}
 type {{$ContainerType}} struct {
-	container {{$RootImportAlias}}.Container
+	container {{$ContainerPathAlias}}.Container
 }
 
 func (c *{{$ContainerType}}) Get(id string) (interface{}, error) {
@@ -45,24 +45,24 @@ func Hey(provider interface{}, params ...interface{}) (interface{}, error) {
 	return {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(provider, params...)
 }
 
-func CreateParamContainer() {{$RootImportAlias}}.ParamContainer {
+func CreateParamContainer() {{$ContainerPathAlias}}.ParamContainer {
 	params := make(map[string]interface{})
 {{range $name, $param := .Input.Params}}	params["{{$name}}"] = {{$param.Code}}
 {{end}}
-	return {{$RootImportAlias}}.NewBaseParamContainer(params)
+	return {{$ContainerPathAlias}}.NewBaseParamContainer(params)
 }
 
 func CreateContainer() *{{$ContainerType}} {
 	result := &{{$ContainerType}}{}
 
-	getters := make(map[string]{{$RootImportAlias}}.GetterDefinition)
-	getters["serviceContainer"] = {{$RootImportAlias}}.GetterDefinition{
+	getters := make(map[string]{{$ContainerPathAlias}}.GetterDefinition)
+	getters["serviceContainer"] = {{$ContainerPathAlias}}.GetterDefinition{
 		Getter: func() (interface{}, error) {
 			return result, nil
 		},
 		Disposable: false,
 	}
-{{range $service := .Input.Services}}	getters[{{ export $service.Name }}] = {{$RootImportAlias}}.GetterDefinition{
+{{range $service := .Input.Services}}	getters[{{ export $service.Name }}] = {{$ContainerPathAlias}}.GetterDefinition{
 		Getter: func() (service interface{}, err error) {
 			defer func() {
 				if r := recover(); r != nil {
@@ -100,7 +100,7 @@ func CreateContainer() *{{$ContainerType}} {
 		Disposable: {{$service.Disposable}},
 	}
 {{end}}
-	result.container = {{$RootImportAlias}}.NewBaseContainer(getters)
+	result.container = {{$ContainerPathAlias}}.NewBaseContainer(getters)
 	return result
 }
 
