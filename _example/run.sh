@@ -3,6 +3,7 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 ENV=dev
+cd ${DIR}/..
 go run ./main.go build -i ${DIR}/../_example/example.yml -i ${DIR}/../_example/params_${ENV}.yml -o ${DIR}/../_example/container/example.go
 cd ${DIR}
 go mod tidy & go mod vendor
