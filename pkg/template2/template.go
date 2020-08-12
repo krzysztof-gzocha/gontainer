@@ -6,8 +6,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/gomponents/gontainer-helpers/exporters"
 	"github.com/gomponents/gontainer/pkg/dto"
-	"github.com/gomponents/gontainer/pkg/exporters"
 	"github.com/gomponents/gontainer/pkg/imports"
 )
 

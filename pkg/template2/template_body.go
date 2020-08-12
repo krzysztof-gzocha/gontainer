@@ -1,7 +1,7 @@
 package template2
 
 const TemplateBody = `
-{{- $RootImportAlias := importAlias "github.com/gomponents/gontainer/pkg" -}}
+{{- $RootImportAlias := importAlias "github.com/gomponents/gontainer-helpers/container" -}}
 {{- $ContainerType := .Input.Meta.ContainerType -}}
 
 {{- range $name, $param := .Input.Params -}}

@@ -2,10 +2,10 @@ package parameters
 
 import (
 	"fmt"
-	"github.com/gomponents/gontainer/pkg/imports"
 	"strings"
 
-	"github.com/gomponents/gontainer/pkg/exporters"
+	"github.com/gomponents/gontainer-helpers/exporters"
+	"github.com/gomponents/gontainer/pkg/imports"
 	"github.com/gomponents/gontainer/pkg/tokens"
 )
 

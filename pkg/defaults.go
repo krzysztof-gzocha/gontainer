@@ -1,9 +1,9 @@
 package pkg
 
 import (
+	"github.com/gomponents/gontainer-helpers/exporters"
 	"github.com/gomponents/gontainer/pkg/arguments"
 	"github.com/gomponents/gontainer/pkg/dto"
-	"github.com/gomponents/gontainer/pkg/exporters"
 	"github.com/gomponents/gontainer/pkg/imports"
 	"github.com/gomponents/gontainer/pkg/parameters"
 	"github.com/gomponents/gontainer/pkg/syntax"
@@ -13,7 +13,7 @@ import (
 func NewDefaultCompiler(imports imports.Imports) dto.Compiler {
 	tokenizer := tokens.NewPatternTokenizer([]tokens.TokenFactoryStrategy{
 		tokens.NewTokenSimpleFunction(imports, "env", "os", "Getenv"),
-		tokens.NewTokenSimpleFunction(imports, "envInt", "github.com/gomponents/gontainer/pkg/std", "MustGetIntEnv"),
+		tokens.NewTokenSimpleFunction(imports, "envInt", "github.com/gomponents/gontainer-helpers/env", "MustGetInt"),
 		tokens.TokenPercentSign{},
 		tokens.TokenReference{},
 		tokens.TokenString{},

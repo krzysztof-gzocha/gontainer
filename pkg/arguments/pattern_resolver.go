@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gomponents/gontainer-helpers/exporters"
 	"github.com/gomponents/gontainer/pkg/dto"
-	"github.com/gomponents/gontainer/pkg/exporters"
 	"github.com/gomponents/gontainer/pkg/imports"
 	"github.com/gomponents/gontainer/pkg/parameters"
 	"github.com/gomponents/gontainer/pkg/tokens"
@@ -68,7 +68,7 @@ func (p PatternResolver) Resolve(expr string, params parameters.ResolvedParams) 
 			return dto.CompiledArg{}, solveErr
 		}
 
-		tmp = p.imports.GetAlias("github.com/gomponents/gontainer/pkg/exporters") + `.MustToString(` + tmp + `)`
+		tmp = p.imports.GetAlias("github.com/gomponents/gontainer-helpers/exporters") + `.MustToString(` + tmp + `)`
 		codeParts = append(codeParts, tmp)
 	}
 
