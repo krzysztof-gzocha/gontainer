@@ -2,7 +2,7 @@ meta:
   pkg: container
   container_type: MyFooContainer
   imports:
-    "example": "my-module"
+    "example": "mymodule"
 
 parameters:
   name: Jane\/\t
