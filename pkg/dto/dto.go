@@ -42,6 +42,7 @@ func (c *CompiledArg) IsService() bool {
 type CompiledService struct {
 	Name        string
 	Getter      string
+	Value       string // todo Value cannot be use with getter
 	Type        string
 	Constructor string
 	Disposable  bool
