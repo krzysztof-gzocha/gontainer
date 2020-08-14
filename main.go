@@ -27,6 +27,7 @@ Re-use dependencies whenever you need and forget about dependency hell in main.g
 
 	rootCmd.AddCommand(
 		cmd.NewBuildCmd(),
+		cmd.NewDumpParamsCmd(),
 		cmd.NewVersionCmd(version, commit, date),
 	)
 

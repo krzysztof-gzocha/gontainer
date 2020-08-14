@@ -74,4 +74,3 @@ services:
       - "@testPerson"
       - "@testPerson"
       - "@qwerty"
-      - "%sdfsdfsf%"

@@ -2,18 +2,32 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/gomponents/gontainer/pkg"
 	"github.com/gomponents/gontainer/pkg/imports"
-	"github.com/gomponents/gontainer/pkg/template2"
 	"github.com/spf13/cobra"
-	"io/ioutil"
-	"os"
 )
 
-func NewBuildCmd() *cobra.Command {
+type mockImports struct {
+}
+
+func (m mockImports) GetAlias(i string) string {
+	return "\"" + i + "\""
+}
+
+func (m mockImports) GetImports() []imports.Import {
+	return nil
+}
+
+func (m mockImports) RegisterPrefix(shortcut string, path string) error {
+	return nil
+}
+
+func NewDumpParamsCmd() *cobra.Command {
 	var (
 		inputFiles []string
-		outputFile string
 		cmd        *cobra.Command
 	)
 
@@ -46,31 +60,39 @@ func NewBuildCmd() *cobra.Command {
 		input, err := reader.Read(inputFiles)
 		handleErr(err, "Configuration error")
 
-		imps := imports.NewSimpleImports()
+		imps := mockImports{}
 		compiler := pkg.NewDefaultCompiler(imps)
 
 		compiledInput, ciErr := compiler.Compile(input)
 		handleErr(ciErr, "Cannot build container")
 
-		tpl, tplErr := template2.NewSimpleBuilder(imps).Build(compiledInput)
-		handleErr(tplErr, "Unexpected error has occurred during building container")
-		fileErr := ioutil.WriteFile(outputFile, []byte(tpl), 0644)
-		handleErr(fileErr, "Error has occurred during saving file")
-		write(fmt.Sprintf("Container has been built\n\t%s\n", outputFile))
+		write("Params\n")
+		max := 0
+		for n, _ := range compiledInput.Params {
+			if len(n) > max {
+				max = len(n)
+			}
+		}
+
+		for n, p := range compiledInput.Params {
+			spaces := strings.Repeat(" ", max-len(n))
+			//raw := p.Raw
+			//if strings.Contains(raw, "\n") {
+			//	raw, _ = exporters.Export(raw)
+			//}
+			write(fmt.Sprintf("    %s: %s%s\n", n, spaces, p.Code))
+		}
 	}
 
 	cmd = &cobra.Command{
-		Use:   "build",
-		Short: "build-container",
-		Long:  "build-long",
+		Use:   "dump-params",
+		Short: "Dump parameters",
+		Long:  "todo",
 		Run:   callback,
 	}
 
 	cmd.Flags().StringArrayVarP(&inputFiles, "input", "i", nil, "input name (required)")
 	_ = cmd.MarkFlagRequired("input")
-
-	cmd.Flags().StringVarP(&outputFile, "output", "o", "", "output name (required)")
-	_ = cmd.MarkFlagRequired("output")
 
 	return cmd
 }
