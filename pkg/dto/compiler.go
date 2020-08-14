@@ -15,7 +15,7 @@ type Compiler interface {
 
 // todo remove and use arguments.Resolver, now it's impossible, because of import cycle
 type ArgResolver interface {
-	Resolve(string, parameters.ResolvedParams) (CompiledArg, error)
+	Resolve(string) (CompiledArg, error)
 }
 
 type BaseCompiler struct {
@@ -79,7 +79,7 @@ func (c *BaseCompiler) Compile(i Input) (CompiledInput, error) {
 		s := i.Services[n]
 		args := make([]CompiledArg, 0)
 		for argN, a := range s.Args {
-			arg, argErr := c.argumentResolver.Resolve(a, r.Params)
+			arg, argErr := c.argumentResolver.Resolve(a)
 			if argErr != nil {
 				return CompiledInput{}, fmt.Errorf(
 					"cannot build `%s` service, error during building arg%d: %s",
@@ -96,7 +96,6 @@ func (c *BaseCompiler) Compile(i Input) (CompiledInput, error) {
 			Getter:      s.Getter,
 			Type:        "",
 			Constructor: "",
-			WithError:   s.WithError,
 			Disposable:  s.Disposable,
 			Args:        args,
 			Tags:        append(s.Args),

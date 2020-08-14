@@ -4,11 +4,10 @@ import (
 	"fmt"
 
 	"github.com/gomponents/gontainer/pkg/dto"
-	"github.com/gomponents/gontainer/pkg/parameters"
 )
 
 type Resolver interface {
-	Resolve(string, parameters.ResolvedParams) (dto.CompiledArg, error)
+	Resolve(string) (dto.CompiledArg, error)
 }
 
 type Subresolver interface {
@@ -24,10 +23,10 @@ func NewSimpleResolver(subresolvers []Subresolver) *SimpleResolver {
 	return &SimpleResolver{subresolvers: subresolvers}
 }
 
-func (s SimpleResolver) Resolve(expr string, params parameters.ResolvedParams) (dto.CompiledArg, error) {
+func (s SimpleResolver) Resolve(expr string) (dto.CompiledArg, error) {
 	for _, r := range s.subresolvers {
 		if r.Supports(expr) {
-			result, err := r.Resolve(expr, params)
+			result, err := r.Resolve(expr)
 			if err == nil {
 				result.Raw = expr
 			}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"mymodule/pkg"
 
 	"mymodule/container"
 )
@@ -11,6 +12,11 @@ func main() {
 	//employee := c.MustGet("employee").(*pkg.Employee)
 	employee, err := c.GetEmployee()
 	fmt.Printf("err %s\n", err)
+	p, _ := c.Get("testPerson")
+	fmt.Printf("%#v", p)
+	q, w := p.(*pkg.Employee)
+	fmt.Printf("%#v %#v\n", q, w)
+	//return
 
 	fmt.Printf("Full name: %s\n", employee.Fullname)
 	fmt.Printf("Position: %s\n", employee.Position)

@@ -8,7 +8,6 @@ type Service struct {
 	Getter      string   `yaml:"getter"`
 	Type        string   `yaml:"type"`
 	Constructor string   `yaml:"constructor"`
-	WithError   bool     `yaml:"with_error"`
 	Disposable  bool     `yaml:"disposable"`
 	Args        []string `yaml:"args"`
 	Tags        []string `yaml:"tags"`
@@ -33,6 +32,7 @@ type CompiledArg struct {
 	Code        string
 	Raw         string
 	ServiceLink *ServiceLink
+	DependsOn   []string // list of depending parameters todo validation
 }
 
 func (c *CompiledArg) IsService() bool {
@@ -44,7 +44,6 @@ type CompiledService struct {
 	Getter      string
 	Type        string
 	Constructor string
-	WithError   bool
 	Disposable  bool
 	Args        []CompiledArg
 	Tags        []string

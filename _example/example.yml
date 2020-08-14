@@ -15,16 +15,32 @@ parameters:
   multiline: |
     multi
     line
+  foo: "@yolo"
 
 services:
   anotherTest:
     constructor: "example/pkg.NewEmplWithErr"
-    with_error: true
     getter: GetMyErr
     type: "*example/pkg.Employee"
 
-  testPerson:
+  test: # &Employee{}
+    type: "*example/pkg.Employee"
+
+  test2: # Employee{}
     type: "example/pkg.Employee"
+
+  test3: # NewEmployee()
+    constructor: "example/pkg.NewEmployee"
+
+  # o tym myślę
+  # wspierane składnie
+  # import.Value - dla zmiennej, stałej i funkcji
+  # import.MyStruct{}.Method
+#  test4: # "MyValue"
+#    value: "my/import.MyValue"
+
+  testPerson:
+    type: "*example/pkg.Employee"
     getter: GetFooPerson
 
   person:
@@ -43,6 +59,8 @@ services:
     # todo add syntax "import.Employee{}" and "&import.Employee{}" or use type from line 28?
     constructor: "example/pkg.NewEmployee"
     args:
+#      - "%foo%"
+#      - "%position%"
       - "@person.(*example/pkg.Person)"
       - "%salary%"
       - "%position%"

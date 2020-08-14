@@ -7,7 +7,6 @@ import (
 	"github.com/gomponents/gontainer-helpers/exporters"
 	"github.com/gomponents/gontainer/pkg/dto"
 	"github.com/gomponents/gontainer/pkg/imports"
-	"github.com/gomponents/gontainer/pkg/parameters"
 	"github.com/gomponents/gontainer/pkg/tokens"
 )
 
@@ -21,7 +20,7 @@ func NewPatternResolver(tokenizer tokens.Tokenizer, exporter exporters.Exporter,
 	return &PatternResolver{tokenizer: tokenizer, exporter: exporter, imports: imports}
 }
 
-func (p PatternResolver) Resolve(expr string, params parameters.ResolvedParams) (dto.CompiledArg, error) {
+func (p PatternResolver) Resolve(expr string) (dto.CompiledArg, error) {
 	tkns, err := p.tokenizer.Tokenize(expr)
 
 	if err != nil {
@@ -32,6 +31,8 @@ func (p PatternResolver) Resolve(expr string, params parameters.ResolvedParams) 
 		return dto.CompiledArg{}, fmt.Errorf("unexpected error, tokenizer returned 0 tokens for expression `%s`", expr)
 	}
 
+	var dependsOn []string
+
 	solveTokenCode := func(t tokens.Token) (string, error) {
 		switch t.Kind {
 		case tokens.TokenKindString:
@@ -39,11 +40,8 @@ func (p PatternResolver) Resolve(expr string, params parameters.ResolvedParams) 
 		case tokens.TokenKindReference:
 			runes := []rune(t.Raw)
 			depID := string(runes[1 : len(runes)-1])
-			param, ok := params[depID]
-			if !ok {
-				return "", fmt.Errorf("parameter `%s` does not exist", depID)
-			}
-			return param.Code, nil
+			dependsOn = append(dependsOn, depID)
+			return fmt.Sprintf("result.MustGetParam(%+q)", depID), nil
 		case tokens.TokenKindCode:
 			return t.Code, nil
 		default:
