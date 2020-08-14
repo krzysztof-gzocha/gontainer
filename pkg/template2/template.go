@@ -11,8 +11,8 @@ import (
 	"github.com/gomponents/gontainer/pkg/imports"
 )
 
-//go:generate go run ../../templater/main.go head.txt template2 TemplateHead tpl_head.go
-//go:generate go run ../../templater/main.go body.txt template2 TemplateBody tpl_body.go
+//go:generate go run ../../templater/main.go head.tmpl template2 TemplateHead tpl_head.go
+//go:generate go run ../../templater/main.go body.tmpl template2 TemplateBody tpl_body.go
 
 type Builder interface {
 	Build(dto.CompiledInput) (string, error)
