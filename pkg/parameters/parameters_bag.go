@@ -115,7 +115,9 @@ func (s SimpleBagFactory) solveString(id string, bag bagParams, deps dependencie
 			if err := solveDep(depID); err != nil {
 				return "", err
 			}
-			return bag[depID].param.Code, nil
+			return fmt.Sprintf("result.MustGetParam(%+q)", depID), nil
+			// todo
+			//return bag[depID].param.Code, nil
 		case tokens.TokenKindCode:
 			return t.Code, nil
 		default:

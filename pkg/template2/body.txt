@@ -31,6 +31,7 @@ func NewParamContainer() *{{$ContainerPathAlias}}.BaseParamContainer {
 	result := {{$ContainerPathAlias}}.NewBaseParamContainer(nil)
 {{- range $name, $param := .Input.Params}}
     result.OverrideParam({{ export $name }}, func() interface{} {
+        // {{ export $param.Raw }}
         return {{$param.Code}}
     })
 {{- end}}
