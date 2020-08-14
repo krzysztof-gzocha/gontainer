@@ -28,10 +28,13 @@ func (c *{{$ContainerType}}) ValidateAllServices() (errors map[string]error) {
 }
 
 func NewParamContainer() *{{$ContainerPathAlias}}.BaseParamContainer {
-	params := make(map[string]interface{})
-{{range $name, $param := .Input.Params}}	params["{{$name}}"] = {{$param.Code}}
-{{end}}
-	return {{$ContainerPathAlias}}.NewBaseParamContainer(params)
+	result := {{$ContainerPathAlias}}.NewBaseParamContainer(nil)
+{{- range $name, $param := .Input.Params}}
+    result.OverrideParam({{ export $name }}, func() interface{} {
+        return {{$param.Code}}
+    })
+{{- end}}
+	return result
 }
 
 func CreateContainer() *{{$ContainerType}} {

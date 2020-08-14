@@ -6,9 +6,15 @@ meta:
 
 
 parameters:
+  t: '%todo("missing parameter")%'
+
+  es_host: "localhost"
+  es_port: "9200"
+  es_host_port: "%es_host%:%es_port%"
+
   name: Jane\/\t
   first_name: "%name%"
-  last_name: "Doe"
+  last_name: "%t%"
   age: 30
   salary: '%envInt("PERSON_SALARY")%'
   position: '%env("PERSON_POSITION")%'

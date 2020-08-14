@@ -149,7 +149,7 @@ func (s SimpleBagFactory) solveString(id string, bag bagParams, deps dependencie
 			return solveErr
 		}
 
-		tmp = s.imports.GetAlias("github.com/gomponents/gontainer/pkg/std") + `.MustConvertToString(` + tmp + `)`
+		tmp = s.imports.GetAlias("github.com/gomponents/gontainer-helpers/exporters") + `.MustToString(` + tmp + `)`
 		codeParts = append(codeParts, tmp)
 	}
 

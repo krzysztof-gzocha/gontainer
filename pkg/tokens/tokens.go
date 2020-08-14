@@ -127,9 +127,13 @@ func (t TokenSimpleFunction) Supports(expr string) bool {
 func (t TokenSimpleFunction) Create(expr string) (Token, error) {
 	e, _ := toExpr(expr)
 	_, m := regex.Match(regexSimpleFn, e)
+	fn := fmt.Sprintf("%s(%s)", t.goFn, m["params"])
+	if t.goImport != "" {
+		fn = fmt.Sprintf("%s.%s", t.imports.GetAlias(t.goImport), fn)
+	}
 	return Token{
 		Kind: TokenKindCode,
 		Raw:  expr,
-		Code: fmt.Sprintf("%s.%s(%s)", t.imports.GetAlias(t.goImport), t.goFn, m["params"]),
+		Code: fn,
 	}, nil
 }
