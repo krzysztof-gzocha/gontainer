@@ -15,3 +15,22 @@ meta:
 params:
     name: '%env("NAME")%'
 ```
+
+* real time params
+
+```yaml
+parameters:
+  name: Jane
+  first_name: "%name%"
+```
+
+**Now**
+```go
+params["first_name"] = "Jane"
+```
+**TODO**
+```go
+params["first_name"] = func () interface{} {
+    return container.GetParam("name")
+}
+```
