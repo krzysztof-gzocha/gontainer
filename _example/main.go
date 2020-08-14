@@ -9,7 +9,6 @@ func main() {
 	c := container.CreateContainer()
 	fmt.Println(c.GetParam("es_host_port"))
 	c = container.CreateContainer()
-	// does not work fix it
 	c.OverrideParam("es_port", func() interface{} {
 		return 9300
 	})
