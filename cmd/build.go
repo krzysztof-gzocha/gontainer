@@ -46,7 +46,7 @@ func NewBuildCmd() *cobra.Command {
 		input, err := reader.Read(inputFiles)
 		handleErr(err, "Configuration error")
 
-		imps := imports.NewSimpleImports("_gontainer")
+		imps := imports.NewSimpleImports()
 		compiler := pkg.NewDefaultCompiler(imps)
 
 		compiledInput, ciErr := compiler.Compile(input)
