@@ -56,7 +56,10 @@ func (p PatternResolver) Resolve(expr string) (dto.CompiledArg, error) {
 			return dto.CompiledArg{}, err
 		}
 
-		return dto.CompiledArg{Code: code}, nil
+		return dto.CompiledArg{
+			Code:      code,
+			DependsOn: dependsOn,
+		}, nil
 	}
 
 	codeParts := make([]string, 0)
@@ -70,7 +73,10 @@ func (p PatternResolver) Resolve(expr string) (dto.CompiledArg, error) {
 		codeParts = append(codeParts, tmp)
 	}
 
-	return dto.CompiledArg{Code: strings.Join(codeParts, " + ")}, nil
+	return dto.CompiledArg{
+		Code:      strings.Join(codeParts, " + "),
+		DependsOn: dependsOn,
+	}, nil
 }
 
 func (p PatternResolver) Supports(string) bool {

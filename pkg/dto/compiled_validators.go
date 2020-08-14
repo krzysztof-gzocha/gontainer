@@ -30,6 +30,7 @@ func (c *ChainCompiledValidator) Validate(i CompiledInput) error {
 func NewDefaultCompiledValidator() CompiledValidator {
 	return NewChainCompiledValidator([]func(CompiledInput) error{
 		validateCircularDependency,
+		validateParamsExists,
 	})
 }
 
@@ -83,5 +84,22 @@ func validateCircularDependency(i CompiledInput) error {
 		return fmt.Errorf("found circular dependency %s", strings.Join(found, " -> "))
 	}
 
+	return nil
+}
+
+func validateParamsExists(i CompiledInput) error {
+	for _, s := range i.Services {
+		for _, a := range s.Args {
+			for _, p := range a.DependsOn {
+				if _, ok := i.Params[p]; !ok {
+					return fmt.Errorf(
+						"cannot build service `%s`, required parameter `%s` does not exist",
+						s.Name,
+						p,
+					)
+				}
+			}
+		}
+	}
 	return nil
 }
