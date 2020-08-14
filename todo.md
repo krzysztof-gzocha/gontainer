@@ -34,3 +34,19 @@ params["first_name"] = func () interface{} {
     return container.GetParam("name")
 }
 ```
+
+* `ValidateAllServices` 
+
+replace
+
+```
+	for _, id := range []string{
+		"anotherTest",
+		"employee",
+```
+
+by
+
+```
+    for _, id := range.GetAllServices
+```
