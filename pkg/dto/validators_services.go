@@ -2,8 +2,10 @@ package dto
 
 import (
 	"fmt"
+	"reflect"
 	"regexp"
 
+	"github.com/gomponents/gontainer-helpers/container"
 	"github.com/gomponents/gontainer/pkg/syntax"
 )
 
@@ -59,7 +61,16 @@ func ValidateServicesGetters(n string, s Service) error {
 		)
 	}
 
-	reserved := []string{"Get", "MustGet", "Has", "ValidateAllServices"}
+	var reserved []string
+	r := reflect.TypeOf(struct {
+		container.BaseContainer
+		container.BaseParamContainer
+	}{})
+	for i := 0; i < r.NumMethod(); i++ {
+		reserved = append(reserved, r.Method(i).Name)
+	}
+	reserved = append(reserved, "ValidateAllServices")
+
 	for _, w := range reserved {
 		if w == s.Getter {
 			return fmt.Errorf("service `%s`: getter `%s` is reserved", n, w)
