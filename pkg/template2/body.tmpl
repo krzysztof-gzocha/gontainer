@@ -43,13 +43,13 @@ func CreateContainer() *{{$ContainerType}} {
 
 	getters := make(map[string]{{$ContainerPathAlias}}.ServiceDefinition)
 	getters["serviceContainer"] = {{$ContainerPathAlias}}.ServiceDefinition{
-		Getter: func() (interface{}, error) {
+		Provider: func() (interface{}, error) {
 			return result, nil
 		},
 		Disposable: false,
 	}
 {{range $service := .Input.Services}}	getters[{{ export $service.Name }}] = {{$ContainerPathAlias}}.ServiceDefinition{
-		Getter: func() (service interface{}, err error) {
+		Provider: func() (service interface{}, err error) {
 			defer func() {
 				if r := recover(); r != nil {
 					err = {{ importAlias "fmt" }}.Errorf("%s", r)
