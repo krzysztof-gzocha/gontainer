@@ -1,5 +1,6 @@
 package input
 
+// is it required here?
 type Validator interface {
 	Validate(DTO) error
 }
