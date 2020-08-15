@@ -8,6 +8,8 @@ import (
 func DefaultMetaValidators() []func(DTO) error {
 	return []func(DTO) error{
 		ValidateMetaPkg,
+		ValidateMetaImports,
+		ValidateMetaContainerType,
 	}
 }
 
@@ -22,5 +24,15 @@ func ValidateMetaPkg(d DTO) error {
 		return fmt.Errorf("meta.pkg must match %s, `%s` given", r, d.Meta.Pkg)
 	}
 
+	return nil
+}
+
+func ValidateMetaImports(d DTO) error {
+	// todo
+	return nil
+}
+
+func ValidateMetaContainerType(d DTO) error {
+	// todo
 	return nil
 }
