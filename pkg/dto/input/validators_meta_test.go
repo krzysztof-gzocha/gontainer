@@ -41,10 +41,6 @@ func TestValidateMetaPkg(t *testing.T) {
 	}
 }
 
-func TestValidateMetaImports(t *testing.T) {
-	// todo
-}
-
 func TestValidateMetaContainerType(t *testing.T) {
 	scenarios := []struct {
 		containerType string
@@ -77,4 +73,12 @@ func TestValidateMetaContainerType(t *testing.T) {
 			assert.Equal(t, s.error, err.Error())
 		})
 	}
+}
+
+func TestValidateMetaImports(t *testing.T) {
+	// todo
+}
+
+func TestValidateMetaFunctions(t *testing.T) {
+	// todo
 }

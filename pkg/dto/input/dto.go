@@ -15,9 +15,10 @@ type Service struct {
 
 type DTO struct {
 	Meta struct {
-		Pkg           string            `yaml:"containerType"` // todo make default main
-		Imports       map[string]string `yaml:"imports"`
+		Pkg           string            `yaml:"pkg"` // todo make default main
 		ContainerType string            `yaml:"container_type"`
+		Imports       map[string]string `yaml:"imports"`
+		Functions     map[string]string `yaml:"functions"` // todo e.g. "env" => "os.Getenv"
 	} `yaml:"meta"`
 	Params   parameters.RawParameters `yaml:"parameters"`
 	Services map[string]Service       `yaml:"services"`

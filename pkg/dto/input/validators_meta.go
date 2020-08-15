@@ -15,6 +15,7 @@ func DefaultMetaValidators() []func(DTO) error {
 		ValidateMetaPkg,
 		ValidateMetaImports,
 		ValidateMetaContainerType,
+		ValidateMetaFunctions,
 	}
 }
 
@@ -34,11 +35,6 @@ func ValidateMetaPkg(d DTO) error {
 	return nil
 }
 
-func ValidateMetaImports(d DTO) error {
-	// todo
-	return nil
-}
-
 func ValidateMetaContainerType(d DTO) error {
 	if !regexpMetaContainerType.MatchString(d.Meta.ContainerType) {
 		return fmt.Errorf(
@@ -47,5 +43,15 @@ func ValidateMetaContainerType(d DTO) error {
 			d.Meta.ContainerType,
 		)
 	}
+	return nil
+}
+
+func ValidateMetaImports(d DTO) error {
+	// todo
+	return nil
+}
+
+func ValidateMetaFunctions(d DTO) error {
+	// todo
 	return nil
 }
