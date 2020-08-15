@@ -10,10 +10,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// todo https://github.com/olekukonko/tablewriter
+
 type mockImports struct {
 }
 
 func (m mockImports) GetAlias(i string) string {
+	// todo limit to X characters
 	return "\"" + i + "\""
 }
 
