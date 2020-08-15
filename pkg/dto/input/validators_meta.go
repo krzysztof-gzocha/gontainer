@@ -13,7 +13,7 @@ func DefaultMetaValidators() []func(DTO) error {
 
 func ValidateMetaPkg(d DTO) error {
 	if d.Meta.Pkg == "" {
-		return fmt.Errorf("meta.pkg cannot be empty")
+		return fmt.Errorf("Meta.Pkg cannot be empty")
 	}
 
 	r := "^[a-z][a-zA-Z0-9_]*$"
