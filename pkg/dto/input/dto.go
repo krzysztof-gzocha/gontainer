@@ -15,7 +15,7 @@ type Service struct {
 
 type DTO struct {
 	Meta struct {
-		Pkg           string            `yaml:"pkg"`
+		Pkg           string            `yaml:"containerType"` // todo make default main
 		Imports       map[string]string `yaml:"imports"`
 		ContainerType string            `yaml:"container_type"`
 	} `yaml:"meta"`
