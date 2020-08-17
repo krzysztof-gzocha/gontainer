@@ -21,7 +21,7 @@ func DefaultServicesValidators() []func(DTO) error {
 	return []func(DTO) error{
 		func(d DTO) error {
 			for n, s := range d.Services {
-				if err := ValidateServiceName(n, d); err != nil {
+				if err := ValidateServiceName(n); err != nil {
 					return err
 				}
 				if s.Todo {
@@ -35,11 +35,12 @@ func DefaultServicesValidators() []func(DTO) error {
 					return fmt.Errorf("service `%s`: %s", n, err.Error())
 				}
 			}
+			return nil
 		},
 	}
 }
 
-func ValidateServiceName(n string, _ Service) error {
+func ValidateServiceName(n string) error {
 	if !regexServiceName.MatchString(n) {
 		return fmt.Errorf(
 			"service name must match pattern `%s`, `%s` given",
@@ -67,7 +68,7 @@ func ValidateConstructorType(_ string, s Service) error {
 	//		Constructor: "NewService",
 	//	}
 	if (s.Constructor != "" || s.Value != "") && (s.Getter == "" && s.Type != "") {
-		return fmt.Errorf("defined type will not be used, specify getter")
+		return fmt.Errorf("defined type will not be used, provide getter")
 	}
 
 	if len(s.Args) > 0 && s.Constructor == "" {
