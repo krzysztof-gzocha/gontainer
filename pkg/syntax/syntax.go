@@ -43,7 +43,7 @@ type SimpleServiceResolver struct {
 var (
 	importPart         = `(?P<import>([A-Za-z][A-Z-a-z0-9._/-]*\.)*)`
 	namePart           = `(?P<name>[A-Za-z_][A-Za-z0-9_]*)`
-	ServiceNamePattern = `(?P<service>[A-Za-z]([._]?[A-Za-z0-9])*)`
+	ServiceNamePattern = `(?P<service>[A-Za-z]([._]?[A-Za-z0-9])*)` // todo move to regex, see regex.MetaServiceName
 	fnRegex            = regexp.MustCompile(`^` + importPart + namePart + `$`)
 	typeRegex          = regexp.MustCompile(`^(?P<pointer>\*?)` + importPart + namePart + `$`)
 	serviceRegex       = regexp.MustCompile(`^@` + ServiceNamePattern + `(\.\((?P<type>` + strings.Trim(typeRegex.String(), `^$`) + `)\))?$`)

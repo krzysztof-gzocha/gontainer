@@ -9,4 +9,6 @@ const (
 	MetaGoFn          = `((?P<import>[A-Za-z][A-Z-a-z0-9._\/-]*)\.)?(?P<fn>[A-Za-z][A-Za-z0-9]*)` // todo split to smaller consts
 
 	MetaParamName = "[A-Za-z]([_.]?[A-Za-z0-9])*"
+
+	MetaServiceName = "(?P<service>[A-Za-z]([._]?[A-Za-z0-9])*)"
 )

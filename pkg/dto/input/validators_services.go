@@ -15,9 +15,7 @@ type ValidateService func(string, Service) error
 
 func DefaultServicesValidators() []func(DTO) error {
 	validators := []ValidateService{
-		func(s string, service Service) error {
-			// todo remove
-		},
+		ValidateConstructorType,
 	}
 
 	return []func(DTO) error{
@@ -49,5 +47,32 @@ func ValidateServiceName(n string, _ Service) error {
 			n,
 		)
 	}
+	return nil
+}
+
+func ValidateConstructorType(_ string, s Service) error {
+	if s.Constructor == "" && s.Value == "" && s.Type == "" {
+		return fmt.Errorf("missing constructor, value or type")
+	}
+
+	if s.Constructor != "" && s.Value != "" {
+		return fmt.Errorf("cannot define constructor and value together")
+	}
+
+	// e.g.
+	// Service{
+	//		Getter:      "",
+	//		Type:        "MyType",
+	//		Value:       "",
+	//		Constructor: "NewService",
+	//	}
+	if (s.Constructor != "" || s.Value != "") && (s.Getter == "" && s.Type != "") {
+		return fmt.Errorf("defined type will not be used, specify getter")
+	}
+
+	if len(s.Args) > 0 && s.Constructor == "" {
+		return fmt.Errorf("arguments are not empty, but constructor is missing")
+	}
+
 	return nil
 }
