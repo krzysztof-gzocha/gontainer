@@ -85,13 +85,24 @@ func TestValidateMetaImports(t *testing.T) {
 			import_: "github.com/stretchr/testify/assert",
 			alias:   "assert",
 		},
+		{
+			import_: "oneTwoThree",
+			alias:   "$123",
+			error:   "invalid alias `$123`, must match `" + regexMetaImportAlias.String() + "`",
+		},
+		{
+			import_: "!!!",
+			alias:   "alias",
+			error:   "invalid import `!!!`, must match `" + regexMetaImport.String() + "`",
+		},
 	}
 
 	for i, s := range scenarios {
 		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
 			d := DTO{}
-			d.Meta.Imports = make(map[string]string)
-			d.Meta.Imports[s.alias] = s.import_
+			d.Meta.Imports = map[string]string{
+				s.alias: s.import_,
+			}
 
 			err := ValidateMetaImports(d)
 
@@ -107,5 +118,45 @@ func TestValidateMetaImports(t *testing.T) {
 }
 
 func TestValidateMetaFunctions(t *testing.T) {
-	// todo
+	scenarios := []struct {
+		alias string
+		goFn  string
+		error string
+	}{
+		{
+			alias: "env",
+			goFn:  "os.Getenv",
+		},
+		{
+			alias: "env",
+			goFn:  "env",
+		},
+		{
+			alias: "$fn",
+			goFn:  "os.Getenv",
+			error: "invalid function `$fn`, must match `" + regexMetaFn.String() + "`",
+		},
+		{
+			alias: "env",
+			goFn:  "os.1Getenv",
+			error: "invalid go function `os.1Getenv`, must match `" + regexMetaGoFn.String() + "`",
+		},
+	}
+	for i, s := range scenarios {
+		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
+			d := DTO{}
+			d.Meta.Functions = map[string]string{
+				s.alias: s.goFn,
+			}
+			err := ValidateMetaFunctions(d)
+
+			if s.error == "" {
+				assert.NoError(t, err)
+				return
+			}
+
+			assert.Error(t, err)
+			assert.Equal(t, s.error, err.Error())
+		})
+	}
 }

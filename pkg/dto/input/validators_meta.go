@@ -2,14 +2,17 @@ package input
 
 import (
 	"fmt"
+	"github.com/gomponents/gontainer/pkg/regex"
 	"regexp"
 )
 
 var (
-	regexpMetaPkg           = regexp.MustCompile("^[a-z][A-Za-z0-9_]*$")
-	regexpMetaContainerType = regexpMetaPkg
-	regexMetaImport         = regexp.MustCompile("^[a-zA-Z0-9_./]+$")
-	regexMetaImportAlias    = regexp.MustCompile("^[a-zA-Z0-9_]+$")
+	regexpMetaPkg           = regexp.MustCompile("^" + regex.MetaPkg + "$")
+	regexpMetaContainerType = regexp.MustCompile("^" + regex.MetaContainerType + "$")
+	regexMetaImport         = regexp.MustCompile("^" + regex.MetaImport + "$")
+	regexMetaImportAlias    = regexp.MustCompile("^" + regex.MetaImportAlias + "$")
+	regexMetaFn             = regexp.MustCompile("^" + regex.MetaFn + "$")
+	regexMetaGoFn           = regexp.MustCompile("^" + regex.MetaGoFn + "$")
 )
 
 func DefaultMetaValidators() []func(DTO) error {
@@ -61,6 +64,14 @@ func ValidateMetaImports(d DTO) error {
 }
 
 func ValidateMetaFunctions(d DTO) error {
-	// todo
+	for fn, goFn := range d.Meta.Functions {
+		if !regexMetaFn.MatchString(fn) {
+			return fmt.Errorf("invalid function `%s`, must match `%s`", fn, regexMetaFn.String())
+		}
+
+		if !regexMetaGoFn.MatchString(goFn) {
+			return fmt.Errorf("invalid go function `%s`, must match `%s`", goFn, regexMetaGoFn.String())
+		}
+	}
 	return nil
 }
