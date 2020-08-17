@@ -55,7 +55,7 @@ func TestValidateConstructorType(t *testing.T) {
 
 	for i, s := range scenarios {
 		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
-			err := ValidateConstructorType("", s.service)
+			err := ValidateConstructorType(s.service)
 			if s.error == "" {
 				assert.NoError(t, err)
 				return

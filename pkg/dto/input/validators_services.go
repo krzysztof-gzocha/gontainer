@@ -11,7 +11,7 @@ var (
 	regexServiceName = regexp.MustCompile("^" + regex.MetaServiceName + "$")
 )
 
-type ValidateService func(string, Service) error
+type ValidateService func(Service) error
 
 func DefaultServicesValidators() []func(DTO) error {
 	validators := []ValidateService{
@@ -28,7 +28,7 @@ func DefaultServicesValidators() []func(DTO) error {
 					continue
 				}
 				for _, v := range validators {
-					err := v(n, s)
+					err := v(s)
 					if err == nil {
 						continue
 					}
@@ -51,7 +51,7 @@ func ValidateServiceName(n string) error {
 	return nil
 }
 
-func ValidateConstructorType(_ string, s Service) error {
+func ValidateConstructorType(s Service) error {
 	if s.Constructor == "" && s.Value == "" && s.Type == "" {
 		return fmt.Errorf("missing constructor, value or type")
 	}
