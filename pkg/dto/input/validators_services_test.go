@@ -2,12 +2,37 @@ package input
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValidateServiceName(t *testing.T) {
-	// todo
+	scenarios := []struct {
+		name  string
+		error string
+	}{
+		{
+			name: "my.service",
+		},
+		{
+			name:  "%service%",
+			error: "service name must match pattern `" + regexServiceName.String() + "`, `%service%` given",
+		},
+	}
+
+	for i, s := range scenarios {
+		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
+			err := ValidateServiceName(s.name)
+			if s.error == "" {
+				assert.NoError(t, err)
+				return
+			}
+
+			assert.Error(t, err)
+			assert.Equal(t, s.error, err.Error())
+		})
+	}
 }
 
 func TestValidateConstructorType(t *testing.T) {
