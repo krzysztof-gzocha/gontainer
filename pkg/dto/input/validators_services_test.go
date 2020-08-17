@@ -91,3 +91,41 @@ func TestValidateConstructorType(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateServiceGetter(t *testing.T) {
+	scenarios := []struct {
+		getter string
+		error  string
+	}{
+		{
+			getter: "",
+		},
+		{
+			getter: "GetName",
+		},
+		{
+			getter: "getName",
+		},
+		{
+			getter: "0getName",
+			error:  "getter must match `" + regexServiceGetter.String() + "`, `0getName` given",
+		},
+		{
+			getter: "Get Name",
+			error:  "getter must match `" + regexServiceGetter.String() + "`, `Get Name` given",
+		},
+	}
+
+	for i, s := range scenarios {
+		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
+			err := ValidateServiceGetter(Service{Getter: s.getter})
+			if s.error == "" {
+				assert.NoError(t, err)
+				return
+			}
+
+			assert.Error(t, err)
+			assert.Equal(t, s.error, err.Error())
+		})
+	}
+}
