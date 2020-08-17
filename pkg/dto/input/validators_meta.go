@@ -8,6 +8,8 @@ import (
 var (
 	regexpMetaPkg           = regexp.MustCompile("^[a-z][A-Za-z0-9_]*$")
 	regexpMetaContainerType = regexpMetaPkg
+	regexMetaImport         = regexp.MustCompile("^[a-zA-Z0-9_./]+$")
+	regexMetaImportAlias    = regexp.MustCompile("^[a-zA-Z0-9_]+$")
 )
 
 func DefaultMetaValidators() []func(DTO) error {
@@ -47,7 +49,14 @@ func ValidateMetaContainerType(d DTO) error {
 }
 
 func ValidateMetaImports(d DTO) error {
-	// todo
+	for a, i := range d.Meta.Imports {
+		if !regexMetaImport.MatchString(i) {
+			return fmt.Errorf("invalid import `%s`, must match `%s`", i, regexMetaImport.String())
+		}
+		if !regexMetaImportAlias.MatchString(a) {
+			return fmt.Errorf("invalid alias `%s`, must match `%s`", a, regexMetaImportAlias.String())
+		}
+	}
 	return nil
 }
 

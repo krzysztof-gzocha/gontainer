@@ -76,7 +76,34 @@ func TestValidateMetaContainerType(t *testing.T) {
 }
 
 func TestValidateMetaImports(t *testing.T) {
-	// todo
+	scenarios := []struct {
+		import_ string
+		alias   string
+		error   string
+	}{
+		{
+			import_: "github.com/stretchr/testify/assert",
+			alias:   "assert",
+		},
+	}
+
+	for i, s := range scenarios {
+		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
+			d := DTO{}
+			d.Meta.Imports = make(map[string]string)
+			d.Meta.Imports[s.alias] = s.import_
+
+			err := ValidateMetaImports(d)
+
+			if s.error == "" {
+				assert.NoError(t, err)
+				return
+			}
+
+			assert.Error(t, err)
+			assert.Equal(t, s.error, err.Error())
+		})
+	}
 }
 
 func TestValidateMetaFunctions(t *testing.T) {

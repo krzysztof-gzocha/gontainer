@@ -17,7 +17,6 @@ func (c *Call) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if err := unmarshal(&z); err != nil {
 		return err
 	}
-	fmt.Println(z)
 
 	if len(z) == 0 || len(z) > 3 {
 		return fmt.Errorf("object Call must contain 1 - 3 args, %d given", len(z))
