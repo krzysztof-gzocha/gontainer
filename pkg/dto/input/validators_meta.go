@@ -2,8 +2,9 @@ package input
 
 import (
 	"fmt"
-	"github.com/gomponents/gontainer/pkg/regex"
 	"regexp"
+
+	"github.com/gomponents/gontainer/pkg/regex"
 )
 
 var (

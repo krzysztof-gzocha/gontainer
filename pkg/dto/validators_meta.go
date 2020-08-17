@@ -41,7 +41,7 @@ func ValidateMetaImports(i Input) error {
 }
 
 func ValidateMetaContainerType(i Input) error {
-	p := "^[A-Za-z][A-Za-z0-9_]*$"
+	p := "^[a-z][A-Za-z0-9_]*$"
 
 	if !regexp.MustCompile(p).MatchString(i.Meta.ContainerType) {
 		return fmt.Errorf("meta.container_type must match %s, `%s` given", p, i.Meta.ContainerType)

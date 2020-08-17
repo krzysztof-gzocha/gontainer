@@ -25,5 +25,6 @@ func (c ChainValidator) Validate(m DTO) error {
 func NewDefaultValidator() Validator {
 	validators := make([]func(DTO) error, 0)
 	validators = append(validators, DefaultMetaValidators()...)
+	validators = append(validators, DefaultParamsValidators()...)
 	return NewChainValidator(validators...)
 }
