@@ -5,6 +5,11 @@ import (
 	"github.com/gomponents/gontainer/pkg/parameters"
 )
 
+const (
+	defaultPkg           = "main"
+	defaultContainerType = "Gontainer"
+)
+
 // todo https://symfony.com/blog/new-in-symfony-4-3-configuring-services-with-immutable-setters
 type Call struct {
 	Method    string
@@ -48,24 +53,37 @@ func (c *Call) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 type Service struct {
-	Getter      string   `yaml:"getter"`
-	Type        string   `yaml:"type"`
-	Value       string   `yaml:"value"`
-	Constructor string   `yaml:"constructor"`
-	Args        []string `yaml:"args"`
-	Calls       []Call   `yaml:"calls"`
-	Disposable  bool     `yaml:"disposable"`
-	Tags        []string `yaml:"tags"`
-	Todo        bool     `yaml:"todo"`
+	Getter      string                 `yaml:"getter"`      // e.g. GetDB
+	Type        string                 `yaml:"type"`        // *?my/import/path.Type
+	Value       string                 `yaml:"value"`       // my/import/path.Variable
+	Constructor string                 `yaml:"constructor"` // NewDB
+	Args        []string               `yaml:"args"`        // ["%host%", "%port%", "@logger"]
+	Calls       []Call                 `yaml:"calls"`       // [["SetLogger", ["@logger"]], ...]
+	Fields      map[string]interface{} `yaml:"fields"`      // Field: "%value%"
+	Disposable  bool                   `yaml:"disposable"`  // if true container creates new instance of given service always, otherwise service is cached
+	Tags        []string               `yaml:"tags"`        // ["service_decorator", ...]
+	Todo        bool                   `yaml:"todo"`        // if true skips validation and returns error whenever users asks container for a service
 }
 
 type DTO struct {
 	Meta struct {
-		Pkg           string            `yaml:"pkg"` // todo make default main
-		ContainerType string            `yaml:"container_type"`
+		Pkg           string            `yaml:"pkg"`            // default "main"
+		ContainerType string            `yaml:"container_type"` // default "Gontainer"
 		Imports       map[string]string `yaml:"imports"`
 		Functions     map[string]string `yaml:"functions"`
 	} `yaml:"meta"`
 	Params   parameters.RawParameters `yaml:"parameters"`
 	Services map[string]Service       `yaml:"services"`
+}
+
+func CreateDefaultDTO() DTO {
+	result := DTO{}
+	result.Meta.Pkg = defaultPkg
+	result.Meta.ContainerType = defaultContainerType
+	result.Meta.Functions = map[string]string{
+		"os.Env": "env",
+		"envInt": "github.com/gomponents/gontainer-helpers/env.MustGetInt",
+		"todo":   "github.com/gomponents/gontainer-helpers/std.GetMissingParameter",
+	}
+	return result
 }

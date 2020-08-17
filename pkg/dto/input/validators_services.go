@@ -14,30 +14,40 @@ var (
 type ValidateService func(Service) error
 
 func DefaultServicesValidators() []func(DTO) error {
+	return []func(DTO) error{
+		ValidateServices,
+	}
+}
+
+func ValidateServices(d DTO) error {
 	validators := []ValidateService{
 		ValidateConstructorType,
+		ValidateServiceGetter,
+		ValidateServiceType,
+		ValidateServiceValue,
+		ValidateServiceConstructor,
+		ValidateServiceArgs,
+		ValidateServiceCalls,
+		ValidateServiceFields,
+		ValidateServiceTags,
 	}
 
-	return []func(DTO) error{
-		func(d DTO) error {
-			for n, s := range d.Services {
-				if err := ValidateServiceName(n); err != nil {
-					return err
-				}
-				if s.Todo {
-					continue
-				}
-				for _, v := range validators {
-					err := v(s)
-					if err == nil {
-						continue
-					}
-					return fmt.Errorf("service `%s`: %s", n, err.Error())
-				}
+	for n, s := range d.Services {
+		if err := ValidateServiceName(n); err != nil {
+			return err
+		}
+		if s.Todo {
+			continue
+		}
+		for _, v := range validators {
+			err := v(s)
+			if err == nil {
+				continue
 			}
-			return nil
-		},
+			return fmt.Errorf("service `%s`: %s", n, err.Error())
+		}
 	}
+	return nil
 }
 
 func ValidateServiceName(n string) error {
@@ -75,5 +85,45 @@ func ValidateConstructorType(s Service) error {
 		return fmt.Errorf("arguments are not empty, but constructor is missing")
 	}
 
+	return nil
+}
+
+func ValidateServiceGetter(s Service) error {
+	// todo
+	return nil
+}
+
+func ValidateServiceType(s Service) error {
+	// todo
+	return nil
+}
+
+func ValidateServiceValue(s Service) error {
+	// todo
+	return nil
+}
+
+func ValidateServiceConstructor(s Service) error {
+	// todo
+	return nil
+}
+
+func ValidateServiceArgs(s Service) error {
+	// todo
+	return nil
+}
+
+func ValidateServiceCalls(s Service) error {
+	// todo
+	return nil
+}
+
+func ValidateServiceFields(s Service) error {
+	// todo
+	return nil
+}
+
+func ValidateServiceTags(s Service) error {
+	// todo
 	return nil
 }
