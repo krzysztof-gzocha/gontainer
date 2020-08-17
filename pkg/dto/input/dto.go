@@ -81,7 +81,7 @@ func CreateDefaultDTO() DTO {
 	result.Meta.Pkg = defaultPkg
 	result.Meta.ContainerType = defaultContainerType
 	result.Meta.Functions = map[string]string{
-		"os.Env": "env",
+		"env":    "os.Env",
 		"envInt": "github.com/gomponents/gontainer-helpers/env.MustGetInt",
 		"todo":   "github.com/gomponents/gontainer-helpers/std.GetMissingParameter",
 	}

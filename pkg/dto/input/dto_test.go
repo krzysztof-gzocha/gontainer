@@ -28,3 +28,10 @@ func TestCall_UnmarshalYAML(t *testing.T) {
 		calls,
 	)
 }
+
+func TestCreateDefaultDTO(t *testing.T) {
+	assert.NoError(
+		t,
+		NewDefaultValidator().Validate(CreateDefaultDTO()),
+	)
+}

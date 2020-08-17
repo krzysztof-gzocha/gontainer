@@ -10,5 +10,6 @@ const (
 
 	MetaParamName = "[A-Za-z]([_.]?[A-Za-z0-9])*"
 
-	MetaServiceName = "(?P<service>[A-Za-z]([._]?[A-Za-z0-9])*)"
+	MetaServiceName   = "(?P<service>[A-Za-z]([._]?[A-Za-z0-9])*)"
+	MetaServiceGetter = MetaPkg
 )
