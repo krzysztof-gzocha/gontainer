@@ -13,6 +13,7 @@ var (
 
 type ValidateService func(Service) error
 
+// DefaultServicesValidators returns validators for DTO.Services.
 func DefaultServicesValidators() []func(DTO) error {
 	return []func(DTO) error{
 		ValidateServices,

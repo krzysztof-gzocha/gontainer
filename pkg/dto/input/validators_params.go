@@ -30,6 +30,7 @@ var (
 	}
 )
 
+// DefaultParamsValidators returns validators for DTO.Params.
 func DefaultParamsValidators() []func(DTO) error {
 	return []func(DTO) error{
 		ValidateParams,

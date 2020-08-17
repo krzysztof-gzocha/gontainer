@@ -16,6 +16,7 @@ var (
 	regexMetaGoFn           = regexp.MustCompile("^" + regex.MetaGoFn + "$")
 )
 
+// DefaultMetaValidators returns validators for DTO.Meta struct.
 func DefaultMetaValidators() []func(DTO) error {
 	return []func(DTO) error{
 		ValidateMetaPkg,
