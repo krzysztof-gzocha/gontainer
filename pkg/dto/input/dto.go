@@ -64,7 +64,7 @@ type DTO struct {
 		Pkg           string            `yaml:"pkg"` // todo make default main
 		ContainerType string            `yaml:"container_type"`
 		Imports       map[string]string `yaml:"imports"`
-		Functions     map[string]string `yaml:"functions"` // todo e.g. "env" => "os.Getenv"
+		Functions     map[string]string `yaml:"functions"`
 	} `yaml:"meta"`
 	Params   parameters.RawParameters `yaml:"parameters"`
 	Services map[string]Service       `yaml:"services"`
