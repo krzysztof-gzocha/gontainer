@@ -1,8 +1,15 @@
 package compiler
 
 import (
+	"regexp"
+
 	"github.com/gomponents/gontainer/pkg/dto/compiled"
 	"github.com/gomponents/gontainer/pkg/dto/input"
+	"github.com/gomponents/gontainer/pkg/regex"
+)
+
+var (
+	regexMetaGoFn = regexp.MustCompile("^" + regex.MetaGoFn + "$")
 )
 
 type Imports interface {
@@ -10,19 +17,35 @@ type Imports interface {
 	RegisterPrefix(shortcut string, path string) error
 }
 
-type Validator interface {
+type InputValidator interface {
 	Validate(input.DTO) error
 }
 
+type CompiledValidator interface {
+	Validate(compiled.DTO) error
+}
+
+type Tokenizer interface {
+	RegisterFunction(goImport string, goFunc string, tokenFun string)
+}
+
+type ParamBagFactory interface {
+	Create(map[string]interface{}) (map[string]compiled.Param, error)
+}
+
 type Compiler struct {
-	imports Imports
+	inputValidator    InputValidator
+	compiledValidator CompiledValidator
+	imports           Imports
+	tokenizer         Tokenizer
+	paramBagFactory   ParamBagFactory
 }
 
 type compilerError struct {
 	error
 }
 
-func panicIfNeed(err error) {
+func throwCompilerError(err error) {
 	if err != nil {
 		panic(compilerError{err})
 	}
@@ -30,31 +53,63 @@ func panicIfNeed(err error) {
 
 func (c Compiler) Compile(i input.DTO) (result compiled.DTO, err error) {
 	defer func() {
-		recoverErr := recover()
-		if recoverErr == nil {
+		recovered := recover()
+		if recovered == nil {
 			return
 		}
 
-		if cErr, ok := recoverErr.(compilerError); ok {
+		if cErr, ok := recovered.(compilerError); ok {
 			result = compiled.DTO{}
 			err = cErr
 			return
 		}
 
-		panic(recoverErr)
+		panic(recovered)
 	}()
 
+	c.validateInput(i)
 	c.handleMeta(i, &result)
+	c.handleParams(i, &result)
+	c.handleServices(i, &result)
+	c.validateCompiled(result)
 
 	return
 }
 
-func (c Compiler) handleMeta(i input.DTO, result *compiled.DTO) {
-	c.handleImport(i)
+func (c Compiler) validateInput(i input.DTO) {
+	throwCompilerError(c.inputValidator.Validate(i))
 }
 
-func (c Compiler) handleImport(input input.DTO) {
-	for a, p := range input.Meta.Imports {
-		panicIfNeed(c.imports.RegisterPrefix(a, p))
+func (c Compiler) validateCompiled(o compiled.DTO) {
+	throwCompilerError(c.compiledValidator.Validate(o))
+}
+
+func (c Compiler) handleMeta(i input.DTO, result *compiled.DTO) {
+	result.Meta.Pkg = i.Meta.Pkg
+	result.Meta.ContainerType = i.Meta.ContainerType
+	c.handleMetaImport(i.Meta.Imports)
+	c.handleMetaFuncs(i.Meta.Functions)
+}
+
+func (c Compiler) handleMetaImport(imports map[string]string) {
+	for a, p := range imports {
+		throwCompilerError(c.imports.RegisterPrefix(a, sanitizeImport(p)))
 	}
+}
+
+func (c Compiler) handleMetaFuncs(funcs map[string]string) {
+	for fn, goFn := range funcs {
+		_, m := regex.Match(regexMetaGoFn, goFn)
+		c.tokenizer.RegisterFunction(m["import"], m["fn"], fn)
+	}
+}
+
+func (c Compiler) handleParams(i input.DTO, result *compiled.DTO) {
+	var err error
+	result.Params, err = c.paramBagFactory.Create(i.Params)
+	throwCompilerError(err)
+}
+
+func (c Compiler) handleServices(i input.DTO, result *compiled.DTO) {
+
 }
