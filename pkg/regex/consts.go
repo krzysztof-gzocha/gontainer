@@ -1,19 +1,21 @@
 package regex
 
 const (
-	Import = `[A-Za-z][A-Z-a-z0-9._\/-]*`
-	Token  = `[A-Za-z][A-Za-z0-9]*`
+	Import    = `[A-Za-z](\/?[A-Z-a-z0-9._-])*`
+	GoToken   = `[A-Za-z][A-Za-z0-9_]*`
+	YamlToken = `[A-Za-z](\.?[A-Za-z0-9_])*`
 
-	MetaPkg           = "[A-Za-z][A-Za-z0-9_]*"
-	MetaContainerType = MetaPkg
+	MetaPkg           = GoToken
+	MetaContainerType = GoToken
 	MetaImport        = Import
-	MetaImportAlias   = "[a-zA-Z0-9_]+"
-	MetaFn            = Token
-	MetaGoFn          = `((?P<import>` + Import + `)\.)?(?P<fn>` + Token + `)`
+	MetaImportAlias   = YamlToken
+	MetaFn            = GoToken
+	MetaGoFn          = `((?P<import>` + Import + `)\.)?(?P<fn>` + GoToken + `)`
 
-	MetaParamName = "[A-Za-z]([_.]?[A-Za-z0-9])*"
+	MetaParamName = YamlToken
 
-	MetaServiceName   = "(?P<service>[A-Za-z]([._]?[A-Za-z0-9])*)"
+	MetaServiceName   = YamlToken
 	MetaServiceGetter = MetaPkg
-	MetaServiceType   = `\*?` + `(` + Import + `\.)?` + Token + ``
+	MetaServiceType   = `\*?` + `(` + Import + `\.)?` + GoToken
+	MetaServiceValue  = `(` + Import + `\.)?(` + GoToken + `\{\}\.)?` + GoToken
 )
