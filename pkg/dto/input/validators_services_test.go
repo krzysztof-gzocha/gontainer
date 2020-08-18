@@ -2,6 +2,7 @@ package input
 
 import (
 	"fmt"
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -77,7 +78,7 @@ func TestValidateConstructorType(t *testing.T) {
 		{
 			service: Service{
 				Type: "MyType",
-				Args: []string{"param"},
+				Args: []interface{}{"param"},
 			},
 			error: "arguments are not empty, but constructor is missing",
 		},
@@ -203,6 +204,82 @@ func TestValidateServiceValue(t *testing.T) {
 	for i, s := range scenarios {
 		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
 			err := ValidateServiceValue(Service{Value: s.val})
+			if s.error == "" {
+				assert.NoError(t, err)
+				return
+			}
+
+			if assert.Error(t, err) {
+				assert.Equal(t, s.error, err.Error())
+			}
+		})
+	}
+}
+
+func TestValidateServiceConstructor(t *testing.T) {
+	scenarios := []struct {
+		constructor string
+		error       string
+	}{
+		{
+			constructor: "",
+		},
+		{
+			constructor: "my/import/foo.NewBar",
+		},
+		{
+			constructor: "NewBar",
+		},
+		{
+			constructor: "gopkg.in/yaml.v2.NewSth",
+		},
+		{
+			constructor: "my/import/foo..NewBar",
+		},
+	}
+
+	for i, s := range scenarios {
+		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
+			err := ValidateServiceConstructor(Service{Constructor: s.constructor})
+			if s.error == "" {
+				assert.NoError(t, err)
+				return
+			}
+
+			if assert.Error(t, err) {
+				assert.Equal(t, s.error, err.Error())
+			}
+		})
+	}
+}
+
+func TestValidateServiceArgs(t *testing.T) {
+	scenarios := []struct {
+		args  []interface{}
+		error string
+	}{
+		{
+			args: nil,
+		},
+		{
+			args: []interface{}{
+				[]interface{}{},
+			},
+			error: "unsupported type `[]interface {}` of arg0",
+		},
+		{
+			args: []interface{}{
+				"hello",
+				1,
+				false,
+				math.Pi,
+			},
+		},
+	}
+
+	for i, s := range scenarios {
+		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
+			err := ValidateServiceArgs(Service{Args: s.args})
 			if s.error == "" {
 				assert.NoError(t, err)
 				return

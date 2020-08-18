@@ -57,7 +57,7 @@ type Service struct {
 	Type        string                 `yaml:"type"`        // *?my/import/path.Type
 	Value       string                 `yaml:"value"`       // my/import/path.Variable
 	Constructor string                 `yaml:"constructor"` // NewDB
-	Args        []string               `yaml:"args"`        // ["%host%", "%port%", "@logger"]
+	Args        []interface{}          `yaml:"args"`        // ["%host%", "%port%", "@logger"]
 	Calls       []Call                 `yaml:"calls"`       // [["SetLogger", ["@logger"]], ...]
 	Fields      map[string]interface{} `yaml:"fields"`      // Field: "%value%"
 	Disposable  bool                   `yaml:"disposable"`  // if true container creates new instance of given service always, otherwise service is cached

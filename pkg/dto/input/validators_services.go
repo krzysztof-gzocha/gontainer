@@ -8,10 +8,14 @@ import (
 )
 
 var (
-	regexServiceName   = regexp.MustCompile("^" + regex.MetaServiceName + "$")
-	regexServiceGetter = regexp.MustCompile("^" + regex.MetaServiceGetter + "$")
-	regexServiceType   = regexp.MustCompile("^" + regex.MetaServiceType + "$")
-	regexServiceValue  = regexp.MustCompile("^" + regex.MetaServiceValue + "$")
+	regexServiceName        = regexp.MustCompile("^" + regex.MetaServiceName + "$")
+	regexServiceGetter      = regexp.MustCompile("^" + regex.MetaServiceGetter + "$")
+	regexServiceType        = regexp.MustCompile("^" + regex.MetaServiceType + "$")
+	regexServiceValue       = regexp.MustCompile("^" + regex.MetaServiceValue + "$")
+	regexServiceConstructor = regexp.MustCompile("^" + regex.MetaServiceConstructor + "$")
+	regexServiceCallName    = regexp.MustCompile("^" + regex.MetaServiceCallName + "$")
+	regexServiceFieldName   = regexp.MustCompile("^" + regex.MetaServiceFieldName + "$")
+	regexServiceTag         = regexp.MustCompile("^" + regex.MetaServiceTag + "$")
 )
 
 type ValidateService func(Service) error
@@ -93,47 +97,71 @@ func ValidateConstructorType(s Service) error {
 }
 
 func ValidateServiceGetter(s Service) error {
-	if s.Getter != "" && !regexServiceGetter.MatchString(s.Getter) {
-		return fmt.Errorf("getter must match `%s`, `%s` given", regexServiceGetter.String(), s.Getter)
-	}
-	return nil
+	return validateRegexField("getter", s.Getter, regexServiceGetter, true)
 }
 
 func ValidateServiceType(s Service) error {
-	if s.Type != "" && !regexServiceType.MatchString(s.Type) {
-		return fmt.Errorf("type must match `%s`, `%s` given", regexServiceType.String(), s.Type)
-	}
-	return nil
+	return validateRegexField("type", s.Type, regexServiceType, true)
 }
 
 func ValidateServiceValue(s Service) error {
-	if s.Value != "" && !regexServiceValue.MatchString(s.Value) {
-		return fmt.Errorf("value must match `%s`, `%s` given", regexServiceValue.String(), s.Value)
-	}
-	return nil
+	return validateRegexField("value", s.Value, regexServiceValue, true)
 }
 
 func ValidateServiceConstructor(s Service) error {
-	// todo
-	return nil
+	return validateRegexField("constructor", s.Constructor, regexServiceConstructor, true)
 }
 
 func ValidateServiceArgs(s Service) error {
-	// todo
+	for i, a := range s.Args {
+		if !isPrimitiveType(a) {
+			return fmt.Errorf("unsupported type `%T` of arg%d", a, i)
+		}
+	}
 	return nil
 }
 
 func ValidateServiceCalls(s Service) error {
-	// todo
+	for j, c := range s.Calls {
+		if err := validateRegexField(fmt.Sprintf("call%d", j), c.Method, regexServiceCallName, false); err != nil {
+			return err
+		}
+		for i, a := range c.Args {
+			if !isPrimitiveType(a) {
+				return fmt.Errorf("unsupported type `%T` of call%d.arg%d", a, j, i)
+			}
+		}
+	}
 	return nil
 }
 
 func ValidateServiceFields(s Service) error {
-	// todo
+	for n, v := range s.Fields {
+		if err := validateRegexField("field", n, regexServiceFieldName, false); err != nil {
+			return err
+		}
+		if !isPrimitiveType(v) {
+			return fmt.Errorf("unsupported type `%T` of field `%s`", v, n)
+		}
+	}
 	return nil
 }
 
 func ValidateServiceTags(s Service) error {
-	// todo
+	for _, t := range s.Tags {
+		if err := validateRegexField("tag", t, regexServiceTag, false); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func validateRegexField(field string, value string, expr *regexp.Regexp, optional bool) error {
+	if optional && value == "" {
+		return nil
+	}
+	if !expr.MatchString(value) {
+		return fmt.Errorf("%s must match `%s`, `%s` given", field, expr.String(), value)
+	}
 	return nil
 }
