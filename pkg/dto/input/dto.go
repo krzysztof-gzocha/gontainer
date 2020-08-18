@@ -2,7 +2,6 @@ package input
 
 import (
 	"fmt"
-	"github.com/gomponents/gontainer/pkg/parameters"
 )
 
 const (
@@ -69,11 +68,11 @@ type DTO struct {
 	Meta struct {
 		Pkg           string            `yaml:"pkg"`            // default "main"
 		ContainerType string            `yaml:"container_type"` // default "Gontainer"
-		Imports       map[string]string `yaml:"imports"`
-		Functions     map[string]string `yaml:"functions"`
+		Imports       map[string]string `yaml:"imports"`        // [["alias": "my/long/path"], ...]
+		Functions     map[string]string `yaml:"functions"`      // [["env": "os.Getenv"], ...]
 	} `yaml:"meta"`
-	Params   parameters.RawParameters `yaml:"parameters"`
-	Services map[string]Service       `yaml:"services"`
+	Params   map[string]interface{} `yaml:"parameters"`
+	Services map[string]Service     `yaml:"services"`
 }
 
 func CreateDefaultDTO() DTO {

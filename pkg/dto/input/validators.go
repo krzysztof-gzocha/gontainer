@@ -1,10 +1,5 @@
 package input
 
-// is it required here?
-type Validator interface {
-	Validate(DTO) error
-}
-
 type ChainValidator struct {
 	validators []func(DTO) error
 }
@@ -22,7 +17,7 @@ func (c ChainValidator) Validate(m DTO) error {
 	return nil
 }
 
-func NewDefaultValidator() Validator {
+func NewDefaultValidator() *ChainValidator {
 	validators := make([]func(DTO) error, 0)
 	validators = append(validators, DefaultMetaValidators()...)
 	validators = append(validators, DefaultParamsValidators()...)
