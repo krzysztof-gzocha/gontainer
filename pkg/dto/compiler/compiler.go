@@ -100,7 +100,7 @@ func (c Compiler) handleMetaImport(imports map[string]string) {
 func (c Compiler) handleMetaFuncs(funcs map[string]string) {
 	for fn, goFn := range funcs {
 		_, m := regex.Match(regexMetaGoFn, goFn)
-		c.tokenizer.RegisterFunction(m["import"], m["fn"], fn)
+		c.tokenizer.RegisterFunction(sanitizeImport(m["import"]), m["fn"], fn)
 	}
 }
 
