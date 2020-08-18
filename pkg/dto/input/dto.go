@@ -10,6 +10,12 @@ const (
 )
 
 // todo https://symfony.com/blog/new-in-symfony-4-3-configuring-services-with-immutable-setters
+// todo change syntax discuss with Adam
+//     calls:
+//      setLogger: ["@logger"]
+//      setName:
+//        args: ["Name"]
+//        immutable: true
 type Call struct {
 	Method    string
 	Args      []interface{}
