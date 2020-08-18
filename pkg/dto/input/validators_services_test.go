@@ -29,8 +29,9 @@ func TestValidateServiceName(t *testing.T) {
 				return
 			}
 
-			assert.Error(t, err)
-			assert.Equal(t, s.error, err.Error())
+			if assert.Error(t, err) {
+				assert.Equal(t, s.error, err.Error())
+			}
 		})
 	}
 }
@@ -86,8 +87,9 @@ func TestValidateConstructorType(t *testing.T) {
 				return
 			}
 
-			assert.Error(t, err)
-			assert.Equal(t, s.error, err.Error())
+			if assert.Error(t, err) {
+				assert.Equal(t, s.error, err.Error())
+			}
 		})
 	}
 }
@@ -124,8 +126,44 @@ func TestValidateServiceGetter(t *testing.T) {
 				return
 			}
 
-			assert.Error(t, err)
-			assert.Equal(t, s.error, err.Error())
+			if assert.Error(t, err) {
+				assert.Equal(t, s.error, err.Error())
+			}
+		})
+	}
+}
+
+func TestValidateServiceType(t *testing.T) {
+	scenarios := []struct {
+		type_ string
+		error string
+	}{
+		{
+			type_: "",
+		},
+		{
+			type_: "my/import/foo.Bar",
+		},
+		{
+			type_: "*my/import/foo.Bar",
+		},
+		{
+			type_: "**my/import/foo.Bar",
+			error: "type must match `" + regexServiceType.String() + "`, `**my/import/foo.Bar` given",
+		},
+	}
+
+	for i, s := range scenarios {
+		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
+			err := ValidateServiceType(Service{Type: s.type_})
+			if s.error == "" {
+				assert.NoError(t, err)
+				return
+			}
+
+			if assert.Error(t, err) {
+				assert.Equal(t, s.error, err.Error())
+			}
 		})
 	}
 }

@@ -41,8 +41,9 @@ func TestValidateParams(t *testing.T) {
 				return
 			}
 
-			assert.Error(t, err)
-			assert.Equal(t, s.error, err.Error())
+			if assert.Error(t, err) {
+				assert.Equal(t, s.error, err.Error())
+			}
 		})
 	}
 }

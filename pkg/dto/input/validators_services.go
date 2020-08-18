@@ -10,6 +10,7 @@ import (
 var (
 	regexServiceName   = regexp.MustCompile("^" + regex.MetaServiceName + "$")
 	regexServiceGetter = regexp.MustCompile("^" + regex.MetaServiceGetter + "$")
+	regexServiceType   = regexp.MustCompile("^" + regex.MetaServiceType + "$")
 )
 
 type ValidateService func(Service) error
@@ -98,7 +99,9 @@ func ValidateServiceGetter(s Service) error {
 }
 
 func ValidateServiceType(s Service) error {
-	// todo
+	if s.Type != "" && !regexServiceType.MatchString(s.Type) {
+		return fmt.Errorf("type must match `%s`, `%s` given", regexServiceType.String(), s.Type)
+	}
 	return nil
 }
 
