@@ -88,6 +88,11 @@ func TestValidateMetaImports(t *testing.T) {
 			alias:   "assert",
 		},
 		{
+			import_: "github.com/stretchr/testify/assert/",
+			alias:   "assert",
+			error:   "invalid import `github.com/stretchr/testify/assert/`, must match `" + regexMetaImport.String() + "`",
+		},
+		{
 			import_: "oneTwoThree",
 			alias:   "$123",
 			error:   "invalid alias `$123`, must match `" + regexMetaImportAlias.String() + "`",

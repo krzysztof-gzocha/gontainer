@@ -16,6 +16,10 @@ func TestValidateServiceName(t *testing.T) {
 			name: "my.service",
 		},
 		{
+			name:  "my..service",
+			error: "service name must match pattern `" + regexServiceName.String() + "`, `my..service` given",
+		},
+		{
 			name:  "%service%",
 			error: "service name must match pattern `" + regexServiceName.String() + "`, `%service%` given",
 		},
@@ -156,6 +160,49 @@ func TestValidateServiceType(t *testing.T) {
 	for i, s := range scenarios {
 		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
 			err := ValidateServiceType(Service{Type: s.type_})
+			if s.error == "" {
+				assert.NoError(t, err)
+				return
+			}
+
+			if assert.Error(t, err) {
+				assert.Equal(t, s.error, err.Error())
+			}
+		})
+	}
+}
+
+func TestValidateServiceValue(t *testing.T) {
+	scenarios := []struct {
+		val   string
+		error string
+	}{
+		{
+			val: "",
+		},
+		{
+			val: "my/import/foo.Bar",
+		},
+		{
+			val: "my/import/foo.MyStruct{}.Bar",
+		},
+		{
+			val:   "my/import/foo.MyStruct{.Bar",
+			error: "value must match `" + regexServiceValue.String() + "`, `my/import/foo.MyStruct{.Bar` given",
+		},
+		{
+			val:   "my/import/foo",
+			error: "value must match `" + regexServiceValue.String() + "`, `my/import/foo` given",
+		},
+		{
+			val:   "*my/import/foo.Bar",
+			error: "value must match `" + regexServiceValue.String() + "`, `*my/import/foo.Bar` given",
+		},
+	}
+
+	for i, s := range scenarios {
+		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
+			err := ValidateServiceValue(Service{Value: s.val})
 			if s.error == "" {
 				assert.NoError(t, err)
 				return
