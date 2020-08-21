@@ -3,20 +3,16 @@ package template
 import (
 	"bytes"
 	"fmt"
+	"github.com/gomponents/gontainer/pkg/dto/compiled"
 	"strings"
 	"text/template"
 
 	"github.com/gomponents/gontainer-helpers/exporters"
-	"github.com/gomponents/gontainer/pkg/dto"
 	"github.com/gomponents/gontainer/pkg/imports"
 )
 
 //go:generate go run ../../templater/main.go head.tmpl template2 TemplateHead tpl_head.go
 //go:generate go run ../../templater/main.go body.tmpl template2 TemplateBody tpl_body.go
-
-type Builder interface {
-	Build(dto.CompiledInput) (string, error)
-}
 
 type SimpleBuilder struct {
 	imports imports.Imports
@@ -26,7 +22,7 @@ func NewSimpleBuilder(imports imports.Imports) *SimpleBuilder {
 	return &SimpleBuilder{imports: imports}
 }
 
-func (s SimpleBuilder) Build(i dto.CompiledInput) (string, error) {
+func (s SimpleBuilder) Build(i compiled.DTO) (string, error) {
 	data := map[string]interface{}{
 		"Imports": s.imports,
 		"Input":   i,
