@@ -1,5 +1,5 @@
 clean:
-	rm -rf pkg/template2/tpl_*.go
+	rm -rf pkg/template/tpl_*.go
 
 templates: clean
 	go generate pkg/template/template.go
