@@ -55,17 +55,40 @@ func CreateContainer() *{{$ContainerType}} {
 					err = {{ importAlias "fmt" }}.Errorf("%s", r)
 				}
 			}()
-			{{ if ne $service.Constructor "" }}return {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(
+
+			{{ if eq $service.Todo true }}
+			err = {{ importAlias "fmt" }}.Errorf("todo")
+			{{ end }}
+
+			{{ if ne $service.Constructor "" }}service = {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(
 			    {{$service.Constructor}},
-				{{- range $argIndex, $arg := $service.Args }}
+				{{- range $arg := $service.Args }}
 				// {{ export $arg.Raw }}
 				{{ $arg.Code }},
 				{{- end }}
-			){{ else }}
+			){{ else if ne $service.Type "" }}
 			var result {{$service.Type}}
             service = result
-            return
+            {{ else if ne $service.Value "" }}
+            service = {{ $service.Value }}
 			{{ end }}
+
+			{{ range $call := $service.Calls }}
+            {{ if eq $call.Immutable true }} result = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.Call(
+                result.{{ $call.Method }},
+				{{- range $arg := $call.Args }}
+				// {{ export $arg.Raw }}
+				{{ $arg.Code }},
+				{{- end }}
+            )
+			{{ end }}
+
+			{{ range $field := $service.Fields }}
+			// {{ export $field.Value.Raw }}
+            {{ importAlias "github.com/gomponents/gontainer-helpers/setter" }}.Set(&result, {{ export $field.Name }}, {{ $field.Value.Code }})
+			{{ end }}
+
+            return
 		},
 		Disposable: {{$service.Disposable}},
 	}
