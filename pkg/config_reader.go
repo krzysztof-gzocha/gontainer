@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/gomponents/gontainer/pkg/dto"
+	"github.com/gomponents/gontainer/pkg/dto/input"
 	"gopkg.in/yaml.v2"
 )
 
 type ConfigReader interface {
-	Read([]string) (dto.Input, error)
+	Read([]string) (input.DTO, error)
 }
 
 type simpleConfigReader struct {
@@ -24,25 +24,25 @@ func NewDefaultConfigReader(beforeParseFile func(string)) ConfigReader {
 	}
 }
 
-func (s simpleConfigReader) Read(patterns []string) (dto.Input, error) {
+func (s simpleConfigReader) Read(patterns []string) (input.DTO, error) {
 	files, err := s.finder.find(patterns)
 	if err != nil {
-		return dto.Input{}, err
+		return input.DTO{}, err
 	}
 
 	if len(files) == 0 {
-		return dto.Input{}, fmt.Errorf("cannot find any configuration file")
+		return input.DTO{}, fmt.Errorf("cannot find any configuration file")
 	}
 
-	result := dto.Input{}
+	result := input.DTO{}
 
 	for _, f := range files {
 		s.beforeParseFile(f)
 		if file, err := ioutil.ReadFile(f); err != nil {
-			return dto.Input{}, fmt.Errorf("error has occurred during opening file `%s`: %s", f, err.Error())
+			return input.DTO{}, fmt.Errorf("error has occurred during opening file `%s`: %s", f, err.Error())
 		} else {
 			if yamlErr := yaml.Unmarshal(file, &result); yamlErr != nil {
-				return dto.Input{}, fmt.Errorf("error has occurred during parsing yaml file `%s`: %s", f, yamlErr.Error())
+				return input.DTO{}, fmt.Errorf("error has occurred during parsing yaml file `%s`: %s", f, yamlErr.Error())
 			}
 		}
 	}
