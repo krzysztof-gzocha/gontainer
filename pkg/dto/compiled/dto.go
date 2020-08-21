@@ -35,6 +35,7 @@ type Service struct {
 	Calls       []Call
 	Fields      []Field
 	Tags        []string
+	Disposable  bool
 	Todo        bool
 }
 

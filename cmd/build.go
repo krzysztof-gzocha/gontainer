@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gomponents/gontainer/pkg"
 	"github.com/gomponents/gontainer/pkg/imports"
 	"github.com/gomponents/gontainer/pkg/template"
@@ -53,9 +52,6 @@ func NewBuildCmd() *cobra.Command {
 
 		compiledInput, ciErr := compiler.Compile(input)
 		handleErr(ciErr, "Cannot build container")
-
-		spew.Dump(compiledInput)
-		return
 
 		tpl, tplErr := template.NewSimpleBuilder(imps).Build(compiledInput)
 		handleErr(tplErr, "Unexpected error has occurred during building container")

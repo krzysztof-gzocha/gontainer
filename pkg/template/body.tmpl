@@ -59,11 +59,7 @@ func CreateContainer() *{{$ContainerType}} {
 			    {{$service.Constructor}},
 				{{- range $argIndex, $arg := $service.Args }}
 				// {{ export $arg.Raw }}
-					{{- if $arg.IsService }}
-				result.MustGet({{export $arg.ServiceLink.Name}}),
-					{{- else }}
 				{{ $arg.Code }},
-					{{- end -}}
 				{{- end }}
 			){{ else }}
 			var result {{$service.Type}}

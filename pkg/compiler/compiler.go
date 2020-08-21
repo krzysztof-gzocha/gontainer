@@ -194,6 +194,7 @@ func (c Compiler) handleService(name string, s input.Service) compiled.Service {
 		Calls:       c.handleServiceCalls(name, s.Calls),
 		Fields:      c.handleServiceFields(name, s.Fields),
 		Tags:        s.Tags,
+		Disposable:  s.Disposable,
 		Todo:        false,
 	}
 

@@ -59,8 +59,8 @@ type Service struct {
 	Args        []interface{}          `yaml:"args"`        // ["%host%", "%port%", "@logger"]
 	Calls       []Call                 `yaml:"calls"`       // [["SetLogger", ["@logger"]], ...]
 	Fields      map[string]interface{} `yaml:"fields"`      // Field: "%value%"
-	Disposable  bool                   `yaml:"disposable"`  // if true container creates new instance of given service always, otherwise service is cached
 	Tags        []string               `yaml:"tags"`        // ["service_decorator", ...]
+	Disposable  bool                   `yaml:"disposable"`  // if true container creates new instance of given service always, otherwise service is cached
 	Todo        bool                   `yaml:"todo"`        // if true skips validation and returns error whenever users asks container for a service
 }
 
