@@ -3,11 +3,11 @@ package template
 import (
 	"bytes"
 	"fmt"
-	"github.com/gomponents/gontainer/pkg/dto/compiled"
 	"strings"
 	"text/template"
 
 	"github.com/gomponents/gontainer-helpers/exporters"
+	"github.com/gomponents/gontainer/pkg/dto/compiled"
 	"github.com/gomponents/gontainer/pkg/imports"
 )
 

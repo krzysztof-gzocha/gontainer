@@ -2,6 +2,8 @@ package arguments
 
 import (
 	"fmt"
+	"github.com/gomponents/gontainer/pkg/regex"
+	"regexp"
 
 	"github.com/gomponents/gontainer/pkg/dto/compiled"
 )
@@ -23,10 +25,19 @@ func (s ServiceResolver) Resolve(v interface{}) (compiled.Arg, error) {
 	}, nil
 }
 
+var (
+	serviceNameRegex = regexp.MustCompile("^" + regex.ServiceName + "$")
+)
+
 func (s ServiceResolver) Supports(v interface{}) bool {
 	expr, ok := v.(string)
 	if !ok {
 		return false
 	}
-	return len(expr) > 1 && []rune(expr)[0] == '@'
+
+	if len(expr) < 2 || []rune(expr)[0] != '@' {
+		return false
+	}
+
+	return serviceNameRegex.MatchString(expr[1:])
 }

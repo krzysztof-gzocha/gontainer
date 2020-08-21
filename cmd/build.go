@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/gomponents/gontainer/pkg"
-	"github.com/gomponents/gontainer/pkg/imports"
-	"github.com/gomponents/gontainer/pkg/template2"
-	"github.com/spf13/cobra"
 	"io/ioutil"
 	"os"
+
+	"github.com/davecgh/go-spew/spew"
+	"github.com/gomponents/gontainer/pkg"
+	"github.com/gomponents/gontainer/pkg/imports"
+	"github.com/gomponents/gontainer/pkg/template"
+	"github.com/spf13/cobra"
 )
 
 func NewBuildCmd() *cobra.Command {
@@ -52,7 +54,10 @@ func NewBuildCmd() *cobra.Command {
 		compiledInput, ciErr := compiler.Compile(input)
 		handleErr(ciErr, "Cannot build container")
 
-		tpl, tplErr := template2.NewSimpleBuilder(imps).Build(compiledInput)
+		spew.Dump(compiledInput)
+		return
+
+		tpl, tplErr := template.NewSimpleBuilder(imps).Build(compiledInput)
 		handleErr(tplErr, "Unexpected error has occurred during building container")
 		fileErr := ioutil.WriteFile(outputFile, []byte(tpl), 0644)
 		handleErr(fileErr, "Error has occurred during saving file")
