@@ -2,6 +2,7 @@ package compiler
 
 import (
 	"regexp"
+	"sort"
 
 	"github.com/gomponents/gontainer/pkg/dto/compiled"
 	"github.com/gomponents/gontainer/pkg/dto/input"
@@ -111,5 +112,41 @@ func (c Compiler) handleParams(i input.DTO, result *compiled.DTO) {
 }
 
 func (c Compiler) handleServices(i input.DTO, result *compiled.DTO) {
+	for n, s := range i.Services {
+		result.Services = append(result.Services, c.handleService(n, s))
+	}
+	sort.SliceStable(
+		result.Services,
+		func(i, j int) bool {
+			return result.Services[i].Name < result.Services[j].Name
+		},
+	)
+}
 
+var (
+	regexServiceType        = regexp.MustCompile("^" + regex.ServiceType + "$")
+	regexServiceValue       = regexp.MustCompile("^" + regex.ServiceValue + "$")
+	regexServiceConstructor = regexp.MustCompile("^" + regex.ServiceConstructor + "$")
+	regexServiceCallName    = regexp.MustCompile("^" + regex.ServiceCallName + "$")
+	regexServiceFieldName   = regexp.MustCompile("^" + regex.ServiceFieldName + "$")
+	regexServiceTag         = regexp.MustCompile("^" + regex.ServiceTag + "$")
+)
+
+func (c Compiler) handleService(name string, s input.Service) compiled.Service {
+	r := compiled.Service{
+		Name:   name,
+		Getter: s.Getter,
+		Type:   c.handleType(s.Type),
+	}
+
+	return r
+}
+
+func (c Compiler) handleType(serviceType string) string {
+	_, m := regex.Match(regexServiceType, serviceType)
+	t := m["type"]
+	if m["import"] != "" {
+		t = c.imports.GetAlias(sanitizeImport(m["import"])) + "." + t
+	}
+	return m["ptr"] + t
 }

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/gomponents/gontainer/pkg/parameters"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -31,7 +30,7 @@ func TestValidateParams(t *testing.T) {
 	for i, s := range scenarios {
 		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
 			d := DTO{}
-			d.Params = parameters.RawParameters{
+			d.Params = map[string]interface{}{
 				s.name: s.val,
 			}
 			err := ValidateParams(d)

@@ -8,14 +8,14 @@ import (
 )
 
 var (
-	regexServiceName        = regexp.MustCompile("^" + regex.MetaServiceName + "$")
-	regexServiceGetter      = regexp.MustCompile("^" + regex.MetaServiceGetter + "$")
-	regexServiceType        = regexp.MustCompile("^" + regex.MetaServiceType + "$")
-	regexServiceValue       = regexp.MustCompile("^" + regex.MetaServiceValue + "$")
-	regexServiceConstructor = regexp.MustCompile("^" + regex.MetaServiceConstructor + "$")
-	regexServiceCallName    = regexp.MustCompile("^" + regex.MetaServiceCallName + "$")
-	regexServiceFieldName   = regexp.MustCompile("^" + regex.MetaServiceFieldName + "$")
-	regexServiceTag         = regexp.MustCompile("^" + regex.MetaServiceTag + "$")
+	regexServiceName        = regexp.MustCompile("^" + regex.ServiceName + "$")
+	regexServiceGetter      = regexp.MustCompile("^" + regex.ServiceGetter + "$")
+	regexServiceType        = regexp.MustCompile("^" + regex.ServiceType + "$")
+	regexServiceValue       = regexp.MustCompile("^" + regex.ServiceValue + "$")
+	regexServiceConstructor = regexp.MustCompile("^" + regex.ServiceConstructor + "$")
+	regexServiceCallName    = regexp.MustCompile("^" + regex.ServiceCallName + "$")
+	regexServiceFieldName   = regexp.MustCompile("^" + regex.ServiceFieldName + "$")
+	regexServiceTag         = regexp.MustCompile("^" + regex.ServiceTag + "$")
 )
 
 type ValidateService func(Service) error

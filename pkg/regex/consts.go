@@ -14,18 +14,18 @@ const (
 	MetaFn            = GoToken
 	MetaGoFn          = GoFunc
 
-	MetaParamName = YamlToken
+	ParamName = YamlToken
 
-	MetaServiceName   = YamlToken
-	MetaServiceGetter = GoToken
-	MetaServiceType   = `\*?` + `(` + Import + `\.)?` + GoToken
-	// MetaServiceValue supports
+	ServiceName   = YamlToken
+	ServiceGetter = GoToken
+	ServiceType   = `(?P<ptr>\*)?` + `((?P<import>` + Import + `)\.)?(?P<type>` + GoToken + `)`
+	// ServiceValue supports
 	// Value
 	// my/import.Value
 	// my/import.StructName{}.Method
-	MetaServiceValue       = `((?P<import>` + Import + `)\.)?((?P<struct>` + GoToken + `)\{\}\.)?(?P<value>` + GoToken + `)`
-	MetaServiceConstructor = GoFunc
-	MetaServiceCallName    = GoToken
-	MetaServiceFieldName   = GoToken
-	MetaServiceTag         = YamlToken
+	ServiceValue       = `((?P<import>` + Import + `)\.)?((?P<struct>` + GoToken + `)\{\}\.)?(?P<value>` + GoToken + `)`
+	ServiceConstructor = GoFunc
+	ServiceCallName    = GoToken
+	ServiceFieldName   = GoToken
+	ServiceTag         = YamlToken
 )
