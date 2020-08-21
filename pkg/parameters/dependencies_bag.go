@@ -4,35 +4,30 @@ import (
 	"strings"
 )
 
-type dependenciesBag map[string]bool
+type dependenciesBag []string
 
 func newDependenciesBag() dependenciesBag {
-	return make(dependenciesBag)
+	return make(dependenciesBag, 0)
 }
 
-func (b dependenciesBag) Has(id string) bool {
-	_, ok := b[id]
-	return ok
+func (b *dependenciesBag) Has(id string) bool {
+	for _, s := range *b {
+		if s == id {
+			return true
+		}
+	}
+	return false
 }
 
-func (b dependenciesBag) Append(id string) {
-	b[id] = true
+func (b *dependenciesBag) Append(id string) {
+	tmp := append(*b, id)
+	*b = tmp
 }
 
 func (b dependenciesBag) Clone() dependenciesBag {
-	r := newDependenciesBag()
-	for id, _ := range b {
-		r.Append(id)
-	}
-
-	return r
+	return append(b)
 }
 
-func (b dependenciesBag) ToString() string {
-	names := make([]string, 0)
-	for id, _ := range b {
-		names = append(names, id)
-	}
-
-	return strings.Join(names, ", ")
+func (b dependenciesBag) String() string {
+	return strings.Join(b, ", ")
 }
