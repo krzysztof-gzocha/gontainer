@@ -14,8 +14,6 @@ var (
 	date    = "unknown"
 )
 
-//go:generate echo "aaa" >> aaa.go
-
 func main() {
 	rootCmd := cobra.Command{
 		Use:   "gontainer",
@@ -27,7 +25,7 @@ Re-use dependencies whenever you need and forget about dependency hell in main.g
 
 	rootCmd.AddCommand(
 		cmd.NewBuildCmd(),
-		cmd.NewDumpParamsCmd(),
+		//cmd.NewDumpParamsCmd(),
 		cmd.NewVersionCmd(version, commit, date),
 	)
 
