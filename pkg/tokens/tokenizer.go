@@ -2,6 +2,7 @@ package tokens
 
 import (
 	"fmt"
+	"github.com/gomponents/gontainer/pkg/imports"
 )
 
 type Tokenizer interface {
@@ -10,10 +11,18 @@ type Tokenizer interface {
 
 type PatternTokenizer struct {
 	strategies []TokenFactoryStrategy
+	imports    imports.Imports
 }
 
-func NewPatternTokenizer(strategies []TokenFactoryStrategy) *PatternTokenizer {
-	return &PatternTokenizer{strategies: strategies}
+func NewPatternTokenizer(strategies []TokenFactoryStrategy, imports imports.Imports) *PatternTokenizer {
+	return &PatternTokenizer{strategies: strategies, imports: imports}
+}
+
+func (s PatternTokenizer) RegisterFunction(goImport string, goFunc string, tokenFunc string) {
+	s.strategies = append(
+		[]TokenFactoryStrategy{NewTokenSimpleFunction(s.imports, tokenFunc, goImport, goFunc)},
+		s.strategies...,
+	)
 }
 
 func (s PatternTokenizer) Tokenize(pattern string) ([]Token, error) {

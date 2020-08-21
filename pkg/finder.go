@@ -22,5 +22,6 @@ func (s simpleFinder) find(patterns []string) ([]string, error) {
 		sort.Strings(matches)
 		result = append(result, matches...)
 	}
+
 	return result, nil
 }

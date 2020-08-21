@@ -1,8 +1,28 @@
 package compiled
 
 type Param struct {
-	Code string
-	Raw  interface{}
+	Name      string
+	Code      string
+	Raw       interface{}
+	DependsOn []string
+}
+
+type Arg struct {
+	Code              string
+	Raw               interface{}
+	DependsOnParams   []string
+	DependsOnServices []string
+}
+
+type Call struct {
+	Method    string
+	Args      []Arg
+	Immutable bool
+}
+
+type Field struct {
+	Name  string
+	Value Arg
 }
 
 type Service struct {
@@ -11,7 +31,11 @@ type Service struct {
 	Type        string
 	Value       string
 	Constructor string
-	Args        []interface{}
+	Args        []Arg
+	Calls       []Call
+	Fields      []Field
+	Tags        []string
+	Todo        bool
 }
 
 type DTO struct {
@@ -19,6 +43,6 @@ type DTO struct {
 		Pkg           string
 		ContainerType string
 	}
-	Params   map[string]Param
+	Params   []Param
 	Services []Service
 }

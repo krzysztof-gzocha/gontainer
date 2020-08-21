@@ -1,16 +1,15 @@
 package compiler
 
 import (
+	"fmt"
 	"regexp"
 	"sort"
+	"strings"
 
 	"github.com/gomponents/gontainer/pkg/dto/compiled"
 	"github.com/gomponents/gontainer/pkg/dto/input"
+	"github.com/gomponents/gontainer/pkg/parameters"
 	"github.com/gomponents/gontainer/pkg/regex"
-)
-
-var (
-	regexMetaGoFn = regexp.MustCompile("^" + regex.MetaGoFn + "$")
 )
 
 type Imports interface {
@@ -27,11 +26,11 @@ type CompiledValidator interface {
 }
 
 type Tokenizer interface {
-	RegisterFunction(goImport string, goFunc string, tokenFun string)
+	RegisterFunction(goImport string, goFunc string, tokenFunc string)
 }
 
-type ParamBagFactory interface {
-	Create(map[string]interface{}) (map[string]compiled.Param, error)
+type ArgResolver interface {
+	Resolve(interface{}) (compiled.Arg, error)
 }
 
 type Compiler struct {
@@ -39,15 +38,37 @@ type Compiler struct {
 	compiledValidator CompiledValidator
 	imports           Imports
 	tokenizer         Tokenizer
-	paramBagFactory   ParamBagFactory
+	paramResolver     parameters.Resolver
+	argResolver       ArgResolver
+}
+
+func NewCompiler(
+	inputValidator InputValidator,
+	compiledValidator CompiledValidator,
+	imports Imports,
+	tokenizer Tokenizer,
+	paramResolver parameters.Resolver,
+	argResolver ArgResolver,
+) *Compiler {
+	return &Compiler{
+		inputValidator:    inputValidator,
+		compiledValidator: compiledValidator,
+		imports:           imports,
+		tokenizer:         tokenizer,
+		paramResolver:     paramResolver,
+		argResolver:       argResolver,
+	}
 }
 
 type compilerError struct {
 	error
 }
 
-func throwCompilerError(err error) {
+func throwCompilerError(err error, msg ...string) {
 	if err != nil {
+		if len(msg) > 0 {
+			err = fmt.Errorf("%s: %s", msg, err.Error())
+		}
 		panic(compilerError{err})
 	}
 }
@@ -94,9 +115,16 @@ func (c Compiler) handleMeta(i input.DTO, result *compiled.DTO) {
 
 func (c Compiler) handleMetaImport(imports map[string]string) {
 	for a, p := range imports {
-		throwCompilerError(c.imports.RegisterPrefix(a, sanitizeImport(p)))
+		throwCompilerError(
+			c.imports.RegisterPrefix(a, sanitizeImport(p)),
+			"cannot register alias",
+		)
 	}
 }
+
+var (
+	regexMetaGoFn = regexp.MustCompile("^" + regex.MetaGoFn + "$")
+)
 
 func (c Compiler) handleMetaFuncs(funcs map[string]string) {
 	for fn, goFn := range funcs {
@@ -106,9 +134,28 @@ func (c Compiler) handleMetaFuncs(funcs map[string]string) {
 }
 
 func (c Compiler) handleParams(i input.DTO, result *compiled.DTO) {
-	var err error
-	result.Params, err = c.paramBagFactory.Create(i.Params)
-	throwCompilerError(err)
+	for n, v := range i.Params {
+		param, err := c.paramResolver.Resolve(v)
+		if err != nil {
+			throwCompilerError(
+				err,
+				fmt.Sprintf("cannot resolve param `%s`", n),
+			)
+		}
+		result.Params = append(
+			result.Params,
+			compiled.Param{
+				Name:      n,
+				Code:      param.Code,
+				Raw:       param.Raw,
+				DependsOn: param.DependsOn,
+			},
+		)
+	}
+
+	sort.SliceStable(result.Params, func(i, j int) bool {
+		return result.Params[i].Name < result.Params[j].Name
+	})
 }
 
 func (c Compiler) handleServices(i input.DTO, result *compiled.DTO) {
@@ -127,26 +174,106 @@ var (
 	regexServiceType        = regexp.MustCompile("^" + regex.ServiceType + "$")
 	regexServiceValue       = regexp.MustCompile("^" + regex.ServiceValue + "$")
 	regexServiceConstructor = regexp.MustCompile("^" + regex.ServiceConstructor + "$")
-	regexServiceCallName    = regexp.MustCompile("^" + regex.ServiceCallName + "$")
-	regexServiceFieldName   = regexp.MustCompile("^" + regex.ServiceFieldName + "$")
-	regexServiceTag         = regexp.MustCompile("^" + regex.ServiceTag + "$")
 )
 
 func (c Compiler) handleService(name string, s input.Service) compiled.Service {
+	if s.Todo {
+		return compiled.Service{
+			Name: name,
+			Todo: true,
+		}
+	}
+
 	r := compiled.Service{
-		Name:   name,
-		Getter: s.Getter,
-		Type:   c.handleType(s.Type),
+		Name:        name,
+		Getter:      s.Getter,
+		Type:        c.handleServiceType(s.Type),
+		Value:       c.handleServiceValue(s.Value),
+		Constructor: c.handleServiceConstructor(s.Constructor),
+		Args:        c.handleServiceArgs(fmt.Sprintf("service `%s`"), s.Args),
+		Calls:       c.handleServiceCalls(name, s.Calls),
+		Fields:      c.handleServiceFields(name, s.Fields),
+		Tags:        s.Tags,
+		Todo:        false,
 	}
 
 	return r
 }
 
-func (c Compiler) handleType(serviceType string) string {
+func (c Compiler) handleServiceType(serviceType string) string {
 	_, m := regex.Match(regexServiceType, serviceType)
 	t := m["type"]
 	if m["import"] != "" {
 		t = c.imports.GetAlias(sanitizeImport(m["import"])) + "." + t
 	}
 	return m["ptr"] + t
+}
+
+func (c Compiler) handleServiceValue(serviceValue string) string {
+	_, m := regex.Match(regexServiceValue, serviceValue)
+	parts := make([]string, 0)
+	if m["import"] != "" {
+		parts = append(parts, c.imports.GetAlias(sanitizeImport(m["import"])))
+	}
+	if m["struct"] != "" {
+		parts = append(parts, m["struct"]+"{}")
+	}
+	return strings.Join(append(parts, m["value"]), ".")
+}
+
+func (c Compiler) handleServiceConstructor(serviceConstructor string) string {
+	_, m := regex.Match(regexServiceConstructor, serviceConstructor)
+	r := ""
+	if m["import"] != "" {
+		r = c.imports.GetAlias(sanitizeImport(m["import"])) + "."
+	}
+	return r + m["fn"]
+}
+
+func (c Compiler) handleServiceArgs(errorPrefix string, args []interface{}) (res []compiled.Arg) {
+	for i, a := range args {
+		arg, err := c.argResolver.Resolve(a)
+		throwCompilerError(
+			err,
+			fmt.Sprintf("%s: cannot solve arg%d", errorPrefix, i),
+		)
+		res = append(res, arg)
+	}
+	return
+}
+
+func (c Compiler) handleServiceCalls(serviceName string, calls []input.Call) (res []compiled.Call) {
+	for _, raw := range calls {
+		call := compiled.Call{
+			Method: raw.Method,
+			Args: c.handleServiceArgs(
+				fmt.Sprintf("service: `%s`: call `%s`", serviceName, raw.Method),
+				raw.Args,
+			),
+			Immutable: raw.Immutable,
+		}
+		res = append(res, call)
+	}
+	return
+}
+
+func (c Compiler) handleServiceFields(serviceName string, fields map[string]interface{}) (res []compiled.Field) {
+	for n, f := range fields {
+		arg, err := c.argResolver.Resolve(f)
+		throwCompilerError(
+			err,
+			fmt.Sprintf("service `%s`: field `%s`", serviceName, n),
+		)
+		field := compiled.Field{
+			Name:  n,
+			Value: arg,
+		}
+		res = append(res, field)
+	}
+
+	sort.SliceStable(res, func(i, j int) bool {
+		return res[i].Name < res[j].Name
+	})
+
+	return
 }

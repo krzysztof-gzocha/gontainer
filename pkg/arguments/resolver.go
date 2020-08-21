@@ -2,38 +2,41 @@ package arguments
 
 import (
 	"fmt"
-
-	"github.com/gomponents/gontainer/pkg/dto"
+	"github.com/gomponents/gontainer/pkg/dto/compiled"
+	"github.com/gomponents/gontainer/pkg/parameters"
 )
 
-type Resolver interface {
-	Resolve(string) (dto.CompiledArg, error)
-}
-
 type Subresolver interface {
-	Resolver
-	Supports(string) bool
+	Resolve(interface{}) (compiled.Arg, error)
+	Supports(interface{}) bool
 }
 
-type SimpleResolver struct {
+type Resolver struct {
 	subresolvers []Subresolver
 }
 
-func NewSimpleResolver(subresolvers []Subresolver) *SimpleResolver {
-	return &SimpleResolver{subresolvers: subresolvers}
+func NewResolver(subresolvers ...Subresolver) *Resolver {
+	return &Resolver{subresolvers: subresolvers}
 }
 
-func (s SimpleResolver) Resolve(expr string) (dto.CompiledArg, error) {
+func (s Resolver) Resolve(i interface{}) (compiled.Arg, error) {
 	for _, r := range s.subresolvers {
-		if r.Supports(expr) {
-			result, err := r.Resolve(expr)
+		if r.Supports(i) {
+			result, err := r.Resolve(i)
 			if err == nil {
-				result.Raw = expr
+				result.Raw = i
 			}
 
 			return result, err
 		}
 	}
 
-	return dto.CompiledArg{}, fmt.Errorf("cannot resolve argument `%s`", expr)
+	return compiled.Arg{}, fmt.Errorf("cannot resolve argument `%s`", i)
+}
+
+func NewDefaultResolver(resolver parameters.Resolver) *Resolver {
+	return NewResolver(
+		NewServiceResolver(),
+		NewParamResolver(resolver),
+	)
 }
