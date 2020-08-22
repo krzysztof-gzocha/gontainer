@@ -29,8 +29,8 @@ func (c *{{$ContainerType}}) ValidateAllServices() (errors map[string]error) {
 
 func NewParamContainer() *{{$ContainerPathAlias}}.BaseParamContainer {
 	result := {{$ContainerPathAlias}}.NewBaseParamContainer(nil)
-{{- range $name, $param := .Input.Params}}
-    result.OverrideParam({{ export $name }}, func() interface{} {
+{{- range $param := .Input.Params}}
+    result.OverrideParam({{ export $param.Name }}, func() interface{} {
         // {{ export $param.Raw }}
         return {{$param.Code}}
     })
@@ -60,22 +60,28 @@ func CreateContainer() *{{$ContainerType}} {
 			err = {{ importAlias "fmt" }}.Errorf("todo")
 			{{ end }}
 
-			{{ if ne $service.Constructor "" }}service = {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(
+			{{ if ne $service.Constructor "" }}service, err = {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(
 			    {{$service.Constructor}},
 				{{- range $arg := $service.Args }}
 				// {{ export $arg.Raw }}
 				{{ $arg.Code }},
 				{{- end }}
-			){{ else if ne $service.Type "" }}
-			var result {{$service.Type}}
-            service = result
+			)
+
+			if err != nil {
+			    return
+			}{{ else if ne $service.Type "" }}
+			}
+			var typeService {{$service.Type}}
+            service = typeService
             {{ else if ne $service.Value "" }}
             service = {{ $service.Value }}
 			{{ end }}
 
 			{{ range $call := $service.Calls }}
-            {{ if eq $call.Immutable true }} result = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.Call(
-                result.{{ $call.Method }},
+            {{ if eq $call.Immutable true }} result = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.{{ if eq $call.Immutable true }}MustCallWitherByName{{ else }}MustCallByName{{ end }}(
+                service,
+                {{ export $call.Method }},
 				{{- range $arg := $call.Args }}
 				// {{ export $arg.Raw }}
 				{{ $arg.Code }},

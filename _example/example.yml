@@ -1,76 +1,20 @@
 meta:
   pkg: container
-  container_type: MyFooContainer
+  container_type: myFooContainer
   imports:
     "example": "mymodule"
 
-
-parameters:
-  t: '%todo("missing parameter")%'
-
-  es_host: "localhost"
-  es_port: "9200"
-  es_host_port: "%es_host%:%es_port%"
-
-  name: Jane\/\t
-  first_name: "%name%"
-  last_name: "%t%"
-  age: 30
-  salary: '%envInt("PERSON_SALARY")%'
-  position: '%env("PERSON_POSITION")%'
-  multiline: |
-    multi
-    line
-  foo: "@yolo"
-
 services:
-  anotherTest:
-    constructor: "example/pkg.NewEmplWithErr"
-    getter: GetMyErr
-    type: "*example/pkg.Employee"
+  logger:
+    constructor: "mymodule/pkg.NewLogger"
+    args: ["logger-prefix"]
 
-  test: # &Employee{}
-    type: "*example/pkg.Employee"
-
-  test2: # Employee{}
-    type: "example/pkg.Employee"
-
-  test3: # NewEmployee()
-    constructor: "example/pkg.NewEmployee"
-
-  # o tym myślę
-  # wspierane składnie
-  # import.Value - dla zmiennej, stałej i funkcji
-  # import.MyStruct{}.Method
-#  test4: # "MyValue"
-#    value: "my/import.MyValue"
-
-  testPerson:
-    type: "*example/pkg.Employee"
-    getter: GetFooPerson
-
-  person:
-    constructor: "example/pkg.NewPerson"
-    args: ["%first_name% %last_name% (%age%)", "%age%"]
-    getter: "GetPerson"
-    type: "*example/pkg.Person"
-    disposable: true
-
-  employee:
-    getter: "GetEmployee"
-    type: "*example/pkg.Employee"
-    # todo factory e.g. "@myFactoryService.NewEmployee"
-    # todo rename constructor to factory
-    # todo calls https://symfony.com/doc/current/service_container/calls.html
-    # todo add syntax "import.Employee{}" and "&import.Employee{}" or use type from line 28?
-    constructor: "example/pkg.NewEmployee"
-    args:
-#      - "%foo%"
-#      - "%position%"
-      - "@person.(*example/pkg.Person)"
-      - "%salary%"
-      - "%position%"
-      - "@testPerson"
-      - "@testPerson"
-      - "@testPerson"
-      - "@qwerty"
+  doer:
+    getter: "GetDoer"
+    type: "*mymodule/pkg.Doer"
+    constructor: '"mymodule/pkg".NewDoer'
+    args: ["@logger"]
+    calls:
+      - ["SetAge", ["%age%"]]
+    fields:
+      name: "%name%"

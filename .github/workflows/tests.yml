@@ -31,14 +31,14 @@ jobs:
     - name: Build
       run: make templates && go build -v main.go
 
-    - name: Test
-      run: go test -coverprofile=coverage.out ./cmd/... ./pkg/...
+#    - name: Test
+#      run: go test -coverprofile=coverage.out ./cmd/... ./pkg/...
+#
+#    - name: Test coverage
+#      run: go tool cover -func=coverage.out
 
-    - name: Test coverage
-      run: go tool cover -func=coverage.out
-
-#    - name: Example
-#      run: _example/run.sh
+    - name: Example
+      run: _example/run.sh
 
     - name: Send coverage
       uses: shogo82148/actions-goveralls@v1

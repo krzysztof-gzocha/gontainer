@@ -11,8 +11,8 @@ import (
 	"github.com/gomponents/gontainer/pkg/imports"
 )
 
-//go:generate go run ../../templater/main.go head.tmpl template TemplateHead tpl_head.go
-//go:generate go run ../../templater/main.go body.tmpl template TemplateBody tpl_body.go
+//go:generate go run ../../templater/main.go head.tmpl template TemplateHead tmpl_head.go
+//go:generate go run ../../templater/main.go body.tmpl template TemplateBody tmpl_body.go
 
 type SimpleBuilder struct {
 	imports imports.Imports
