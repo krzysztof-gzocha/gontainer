@@ -56,30 +56,30 @@ func CreateContainer() *{{$ContainerType}} {
 				}
 			}()
 
-			{{ if eq $service.Todo true }}
+			{{- if eq $service.Todo true }}
 			err = {{ importAlias "fmt" }}.Errorf("todo")
 			{{ end }}
 
-			{{ if ne $service.Constructor "" }}service, err = {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(
+			{{- if ne $service.Constructor "" }}
+			service, err = {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(
 			    {{$service.Constructor}},
 				{{- range $arg := $service.Args }}
 				// {{ export $arg.Raw }}
 				{{ $arg.Code }},
 				{{- end }}
 			)
-
 			if err != nil {
 			    return
-			}{{ else if ne $service.Type "" }}
 			}
+			{{- else if ne $service.Type "" }}
 			var typeService {{$service.Type}}
             service = typeService
-            {{ else if ne $service.Value "" }}
+            {{- else if ne $service.Value "" }}
             service = {{ $service.Value }}
-			{{ end }}
+			{{- end -}}
 
-			{{ range $call := $service.Calls }}
-            {{ if eq $call.Immutable true }} service = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.{{ if eq $call.Immutable true }}MustCallWitherByName{{ else }}MustCallByName{{ end }}(
+			{{- range $call := $service.Calls }}
+            {{ if eq $call.Immutable true }}service = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.{{ if eq $call.Immutable true }}MustCallWitherByName{{ else }}MustCallByName{{ end }}(
                 &service,
                 {{ export $call.Method }},
 				{{- range $arg := $call.Args }}
@@ -87,12 +87,12 @@ func CreateContainer() *{{$ContainerType}} {
 				{{ $arg.Code }},
 				{{- end }}
             )
-			{{ end }}
+			{{- end -}}
 
-			{{ range $field := $service.Fields }}
+			{{- range $field := $service.Fields }}
 			// {{ export $field.Value.Raw }}
             {{ importAlias "github.com/gomponents/gontainer-helpers/setter" }}.MustSet(&service, {{ export $field.Name }}, {{ $field.Value.Code }})
-			{{ end }}
+			{{- end }}
 
             return
 		},
