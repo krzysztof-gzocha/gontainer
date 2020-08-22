@@ -18,7 +18,7 @@ const (
 
 	ServiceName   = YamlToken
 	ServiceGetter = GoToken
-	ServiceType   = `(?P<ptr>\*)?` + `((?P<import>` + Import + `)\.)?(?P<type>` + GoToken + `)`
+	ServiceType   = `(?P<ptr>\*)?` + `((?P<import>` + Import + `)\.)?(?P<type>` + GoToken + `)` // todo maybe better to use & instead of *
 	// ServiceValue supports
 	// Value
 	// my/import.Value
@@ -28,4 +28,6 @@ const (
 	ServiceCallName    = GoToken
 	ServiceFieldName   = GoToken
 	ServiceTag         = YamlToken
+
+	TaggedArg = "!tagged +(?P<tag>" + YamlToken + ")"
 )

@@ -12,6 +12,7 @@ type Arg struct {
 	Raw               interface{}
 	DependsOnParams   []string
 	DependsOnServices []string
+	DependsOnTags     []string
 }
 
 type Call struct {

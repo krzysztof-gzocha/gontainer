@@ -38,6 +38,7 @@ func (s Resolver) Resolve(i interface{}) (compiled.Arg, error) {
 func NewDefaultResolver(resolver parameters.Resolver) *Resolver {
 	return NewResolver(
 		NewServiceResolver(),
+		NewTaggedResolver(),
 		NewParamResolver(resolver),
 	)
 }
