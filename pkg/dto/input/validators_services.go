@@ -151,10 +151,15 @@ func ValidateServiceFields(s Service) error {
 }
 
 func ValidateServiceTags(s Service) error {
+	exists := make(map[string]bool)
 	for _, t := range s.Tags {
-		if err := validateRegexField("tag", t, regexServiceTag, false); err != nil {
+		if err := validateRegexField("tag", t.Name, regexServiceTag, false); err != nil {
 			return err
 		}
+		if _, ok := exists[t.Name]; ok {
+			return fmt.Errorf("duplicate tag `%s`", t.Name)
+		}
+		exists[t.Name] = true
 	}
 	return nil
 }

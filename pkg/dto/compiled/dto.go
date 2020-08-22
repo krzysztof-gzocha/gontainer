@@ -25,6 +25,11 @@ type Field struct {
 	Value Arg
 }
 
+type Tag struct {
+	Name     string
+	Priority int
+}
+
 type Service struct {
 	Name        string
 	Getter      string
@@ -34,7 +39,7 @@ type Service struct {
 	Args        []Arg
 	Calls       []Call
 	Fields      []Field
-	Tags        []string
+	Tags        []Tag
 	Disposable  bool
 	Todo        bool
 }

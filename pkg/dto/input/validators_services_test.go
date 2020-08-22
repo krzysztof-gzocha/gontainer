@@ -277,3 +277,30 @@ func TestValidateServiceArgs(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateServiceCalls(t *testing.T) {
+	// todo
+}
+
+func TestValidateServiceFields(t *testing.T) {
+	// todo
+}
+
+func TestValidateServiceTags(t *testing.T) {
+	t.Run("Given duplicate", func(t *testing.T) {
+		s := Service{
+			Tags: []Tag{
+				{
+					Name:     "logger",
+					Priority: 0,
+				},
+				{
+					Name:     "logger",
+					Priority: 10,
+				},
+			},
+		}
+		err := ValidateServiceTags(s)
+		assert.EqualError(t, err, "duplicate tag `logger`")
+	})
+}
