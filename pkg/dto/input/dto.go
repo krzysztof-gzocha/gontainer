@@ -9,7 +9,6 @@ const (
 	defaultContainerType = "Gontainer"
 )
 
-// todo https://symfony.com/blog/new-in-symfony-4-3-configuring-services-with-immutable-setters
 type Call struct {
 	Method    string
 	Args      []interface{}
@@ -48,6 +47,47 @@ func (c *Call) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	}
 
+	return nil
+}
+
+type Tag struct {
+	Name     string
+	Priority int
+}
+
+func (t *Tag) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var z interface{}
+	if err := unmarshal(&z); err != nil {
+		return nil
+	}
+
+	if s, ok := z.(string); ok {
+		t.Name = s
+		t.Priority = 0
+		return nil
+	}
+
+	if m, ok := z.(map[interface{}]interface{}); ok {
+		if n, ok := m["name"]; ok {
+			name, okName := n.(string)
+			if !okName {
+				return fmt.Errorf("name must be an instance of string")
+			}
+			t.Name = name
+		} else {
+			return fmt.Errorf("name of tag is required")
+		}
+
+		if p, ok := m["priority"]; ok {
+			priority, okPriority := p.(int)
+			if !okPriority {
+				return fmt.Errorf("priority must be an instance of int")
+			}
+			t.Priority = priority
+		} else {
+			t.Priority = 0
+		}
+	}
 	return nil
 }
 
