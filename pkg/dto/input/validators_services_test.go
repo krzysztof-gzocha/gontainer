@@ -34,9 +34,7 @@ func TestValidateServiceName(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.Equal(t, err, s.error)
 		})
 	}
 }
@@ -92,9 +90,7 @@ func TestValidateConstructorType(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }
@@ -131,9 +127,7 @@ func TestValidateServiceGetter(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.Equal(t, err, s.error)
 		})
 	}
 }
@@ -166,9 +160,7 @@ func TestValidateServiceType(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.Equal(t, err, s.error)
 		})
 	}
 }
@@ -209,9 +201,7 @@ func TestValidateServiceValue(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.Equal(t, err, s.error)
 		})
 	}
 }
@@ -246,9 +236,7 @@ func TestValidateServiceConstructor(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.Equal(t, err, s.error)
 		})
 	}
 }
@@ -285,9 +273,7 @@ func TestValidateServiceArgs(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }

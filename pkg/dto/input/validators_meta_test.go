@@ -35,9 +35,7 @@ func TestValidateMetaPkg(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }
@@ -70,9 +68,7 @@ func TestValidateMetaContainerType(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }
@@ -118,9 +114,7 @@ func TestValidateMetaImports(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }
@@ -163,9 +157,7 @@ func TestValidateMetaFunctions(t *testing.T) {
 				return
 			}
 
-			if assert.Error(t, err) {
-				assert.Equal(t, s.error, err.Error())
-			}
+			assert.Equal(t, err, s.error)
 		})
 	}
 }
