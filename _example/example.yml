@@ -15,6 +15,6 @@ services:
     constructor: '"mymodule/pkg".NewDoer'
     args: ["@logger"]
     calls:
-      - ["SetAge", ["%age%"]]
+      - ["SetAge", ["%age%"], true]
     fields:
       name: "%name%"

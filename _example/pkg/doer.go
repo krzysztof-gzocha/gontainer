@@ -14,8 +14,9 @@ func NewDoer(logger *log.Logger) *Doer {
 	return &Doer{logger: logger}
 }
 
-func (d *Doer) SetAge(age int) {
+func (d *Doer) SetAge(age int) *Doer {
 	d.age = age
+	return d
 }
 
 func (d Doer) Do() {
