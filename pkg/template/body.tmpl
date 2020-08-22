@@ -79,7 +79,7 @@ func CreateContainer() *{{$ContainerType}} {
 			{{ end }}
 
 			{{ range $call := $service.Calls }}
-            {{ if eq $call.Immutable true }} result = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.{{ if eq $call.Immutable true }}MustCallWitherByName{{ else }}MustCallByName{{ end }}(
+            {{ if eq $call.Immutable true }} service = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.{{ if eq $call.Immutable true }}MustCallWitherByName{{ else }}MustCallByName{{ end }}(
                 service,
                 {{ export $call.Method }},
 				{{- range $arg := $call.Args }}
@@ -91,7 +91,7 @@ func CreateContainer() *{{$ContainerType}} {
 
 			{{ range $field := $service.Fields }}
 			// {{ export $field.Value.Raw }}
-            {{ importAlias "github.com/gomponents/gontainer-helpers/setter" }}.Set(&result, {{ export $field.Name }}, {{ $field.Value.Code }})
+            {{ importAlias "github.com/gomponents/gontainer-helpers/setter" }}.MustSet(&service, {{ export $field.Name }}, {{ $field.Value.Code }})
 			{{ end }}
 
             return
