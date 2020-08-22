@@ -19,6 +19,7 @@ func DefaultParamsValidators() []func(DTO) error {
 }
 
 func ValidateParams(d DTO) error {
+	// todo the following code is unstable, iterate over slice instead of map
 	for k, v := range d.Params {
 		if !regexParamName.MatchString(k) {
 			return fmt.Errorf("parameter name should match `%s`, `%s` given", regexParamName.String(), k)

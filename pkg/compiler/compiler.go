@@ -134,6 +134,7 @@ func (c Compiler) handleMetaFuncs(funcs map[string]string) {
 }
 
 func (c Compiler) handleParams(i input.DTO, result *compiled.DTO) {
+	// todo the following code is unstable, iterate over slice instead of map
 	for n, v := range i.Params {
 		param, err := c.paramResolver.Resolve(v)
 		if err != nil {
