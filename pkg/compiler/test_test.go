@@ -16,7 +16,7 @@ type inputOutputScenario struct {
 func doTestInputOutput(t *testing.T, fn interface{}, scenarios ...inputOutputScenario) {
 	for i, s := range scenarios {
 		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
-			output := caller.Call(fn, s.input)
+			output := caller.MustCall(fn, s.input)
 			assert.Equal(t, s.output, output[0])
 		})
 	}
