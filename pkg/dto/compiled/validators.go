@@ -1,18 +1,24 @@
 package compiled
 
-type Validator struct {
+type ChainValidator struct {
+	validators []func(DTO) error
 }
 
-func NewValidator() *Validator {
-	return &Validator{}
+func NewChainValidator(validators ...func(DTO) error) *ChainValidator {
+	return &ChainValidator{validators: validators}
 }
 
-func (v Validator) Validate(DTO) error {
-	// todo
+func (c ChainValidator) Validate(m DTO) error {
+	for _, v := range c.validators {
+		if err := v(m); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
-func NewDefaultValidator() *Validator {
-	// todo
-	return NewValidator()
+func NewDefaultValidator() *ChainValidator {
+	validators := make([]func(DTO) error, 0)
+	validators = append(validators, DefaultParamsValidators()...)
+	return NewChainValidator(validators...)
 }
