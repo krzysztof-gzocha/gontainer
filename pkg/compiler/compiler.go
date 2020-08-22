@@ -193,7 +193,7 @@ func (c Compiler) handleService(name string, s input.Service) compiled.Service {
 		Args:        c.handleServiceArgs(fmt.Sprintf("service `%s`"), s.Args),
 		Calls:       c.handleServiceCalls(name, s.Calls),
 		Fields:      c.handleServiceFields(name, s.Fields),
-		Tags:        s.Tags,
+		Tags:        c.handleServiceTags(s.Tags),
 		Disposable:  s.Disposable,
 		Todo:        false,
 	}
@@ -276,5 +276,15 @@ func (c Compiler) handleServiceFields(serviceName string, fields map[string]inte
 		return res[i].Name < res[j].Name
 	})
 
+	return
+}
+
+func (c Compiler) handleServiceTags(tags []input.Tag) (r []compiled.Tag) {
+	for _, t := range tags {
+		r = append(r, compiled.Tag{
+			Name:     t.Name,
+			Priority: t.Priority,
+		})
+	}
 	return
 }

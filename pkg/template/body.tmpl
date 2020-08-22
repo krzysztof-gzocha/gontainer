@@ -10,6 +10,7 @@
 type {{$ContainerType}} struct {
 	*{{$ContainerPathAlias}}.BaseContainer
 	*{{$ContainerPathAlias}}.BaseParamContainer
+	*{{$ContainerPathAlias}}.BaseTaggedContainer
 }
 
 func (c *{{$ContainerType}}) ValidateAllServices() (errors map[string]error) {
@@ -99,9 +100,12 @@ func CreateContainer() *{{$ContainerType}} {
 		Disposable: {{$service.Disposable}},
 	}
 {{end}}
+    baseContainer := {{$ContainerPathAlias}}.NewBaseContainer(getters)
+    baseTaggedContainer := {{$ContainerPathAlias}}.NewBaseTaggedContainer(baseContainer)
 	result = &{{$ContainerType}}{
-	    BaseContainer:      {{$ContainerPathAlias}}.NewBaseContainer(getters),
-	    BaseParamContainer: NewParamContainer(),
+	    BaseContainer:       baseContainer,
+	    BaseParamContainer:  NewParamContainer(),
+	    BaseTaggedContainer: baseTaggedContainer,
 	}
 	return result
 }
