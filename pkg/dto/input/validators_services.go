@@ -97,6 +97,9 @@ func ValidateConstructorType(s Service) error {
 }
 
 func ValidateServiceGetter(s Service) error {
+	if s.Getter != "" && s.Type == "" {
+		return fmt.Errorf("getter is given, but type is missing")
+	}
 	return validateRegexField("getter", s.Getter, regexServiceGetter, true)
 }
 
