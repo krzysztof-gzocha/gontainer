@@ -80,7 +80,7 @@ func CreateContainer() *{{$ContainerType}} {
 
 			{{ range $call := $service.Calls }}
             {{ if eq $call.Immutable true }} service = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.{{ if eq $call.Immutable true }}MustCallWitherByName{{ else }}MustCallByName{{ end }}(
-                service,
+                &service,
                 {{ export $call.Method }},
 				{{- range $arg := $call.Args }}
 				// {{ export $arg.Raw }}
