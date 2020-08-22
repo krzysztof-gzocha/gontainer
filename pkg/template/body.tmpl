@@ -1,5 +1,7 @@
-{{- $ContainerPathAlias := importAlias "github.com/gomponents/gontainer-helpers/container" -}}
-{{- $ContainerType := .Input.Meta.ContainerType -}}
+{{- $containerPathAlias := importAlias "github.com/gomponents/gontainer-helpers/container" -}}
+{{- $containerType := .Input.Meta.ContainerType -}}
+{{- $callerPathAlias := importAlias "github.com/gomponents/gontainer-helpers/caller" -}}
+{{- $setterPathAlias := importAlias "github.com/gomponents/gontainer-helpers/setter" -}}
 
 {{- range $name, $param := .Input.Params -}}
 // {{$name}}
@@ -7,13 +9,13 @@
 // GO:  {{$param.Code}}
 // -----------------------------------------------------------------------------
 {{end}}
-type {{$ContainerType}} struct {
-	*{{$ContainerPathAlias}}.BaseContainer
-	*{{$ContainerPathAlias}}.BaseParamContainer
-	*{{$ContainerPathAlias}}.BaseTaggedContainer
+type {{$containerType}} struct {
+	*{{$containerPathAlias}}.BaseContainer
+	*{{$containerPathAlias}}.BaseParamContainer
+	*{{$containerPathAlias}}.BaseTaggedContainer
 }
 
-func (c *{{$ContainerType}}) ValidateAllServices() (errors map[string]error) {
+func (c *{{$containerType}}) ValidateAllServices() (errors map[string]error) {
 	errors = make(map[string]error)
 	for _, id := range []string{
 {{range $service := .Input.Services -}} {{ "		" }} {{- export $service.Name }},{{ "\n" }}{{ end -}}
@@ -28,8 +30,8 @@ func (c *{{$ContainerType}}) ValidateAllServices() (errors map[string]error) {
 	return
 }
 
-func NewParamContainer() *{{$ContainerPathAlias}}.BaseParamContainer {
-	result := {{$ContainerPathAlias}}.NewBaseParamContainer(nil)
+func NewParamContainer() *{{$containerPathAlias}}.BaseParamContainer {
+	result := {{$containerPathAlias}}.NewBaseParamContainer(nil)
 {{- range $param := .Input.Params}}
     result.OverrideParam({{ export $param.Name }}, func() interface{} {
         // {{ export $param.Raw }}
@@ -39,17 +41,17 @@ func NewParamContainer() *{{$ContainerPathAlias}}.BaseParamContainer {
 	return result
 }
 
-func CreateContainer() *{{$ContainerType}} {
-	result := &{{$ContainerType}}{}
+func CreateContainer() *{{$containerType}} {
+	result := &{{$containerType}}{}
 
-	getters := make(map[string]{{$ContainerPathAlias}}.ServiceDefinition)
-	getters["serviceContainer"] = {{$ContainerPathAlias}}.ServiceDefinition{
+	getters := make(map[string]{{$containerPathAlias}}.ServiceDefinition)
+	getters["serviceContainer"] = {{$containerPathAlias}}.ServiceDefinition{
 		Provider: func() (interface{}, error) {
 			return result, nil
 		},
 		Disposable: false,
 	}
-{{range $service := .Input.Services}}	getters[{{ export $service.Name }}] = {{$ContainerPathAlias}}.ServiceDefinition{
+{{range $service := .Input.Services}}	getters[{{ export $service.Name }}] = {{$containerPathAlias}}.ServiceDefinition{
 		Provider: func() (service interface{}, err error) {
 			defer func() {
 				if r := recover(); r != nil {
@@ -62,7 +64,7 @@ func CreateContainer() *{{$ContainerType}} {
 			{{ end }}
 
 			{{- if ne $service.Constructor "" }}
-			service, err = {{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.CallProvider(
+			service, err = {{ $callerPathAlias }}.CallProvider(
 			    {{$service.Constructor}},
 				{{- range $arg := $service.Args }}
 				// {{ export $arg.Raw }}
@@ -80,7 +82,7 @@ func CreateContainer() *{{$ContainerType}} {
 			{{- end -}}
 
 			{{- range $call := $service.Calls }}
-            {{ if eq $call.Immutable true }}service = {{ end }}{{ importAlias "github.com/gomponents/gontainer-helpers/caller" }}.{{ if eq $call.Immutable true }}MustCallWitherByName{{ else }}MustCallByName{{ end }}(
+            {{ if eq $call.Immutable true }}service = {{ end }}{{ $callerPathAlias }}.{{ if eq $call.Immutable true }}MustCallWitherByName{{ else }}MustCallByName{{ end }}(
                 &service,
                 {{ export $call.Method }},
 				{{- range $arg := $call.Args }}
@@ -92,7 +94,7 @@ func CreateContainer() *{{$ContainerType}} {
 
 			{{- range $field := $service.Fields }}
 			// {{ export $field.Value.Raw }}
-            {{ importAlias "github.com/gomponents/gontainer-helpers/setter" }}.MustSet(&service, {{ export $field.Name }}, {{ $field.Value.Code }})
+            {{ $setterPathAlias }}.MustSet(&service, {{ export $field.Name }}, {{ $field.Value.Code }})
 			{{- end }}
 
             return
@@ -100,12 +102,12 @@ func CreateContainer() *{{$ContainerType}} {
 		Disposable: {{$service.Disposable}},
 	}
 {{end}}
-    baseContainer := {{$ContainerPathAlias}}.NewBaseContainer(getters)
-    baseTaggedContainer := {{$ContainerPathAlias}}.NewBaseTaggedContainer(baseContainer)
+    baseContainer := {{$containerPathAlias}}.NewBaseContainer(getters)
+    baseTaggedContainer := {{$containerPathAlias}}.NewBaseTaggedContainer(baseContainer)
     {{- range $service := .Input.Services }}{{ range $tag := $service.Tags }}
     baseTaggedContainer.OverrideTagService({{ export $tag.Name }}, {{ export $service.Name }}, {{ export $tag.Priority }})
     {{- end }}{{ end }}
-	result = &{{$ContainerType}}{
+	result = &{{$containerType}}{
 	    BaseContainer:       baseContainer,
 	    BaseParamContainer:  NewParamContainer(),
 	    BaseTaggedContainer: baseTaggedContainer,
@@ -116,7 +118,7 @@ func CreateContainer() *{{$ContainerType}} {
 {{- range $service := .Input.Services -}}
 {{- if ne $service.Getter "" }}
 
-func (c *{{$ContainerType}}) {{ $service.Getter }}() (result {{ $service.Type }}, err error) {
+func (c *{{$containerType}}) {{ $service.Getter }}() (result {{ $service.Type }}, err error) {
 	var object interface{}
 	var ok bool
 

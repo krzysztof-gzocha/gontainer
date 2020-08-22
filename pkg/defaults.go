@@ -11,12 +11,14 @@ import (
 	"github.com/gomponents/gontainer/pkg/tokens"
 )
 
+const gontainerHelperPath = "github.com/gomponents/gontainer-helpers"
+
 func NewDefaultCompiler(imports imports.Imports) *compiler.Compiler {
 	tokenizer := tokens.NewPatternTokenizer(
 		[]tokens.TokenFactoryStrategy{
 			tokens.NewTokenSimpleFunction(imports, "env", "os", "Getenv"),
-			tokens.NewTokenSimpleFunction(imports, "envInt", "github.com/gomponents/gontainer-helpers/env", "MustGetInt"),
-			tokens.NewTokenSimpleFunction(imports, "todo", "github.com/gomponents/gontainer-helpers/std", "GetMissingParameter"),
+			tokens.NewTokenSimpleFunction(imports, "envInt", gontainerHelperPath+"/env", "MustGetInt"),
+			tokens.NewTokenSimpleFunction(imports, "todo", gontainerHelperPath+"/std", "GetMissingParameter"),
 			tokens.TokenPercentSign{},
 			tokens.TokenReference{},
 			tokens.TokenString{},
