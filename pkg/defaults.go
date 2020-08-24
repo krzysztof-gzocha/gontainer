@@ -34,7 +34,7 @@ func NewDefaultCompiler(imports imports.Imports) *compiler.Compiler {
 
 	return compiler.NewCompiler(
 		input.NewDefaultValidator(),
-		compiled.NewValidator(),
+		compiled.NewDefaultValidator(),
 		imports,
 		tokenizer,
 		paramResolver,
