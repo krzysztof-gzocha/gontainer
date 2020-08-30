@@ -1,6 +1,5 @@
 parameters:
   name: '%env("PERSON_NAME")%'
-  age: '%envInt("PERSON_AGE")%'
 
 services:
   person:
@@ -8,4 +7,4 @@ services:
     type: "Person"
     fields:
       Name: "%name%"
-      Age: "%age%"
+      Age: '%envInt("PERSON_AGE")%'
