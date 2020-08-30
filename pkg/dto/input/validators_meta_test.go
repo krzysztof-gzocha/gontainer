@@ -114,7 +114,7 @@ func TestValidateMetaImports(t *testing.T) {
 				return
 			}
 
-			assert.EqualError(t, err, s.error)
+			assert.EqualError(t, err, s.error, s)
 		})
 	}
 }

@@ -19,7 +19,7 @@ func TestValidateParams(t *testing.T) {
 		},
 		{
 			name:  "@",
-			error: "parameter name should match `^" + regexParamName.String() + "`, `@` given",
+			error: "parameter name should match `" + regexParamName.String() + "`, `@` given",
 		},
 		{
 			name:  "param",
