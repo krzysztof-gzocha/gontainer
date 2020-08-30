@@ -29,13 +29,13 @@ jobs:
       run: go mod download
 
     - name: Build
-      run: make templates && go build -v main.go
+      run: make build
 
-#    - name: Test
-#      run: go test -coverprofile=coverage.out ./cmd/... ./pkg/...
-#
-#    - name: Test coverage
-#      run: go tool cover -func=coverage.out
+    - name: Test
+      run: make tests-unit
+
+    - name: Test coverage
+      run: make code-coverage
 
     - name: Example
       run: _example/run.sh
