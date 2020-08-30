@@ -191,7 +191,7 @@ func (c Compiler) handleService(name string, s input.Service) compiled.Service {
 		Type:        c.handleServiceType(s.Type),
 		Value:       c.handleServiceValue(s.Value),
 		Constructor: c.handleServiceConstructor(s.Constructor),
-		Args:        c.handleServiceArgs(fmt.Sprintf("service `%s`"), s.Args),
+		Args:        c.handleServiceArgs(fmt.Sprintf("service `%s`", name), s.Args),
 		Calls:       c.handleServiceCalls(name, s.Calls),
 		Fields:      c.handleServiceFields(name, s.Fields),
 		Tags:        c.handleServiceTags(s.Tags),

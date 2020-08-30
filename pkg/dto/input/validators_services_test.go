@@ -98,6 +98,7 @@ func TestValidateConstructorType(t *testing.T) {
 func TestValidateServiceGetter(t *testing.T) {
 	scenarios := []struct {
 		getter string
+		type_  string
 		error  string
 	}{
 		{
@@ -105,29 +106,37 @@ func TestValidateServiceGetter(t *testing.T) {
 		},
 		{
 			getter: "GetName",
+			error:  "getter is given, but type is missing",
+		},
+		{
+			getter: "GetName",
+			type_:  "MyType",
 		},
 		{
 			getter: "getName",
+			type_:  "MyType",
 		},
 		{
 			getter: "0getName",
 			error:  "getter must match `" + regexServiceGetter.String() + "`, `0getName` given",
+			type_:  "MyType",
 		},
 		{
 			getter: "Get Name",
 			error:  "getter must match `" + regexServiceGetter.String() + "`, `Get Name` given",
+			type_:  "MyType",
 		},
 	}
 
 	for i, s := range scenarios {
 		t.Run(fmt.Sprintf("Scenario #%d", i), func(t *testing.T) {
-			err := ValidateServiceGetter(Service{Getter: s.getter})
+			err := ValidateServiceGetter(Service{Getter: s.getter, Type: s.type_})
 			if s.error == "" {
 				assert.NoError(t, err)
 				return
 			}
 
-			assert.Equal(t, err, s.error)
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }
@@ -160,7 +169,7 @@ func TestValidateServiceType(t *testing.T) {
 				return
 			}
 
-			assert.Equal(t, err, s.error)
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }
@@ -201,7 +210,7 @@ func TestValidateServiceValue(t *testing.T) {
 				return
 			}
 
-			assert.Equal(t, err, s.error)
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }

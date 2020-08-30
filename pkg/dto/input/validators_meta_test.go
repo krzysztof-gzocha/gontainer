@@ -157,7 +157,7 @@ func TestValidateMetaFunctions(t *testing.T) {
 				return
 			}
 
-			assert.Equal(t, err, s.error)
+			assert.EqualError(t, err, s.error)
 		})
 	}
 }
