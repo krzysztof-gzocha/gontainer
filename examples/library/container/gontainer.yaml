@@ -1,6 +1,10 @@
 meta:
   pkg: container
 
+parameters:
+  brandonSanderson: "Brandon Sanderson"
+  georgeRRMartin: "George R. R. Martin"
+
 services:
   library:
     getter: "GetLibrary"
@@ -11,12 +15,12 @@ services:
   authorBrandonSanderson:
     type: "library/pkg.Author"
     fields:
-      Name: "Brandon Sanderson"
+      Name: "%brandonSanderson%"
 
   authorGeorgeRRMartin:
     type: "library/pkg.Author"
     fields:
-      Name: "George R. R. Martin"
+      Name: "%georgeRRMartin%"
 
   bookTheWayOfKings:
     type: "library/pkg.Book"

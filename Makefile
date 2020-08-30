@@ -13,3 +13,7 @@ code-coverage:
 
 build: clean templates
 	go build -v -o app.bin main.go
+
+run-example-library: build
+	./app.bin build -i examples/library/container/gontainer.yaml -o examples/library/container/container.go
+	cd examples/library && go run main.go

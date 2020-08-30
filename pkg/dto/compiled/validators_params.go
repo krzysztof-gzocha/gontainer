@@ -29,7 +29,7 @@ func ValidateParamReqParamsExist(d DTO) error {
 		for _, a := range getAllServiceArgs(s) {
 			for _, n := range a.DependsOnParams {
 				if _, ok := list[n]; !ok {
-					return fmt.Errorf("servce `%s` requires param `%s`, but it does not exist", s.Name, n)
+					return fmt.Errorf("service `%s` requires param `%s`, but it does not exist", s.Name, n)
 				}
 			}
 		}
