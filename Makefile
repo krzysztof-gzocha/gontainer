@@ -18,8 +18,7 @@ globally: build
 	mv app.bin /usr/local/bin/gontainer
 
 globally-gh: build
-	mv app.bin gontainer
-	export PATH=${GITHUB_WORKSPACE}:${PATH}
+	sudo mv app.bin /usr/local/bin/gontainer
 
 upgrade-helpers:
 	go get -u github.com/gomponents/gontainer-helpers
