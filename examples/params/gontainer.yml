@@ -3,3 +3,6 @@ parameters:
   nameAlias: "%name%"
   age: '%envInt("PERSON_AGE")%'
   bio: "%todo()%"
+  firstName: "Johnny"
+  lastName: "Bravo"
+  fullName: "%firstName% %lastName%"

@@ -14,7 +14,7 @@ type mockImports struct {
 }
 
 func (m mockImports) GetAlias(i string) string {
-	const max = 30
+	const max = 15
 	const preffix = "(...)"
 	r := []rune(i)
 	if len(r) > max {
@@ -86,7 +86,9 @@ func NewDumpParamsCmd() *cobra.Command {
 			})
 		}
 
-		p := tableprinter.New(os.Stdout)
+		p := tableprinter.New(cmd.OutOrStdout())
+		p.ColumnSeparator = "│"
+		p.RowSeparator = "─"
 		p.Print(rows)
 	}
 
