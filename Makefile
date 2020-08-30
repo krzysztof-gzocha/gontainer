@@ -11,8 +11,10 @@ tests-unit: templates
 code-coverage:
 	go tool cover -func=coverage.out
 
+build: export DATETIME = $(shell date +'%Y-%m-%d %H:%M:%S')
+build: export GITHASH = $(shell git rev-parse HEAD)
 build: clean templates
-	go build -v -o app.bin main.go
+	go build -v -ldflags="-X 'main.date=${DATETIME}' -X 'main.commit=${GITHASH}'" -o app.bin main.go
 
 globally: build
 	mv app.bin /usr/local/bin/gontainer
