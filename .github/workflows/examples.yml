@@ -30,6 +30,8 @@ jobs:
 
     - name: Example "Library"
       run: |
+        pwd
+        ls -al
         make globally-gh
         make run-example-library
 
