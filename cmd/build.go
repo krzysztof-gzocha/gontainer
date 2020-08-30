@@ -57,7 +57,7 @@ func NewBuildCmd() *cobra.Command {
 		handleErr(tplErr, "Unexpected error has occurred during building container")
 		fileErr := ioutil.WriteFile(outputFile, []byte(tpl), 0644)
 		handleErr(fileErr, "Error has occurred during saving file")
-		write(fmt.Sprintf("Container has been built\n\t%s\n", outputFile))
+		write(fmt.Sprintf("Container has been built\n    %s\n", outputFile))
 	}
 
 	cmd = &cobra.Command{
