@@ -18,7 +18,6 @@ globally: build
 	mv app.bin /usr/local/bin/gontainer
 
 globally-gh: build
-	ls -al
 	mv app.bin gontainer
 	export PATH=${GITHUB_WORKSPACE}:${PATH}
 
