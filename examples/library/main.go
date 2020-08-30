@@ -8,6 +8,8 @@ import (
 	"library/pkg"
 )
 
+//go:generate gontainer build -i container/gontainer.yml -o container/container.go
+
 func main() {
 	c := container.NewContainer()
 	l, _ := c.GetLibrary()
