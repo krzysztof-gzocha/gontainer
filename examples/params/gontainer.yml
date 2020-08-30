@@ -1,0 +1,5 @@
+parameters:
+  name: '%env("PERSON_NAME")%'
+  nameAlias: "%name%"
+  age: '%envInt("PERSON_AGE")%'
+  bio: "%todo()%"

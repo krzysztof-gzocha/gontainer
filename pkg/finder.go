@@ -19,6 +19,9 @@ func (s simpleFinder) find(patterns []string) ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
+		for i, m := range matches {
+			matches[i] = filepath.Clean(m)
+		}
 		sort.Strings(matches)
 		result = append(result, matches...)
 	}

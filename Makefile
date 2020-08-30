@@ -29,3 +29,6 @@ run-example-library:
 run-example-env: build
 	./app.bin build -i examples/env/gontainer.yml -o examples/env/container.go
 	cd examples/env && PERSON_NAME="Harry Potter" PERSON_AGE="13" go run .
+
+run-example-params:
+	cd examples/params && gontainer dump-params -i gontainer.yml

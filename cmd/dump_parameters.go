@@ -1,23 +1,26 @@
 package cmd
 
-
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/gomponents/gontainer/pkg"
 	"github.com/gomponents/gontainer/pkg/imports"
+	"github.com/landoop/tableprinter"
 	"github.com/spf13/cobra"
 )
-
-// todo https://github.com/olekukonko/tablewriter
 
 type mockImports struct {
 }
 
 func (m mockImports) GetAlias(i string) string {
-	// todo limit to X characters
+	const max = 30
+	const preffix = "(...)"
+	r := []rune(i)
+	if len(r) > max {
+		r = r[len(r)-(max-len([]rune(preffix))):]
+		i = preffix + string(r)
+	}
 	return "\"" + i + "\""
 }
 
@@ -27,6 +30,11 @@ func (m mockImports) GetImports() []imports.Import {
 
 func (m mockImports) RegisterPrefix(shortcut string, path string) error {
 	return nil
+}
+
+type paramRow struct {
+	Name    string `header:"Name"`
+	Pattern string `header:"Param"`
 }
 
 func NewDumpParamsCmd() *cobra.Command {
@@ -49,26 +57,37 @@ func NewDumpParamsCmd() *cobra.Command {
 		}
 	}
 
-	write := func(s string) {
-		_, err := cmd.OutOrStdout().Write([]byte(s))
-		if err != nil {
-			panic(err)
-		}
-	}
+	//write := func(s string) {
+	//	_, err := cmd.OutOrStdout().Write([]byte(s))
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//}
 
 	callback := func(cmd *cobra.Command, args []string) {
 		reader := pkg.NewDefaultConfigReader(func(s string) {
-			write(fmt.Sprintf("    %s\n", s))
+			//write(fmt.Sprintf("    %s\n", s))
 		})
-		write("Reading files...\n")
+		//write("Reading files...\n")
 		input, err := reader.Read(inputFiles)
 		handleErr(err, "Configuration error")
 
-		imps := imports.NewSimpleImports()
+		imps := &mockImports{}
 		compiler := pkg.NewDefaultCompiler(imps)
 
 		compiledInput, ciErr := compiler.Compile(input)
 		handleErr(ciErr, "Cannot build container")
+
+		var rows []paramRow
+		for _, p := range compiledInput.Params {
+			rows = append(rows, paramRow{
+				Name:    p.Name,
+				Pattern: p.Code,
+			})
+		}
+
+		p := tableprinter.New(os.Stdout)
+		p.Print(rows)
 	}
 
 	cmd = &cobra.Command{

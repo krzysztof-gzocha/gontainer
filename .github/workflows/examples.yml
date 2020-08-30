@@ -28,11 +28,16 @@ jobs:
     - name: Get dependencies
       run: go mod download
 
+    - name: Example "Environment variables"
+      run: |
+        make run-example-env
+
     - name: Example "Library"
       run: |
         sudo make globally
         make run-example-library
 
-    - name: Example "Environment variables"
+    - name: Example "Params"
       run: |
-        make run-example-env
+        sudo make globally
+        make run-example-params
