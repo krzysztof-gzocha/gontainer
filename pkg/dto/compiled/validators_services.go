@@ -68,7 +68,7 @@ func ValidateServicesCircularDeps(d DTO) error {
 	})
 
 	services := append(d.Services)
-	sort.Slice(serviceMapping, func(i, j int) bool {
+	sort.Slice(services, func(i, j int) bool {
 		return services[i].Name < services[j].Name
 	})
 
