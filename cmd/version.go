@@ -9,22 +9,23 @@ import (
 
 func NewVersionCmd(version, commit, date string) *cobra.Command {
 	var (
-		shortened  = false
-		output     = "json"
+		format     = "json"
 		versionCmd = &cobra.Command{
 			Use:   "version",
-			Short: "Version will output the current build information",
+			Short: "Version will format the current build information",
 			Long:  ``,
-			Run: func(_ *cobra.Command, _ []string) {
-				resp := goVersion.FuncWithOutput(shortened, version, commit, date, output)
-				fmt.Print(resp)
+			Run: func(c *cobra.Command, _ []string) {
+				c.OutOrStdout()
+				_, _ = fmt.Fprint(
+					c.OutOrStdout(),
+					goVersion.FuncWithOutput(false, version, commit, date, format),
+				)
 				return
 			},
 		}
 	)
 
-	versionCmd.Flags().BoolVarP(&shortened, "short", "s", false, "Print just the version number.")
-	versionCmd.Flags().StringVarP(&output, "output", "o", "json", "Output format. One of 'yaml' or 'json'.")
+	versionCmd.Flags().StringVarP(&format, "format", "f", "yaml", "Output format. One of 'yaml' or 'json'.")
 
 	return versionCmd
 }
