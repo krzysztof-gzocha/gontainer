@@ -17,9 +17,6 @@ build: clean templates
 globally: build
 	mv app.bin /usr/local/bin/gontainer
 
-globally-gh: build
-	sudo mv app.bin /usr/local/bin/gontainer
-
 upgrade-helpers:
 	go get -u github.com/gomponents/gontainer-helpers
 

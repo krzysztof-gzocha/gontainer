@@ -30,9 +30,7 @@ jobs:
 
     - name: Example "Library"
       run: |
-        make globally-gh
-        ls -al
-        gontainer
+        sudo make globally
         make run-example-library
 
     - name: Example "Environment variables"
