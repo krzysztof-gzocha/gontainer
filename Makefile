@@ -14,6 +14,9 @@ code-coverage:
 build: clean templates
 	go build -v -o app.bin main.go
 
+upgrade-helpers:
+	go get -u github.com/gomponents/gontainer-helpers
+
 run-example-library: build
 	./app.bin build -i examples/library/container/gontainer.yml -o examples/library/container/container.go
 	cd examples/library && go run main.go
