@@ -1,7 +1,7 @@
 {{- $containerType := .Input.Meta.ContainerType -}}
 
-{{- range $name, $param := .Input.Params -}}
-// {{$name}}
+{{- range $param := .Input.Params -}}
+// {{$param.Name}}
 // Raw: {{ export $param.Raw }}
 // GO:  {{$param.Code}}
 // -----------------------------------------------------------------------------
