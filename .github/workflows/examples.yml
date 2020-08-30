@@ -33,6 +33,8 @@ jobs:
 
     - name: Example "Library"
       run: |
-        ./app.bin build -i examples/library/container/gontainer.yaml -o examples/library/container/container.go
-        cd examples/library
-        go run main.go
+        make run-example-library
+
+    - name: Example "Environment variables"
+      run: |
+        make run-example-env

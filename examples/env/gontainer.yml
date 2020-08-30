@@ -1,0 +1,11 @@
+parameters:
+  name: '%env("PERSON_NAME")%'
+  age: '%envInt("PERSON_AGE")%'
+
+services:
+  person:
+    getter: "GetPerson"
+    type: "Person"
+    fields:
+      Name: "%name%"
+      Age: "%age%"
