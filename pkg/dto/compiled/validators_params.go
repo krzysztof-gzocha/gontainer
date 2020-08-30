@@ -8,16 +8,40 @@ import (
 
 func DefaultParamsValidators() []func(DTO) error {
 	return []func(DTO) error{
-		ValidateParams,
+		ValidateParamReqParamsExist,
+		ValidateParamsCircularDeps,
 	}
 }
 
-func ValidateParams(d DTO) error {
+func ValidateParamReqParamsExist(d DTO) error {
+	list := make(map[string]bool)
+	for _, p := range d.Params {
+		list[p.Name] = true
+	}
+	for _, p := range d.Params {
+		for _, n := range p.DependsOn {
+			if _, ok := list[n]; !ok {
+				return fmt.Errorf("parameter `%s` requires param `%s`, but it does not exist", p.Name, n)
+			}
+		}
+	}
+	for _, s := range d.Services {
+		for _, a := range getAllServiceArgs(s) {
+			for _, n := range a.DependsOnParams {
+				if _, ok := list[n]; !ok {
+					return fmt.Errorf("servce `%s` requires param `%s`, but it does not exist", s.Name, n)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func ValidateParamsCircularDeps(d DTO) error {
 	mapping := make(map[string]Param)
-	params := make([]Param, 0)
+	params := append(d.Params)
 	for _, p := range d.Params {
 		mapping[p.Name] = p
-		params = append(params, p)
 	}
 	sort.SliceStable(params, func(i, j int) bool {
 		return params[i].Name < params[j].Name
