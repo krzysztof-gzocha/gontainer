@@ -19,7 +19,7 @@ func (s ServiceResolver) Resolve(v interface{}) (compiled.Arg, error) {
 	expr, _ := v.(string)
 	service := expr[1:]
 	return compiled.Arg{
-		Code:              fmt.Sprintf("result.MustGet(%+q)", service),
+		Code:              fmt.Sprintf("container.MustGet(%+q)", service),
 		Raw:               expr,
 		DependsOnServices: []string{service},
 	}, nil

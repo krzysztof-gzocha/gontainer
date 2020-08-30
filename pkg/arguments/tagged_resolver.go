@@ -24,7 +24,7 @@ func (t TaggedResolver) Resolve(p interface{}) (compiled.Arg, error) {
 	_, m := regex.Match(taggedRegex, s)
 
 	return compiled.Arg{
-		Code:          fmt.Sprintf("result.MustGetByTag(%+q)", m["tag"]),
+		Code:          fmt.Sprintf("container.MustGetByTag(%+q)", m["tag"]),
 		Raw:           s,
 		DependsOnTags: []string{m["tag"]},
 	}, nil

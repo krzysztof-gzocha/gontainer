@@ -73,7 +73,7 @@ func (s SimpleResolver) resolveString(v string) (Expr, error) {
 			depID := string(runes[1 : len(runes)-1])
 			dependsOn = append(dependsOn, depID)
 			// todo make result injectable
-			return fmt.Sprintf("result.MustGetParam(%+q)", depID), nil
+			return fmt.Sprintf("container.MustGetParam(%+q)", depID), nil
 		case tokens.TokenKindCode:
 			return t.Code, nil
 		default:

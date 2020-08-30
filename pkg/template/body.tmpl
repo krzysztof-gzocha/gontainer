@@ -26,23 +26,23 @@ func (c *{{$containerType}}) ValidateAllServices() (errors map[string]error) {
 }
 
 func NewParamContainer() *{{containerAlias}}.BaseParamContainer {
-	result := {{containerAlias}}.NewBaseParamContainer(nil)
+	container := {{containerAlias}}.NewBaseParamContainer(nil)
 {{- range $param := .Input.Params}}
-    result.OverrideParam({{ export $param.Name }}, func() interface{} {
+    container.OverrideParam({{ export $param.Name }}, func() interface{} {
         // {{ export $param.Raw }}
         return {{$param.Code}}
     })
 {{- end}}
-	return result
+	return container
 }
 
 func NewContainer() *{{$containerType}} {
-	result := &{{$containerType}}{}
+	container := &{{$containerType}}{}
 
 	getters := make(map[string]{{containerAlias}}.ServiceDefinition)
 	getters["serviceContainer"] = {{containerAlias}}.ServiceDefinition{
 		Provider: func() (interface{}, error) {
-			return result, nil
+			return container, nil
 		},
 		Disposable: false,
 	}
@@ -102,12 +102,12 @@ func NewContainer() *{{$containerType}} {
     {{- range $service := .Input.Services }}{{ range $tag := $service.Tags }}
     baseTaggedContainer.OverrideTagService({{ export $tag.Name }}, {{ export $service.Name }}, {{ export $tag.Priority }})
     {{- end }}{{ end }}
-	result = &{{$containerType}}{
+	container = &{{$containerType}}{
 	    BaseContainer:       baseContainer,
 	    BaseParamContainer:  NewParamContainer(),
 	    BaseTaggedContainer: baseTaggedContainer,
 	}
-	return result
+	return container
 }
 
 {{- range $service := .Input.Services -}}
