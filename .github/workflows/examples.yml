@@ -28,11 +28,9 @@ jobs:
     - name: Get dependencies
       run: go mod download
 
-    - name: Globally
-      run: make globally-gh
-
     - name: Example "Library"
       run: |
+        make globally-gh
         make run-example-library
 
     - name: Example "Environment variables"
