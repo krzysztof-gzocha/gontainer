@@ -34,7 +34,7 @@ func (s simpleConfigReader) Read(patterns []string) (input.DTO, error) {
 		return input.DTO{}, fmt.Errorf("cannot find any configuration file")
 	}
 
-	result := input.DTO{}
+	result := input.CreateDefaultDTO()
 
 	for _, f := range files {
 		s.beforeParseFile(f)
