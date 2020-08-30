@@ -13,8 +13,9 @@ code-coverage:
 
 build: export DATETIME = $(shell date +'%Y-%m-%d %H:%M:%S')
 build: export GITHASH = $(shell git rev-parse HEAD)
+build: export VERSION = dev-$(shell git rev-parse --abbrev-ref HEAD)
 build: clean templates
-	go build -v -ldflags="-X 'main.date=${DATETIME}' -X 'main.commit=${GITHASH}'" -o app.bin main.go
+	go build -v -ldflags="-X 'main.date=${DATETIME}' -X 'main.commit=${GITHASH}' -X 'main.version=${VERSION}'" -o app.bin main.go
 
 globally: build
 	mv app.bin /usr/local/bin/gontainer
