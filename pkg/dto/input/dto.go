@@ -7,6 +7,7 @@ import (
 const (
 	defaultPkg           = "main"
 	defaultContainerType = "Gontainer"
+	gontainerHelperPath  = "github.com/gomponents/gontainer-helpers"
 )
 
 type Call struct {
@@ -121,8 +122,8 @@ func CreateDefaultDTO() DTO {
 	result.Meta.ContainerType = defaultContainerType
 	result.Meta.Functions = map[string]string{
 		"env":    "os.Env",
-		"envInt": "github.com/gomponents/gontainer-helpers/env.MustGetInt",
-		"todo":   "github.com/gomponents/gontainer-helpers/std.GetMissingParameter",
+		"envInt": gontainerHelperPath + "/env.MustGetInt",
+		"todo":   gontainerHelperPath + "/std.GetMissingParameter",
 	}
 	return result
 }
